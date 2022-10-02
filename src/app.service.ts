@@ -4,7 +4,7 @@ import { Response } from 'express';
 
 @Injectable()
 export class AppService {
-	getIndex(res: Response) {
-		res.sendFile(frontIndexFile);
-	}
+  getIndex(res: Response) {
+    res.sendFile(frontIndexFile);
+  }
 }

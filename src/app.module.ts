@@ -1,15 +1,30 @@
-import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { ServeStaticModule } from '@nestjs/serve-static';
-import { StaticModuleForRoot } from './utils/staticFiles';
+import { Module } from "@nestjs/common";
+import { AppController } from "./app.controller";
+import { AppService } from "./app.service";
+import {
+  envConfig,
+  sequelizeIntegration,
+  staticFolder,
+} from "./app.module.config";
+import { LoginModule } from "./login/login.module";
+import { RouterModule, RouteTree } from "@nestjs/core";
+
+const routs: RouteTree[] = [
+  {
+    path: "api",
+    children: [{ path: "login", module: LoginModule }],
+  },
+];
 
 @Module({
-	imports: [ ConfigModule.forRoot(), ServeStaticModule.forRoot(StaticModuleForRoot) ],
-	controllers: [ AppController ],
-	providers: [ AppService ]
+  imports: [
+    envConfig,
+    staticFolder,
+    sequelizeIntegration,
+    LoginModule,
+    RouterModule.register(routs),
+  ],
+  controllers: [AppController],
+  providers: [AppService],
 })
-export class AppModule {
-	
-}
+export class AppModule {}
