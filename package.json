@@ -19,7 +19,8 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "migration:create": "npx sequelize-cli migration:create  --migrations-path ./src/migrations --name"
+    "migration:create": "npx sequelize-cli migration:create  --migrations-path ./src/migrations --name",
+    "migration:migrate": "npx sequelize-cli db:migrate"
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",
@@ -28,6 +29,7 @@
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/sequelize": "^9.0.0",
     "@nestjs/serve-static": "^3.0.0",
+    "bcrypt": "^5.0.1",
     "cookie-parser": "^1.4.6",
     "mysql2": "^2.3.3",
     "reflect-metadata": "^0.1.13",
