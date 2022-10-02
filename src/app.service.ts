@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
-import { frontIndexFile } from './utils/staticFiles';
-import { Response } from 'express';
+import { Injectable } from "@nestjs/common";
+import { frontIndexFile } from "./utils/staticFiles";
+import { Response } from "express";
 
 @Injectable()
 export class AppService {
