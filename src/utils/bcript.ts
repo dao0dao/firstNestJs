@@ -1,4 +1,4 @@
-import bcrypt = require("bcrypt");
+import * as bcrypt from "bcrypt";
 
 export const isSamePasswords = async (
   password: string,

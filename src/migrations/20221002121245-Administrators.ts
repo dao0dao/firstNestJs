@@ -1,9 +1,9 @@
-import { QueryInterface } from 'sequelize';
-import { DataType } from 'sequelize-typescript';
+import { QueryInterface } from "sequelize";
+import { DataType } from "sequelize-typescript";
 
 module.exports = {
   async up(queryInterface: QueryInterface) {
-    queryInterface.createTable('administrators', {
+    queryInterface.createTable("administrators", {
       id: {
         allowNull: false,
         primaryKey: true,
@@ -31,6 +31,6 @@ module.exports = {
   },
 
   async down(queryInterface: QueryInterface) {
-    queryInterface.dropTable('administrators');
+    queryInterface.dropTable("administrators");
   },
 };

@@ -8,6 +8,7 @@ import {
 } from "./app.module.config";
 import { LoginModule } from "./login/login.module";
 import { RouterModule, RouteTree } from "@nestjs/core";
+import { SharedModule } from "./utils/shared/shared.module";
 
 const routs: RouteTree[] = [
   {
@@ -23,8 +24,10 @@ const routs: RouteTree[] = [
     sequelizeIntegration,
     LoginModule,
     RouterModule.register(routs),
+    SharedModule,
   ],
   controllers: [AppController],
   providers: [AppService],
+  exports: [],
 })
 export class AppModule {}
