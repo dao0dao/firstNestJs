@@ -1,9 +1,11 @@
+import { IsString } from "class-validator";
+
 export class LoginInputDTO {
-  nick: string;
-  password: string;
+  @IsString() nick: string;
+  @IsString() password: string;
 }
 
-export class LoginOutputDTO {
+export class LoginResponse {
   isLogin: boolean;
   isAdmin: boolean;
   user: string;

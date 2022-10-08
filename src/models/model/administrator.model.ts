@@ -1,4 +1,5 @@
 import { Table, Column, Model } from "sequelize-typescript";
+
 @Table
 export class Administrator extends Model {
   @Column({ primaryKey: true })

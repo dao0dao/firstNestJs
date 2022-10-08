@@ -7,8 +7,9 @@ import {
   staticFolder,
 } from "./app.module.config";
 import { LoginModule } from "./login/login.module";
-import { RouterModule, RouteTree } from "@nestjs/core";
+import { APP_PIPE, RouterModule, RouteTree } from "@nestjs/core";
 import { SharedModule } from "./utils/shared/shared.module";
+import { ClassValidationPipe } from "./class-validation.pipe";
 
 const routs: RouteTree[] = [
   {
@@ -27,7 +28,7 @@ const routs: RouteTree[] = [
     SharedModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, { provide: APP_PIPE, useClass: ClassValidationPipe }],
   exports: [],
 })
 export class AppModule {}
