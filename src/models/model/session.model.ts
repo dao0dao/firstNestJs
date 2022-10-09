@@ -7,4 +7,6 @@ export class Sessions extends Model {
   session_id: string;
   @Column
   expired_at: string;
+  @Column
+  administrator_id: string;
 }

@@ -14,7 +14,7 @@ import { ClassValidationPipe } from "./class-validation.pipe";
 const routs: RouteTree[] = [
   {
     path: "api",
-    children: [{ path: "login", module: LoginModule }],
+    children: [LoginModule],
   },
 ];
 

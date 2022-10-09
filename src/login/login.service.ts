@@ -27,6 +27,22 @@ export class LoginService {
       isAdmin: admin.isAdmin,
       isLogin: true,
       user: admin.name,
+      user_id: admin.id,
+    };
+    return login;
+  }
+
+  async checkIsLogin(administrator_id: string): Promise<LoginResponse | false> {
+    const admin = await this.AdminModel.findOne({
+      where: { id: administrator_id },
+    });
+    if (!admin) {
+      return false;
+    }
+    const login: LoginResponse = {
+      isAdmin: admin.isAdmin,
+      isLogin: true,
+      user: admin.name,
     };
     return login;
   }

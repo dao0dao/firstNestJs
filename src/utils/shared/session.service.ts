@@ -11,7 +11,10 @@ export class SessionsService {
     date = date.slice(0, date.indexOf("."));
     return date;
   }
-  async createSession(): Promise<{ key: string; date: Date }> {
+
+  async createSession(
+    administrator_id: string
+  ): Promise<{ key: string; date: Date }> {
     const rounds = parseInt((Math.random() * 10).toFixed(0));
     const key = await bcrypt.hash("secretKey", rounds);
     const date = new Date(Date.now() + 2 * 3600 * 1000);
@@ -20,8 +23,17 @@ export class SessionsService {
       .create({
         session_id: key,
         expired_at: dateSQL,
+        administrator_id: administrator_id,
       })
       .catch((e) => console.log(e));
     return { key, date };
+  }
+
+  async findSession(session_id: string): Promise<string | false> {
+    const session = await this.sessionModel.findOne({ where: { session_id } });
+    if (!session) {
+      return false;
+    }
+    return session.administrator_id;
   }
 }

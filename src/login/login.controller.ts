@@ -5,14 +5,15 @@ import {
   HttpException,
   HttpStatus,
   Post,
+  Req,
   Res,
 } from "@nestjs/common";
-import { Response } from "express";
+import { Response, Request } from "express";
 import { SessionsService } from "src/utils/shared/session.service";
 import { LoginInputDTO } from "./login.dto";
 import { LoginService } from "./login.service";
 
-@Controller()
+@Controller("login")
 export class LoginController {
   constructor(
     private loginService: LoginService,
@@ -24,18 +25,30 @@ export class LoginController {
     if (!login) {
       throw new HttpException("UNAUTHORIZED", HttpStatus.UNAUTHORIZED);
     }
-    const session = await this.sessionService.createSession();
+    const session = await this.sessionService.createSession(login.user_id);
     res.cookie("key", session.key, {
       expires: session.date,
       httpOnly: true,
       secure: true,
       path: "/",
     });
-    res.json(login);
+    res.json({
+      isLogin: login.isLogin,
+      isAdmin: login.isAdmin,
+      user: login.user,
+    });
   }
 
   @Get()
-  checkIsLogin() {
-    return { status: "ok" };
+  async checkIsLogin(@Req() req: Request) {
+    const session_id = await this.sessionService.findSession(req.cookies.key);
+    if (!session_id) {
+      throw new HttpException("UNAUTHORIZED", HttpStatus.UNAUTHORIZED);
+    }
+    const admin = await this.loginService.checkIsLogin(session_id);
+    if (!admin) {
+      throw new HttpException("UNAUTHORIZED", HttpStatus.UNAUTHORIZED);
+    }
+    return admin;
   }
 }

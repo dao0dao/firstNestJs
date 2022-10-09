@@ -9,4 +9,5 @@ export class LoginResponse {
   isLogin: boolean;
   isAdmin: boolean;
   user: string;
+  user_id?: string;
 }
