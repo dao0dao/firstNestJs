@@ -36,4 +36,17 @@ export class SessionsService {
     }
     return session.administrator_id;
   }
+
+  clearOldSessions() {
+    const now = Date.now();
+    this.sessionModel.findAll().then((res) => {
+      for (const ses of res) {
+        const expired = new Date(ses.expired_at).getTime();
+        if (now >= expired) {
+          console.log("--remove session");
+          ses.destroy();
+        }
+      }
+    });
+  }
 }
