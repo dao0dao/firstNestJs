@@ -34,6 +34,7 @@ const routs: RouteTree[] = [
 })
 export class AppModule {
   constructor(private readonly session: SessionsService) {
+    this.session.clearOldSessions();
     setInterval(() => {
       this.session.clearOldSessions();
     }, 1 * 3600 * 1000);

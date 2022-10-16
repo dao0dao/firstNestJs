@@ -43,7 +43,6 @@ export class SessionsService {
       for (const ses of res) {
         const expired = new Date(ses.expired_at).getTime();
         if (now >= expired) {
-          console.log("--remove session");
           ses.destroy();
         }
       }
