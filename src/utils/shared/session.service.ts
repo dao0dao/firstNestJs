@@ -37,6 +37,17 @@ export class SessionsService {
     return session.administrator_id;
   }
 
+  async removeSession(session_id: string): Promise<boolean | Sessions> {
+    const session = await this.sessionModel.findOne({ where: { session_id } });
+    if (!session) {
+      return false;
+    }
+    return session
+      .destroy()
+      .then(() => session)
+      .catch(() => false);
+  }
+
   clearOldSessions() {
     const now = Date.now();
     this.sessionModel.findAll().then((res) => {

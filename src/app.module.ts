@@ -11,6 +11,7 @@ import { APP_PIPE, RouterModule, RouteTree } from "@nestjs/core";
 import { SharedModule } from "./utils/shared/shared.module";
 import { ClassValidationPipe } from "./class-validation.pipe";
 import { SessionsService } from "./utils/shared/session.service";
+import { AdministratorModule } from "./administrator/administrator.module";
 
 const routs: RouteTree[] = [
   {
@@ -27,6 +28,7 @@ const routs: RouteTree[] = [
     LoginModule,
     RouterModule.register(routs),
     SharedModule,
+    AdministratorModule,
   ],
   controllers: [AppController],
   providers: [AppService, { provide: APP_PIPE, useClass: ClassValidationPipe }],
