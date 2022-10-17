@@ -1,18 +1,13 @@
 import { Injectable } from "@nestjs/common";
-import { InjectModel } from "@nestjs/sequelize";
-import { Administrator } from "src/models/model/administrator.model";
+import { AdministratorService } from "src/administrator/administrator.service";
 import { isSamePasswords } from "src/utils/bcript";
 import { LoginInputDTO, LoginResponse } from "./login.dto";
 
 @Injectable()
 export class LoginService {
-  constructor(
-    @InjectModel(Administrator) private AdminModel: typeof Administrator
-  ) {}
+  constructor(private adminService: AdministratorService) {}
   async login(data: LoginInputDTO): Promise<false | LoginResponse> {
-    const admin = await this.AdminModel.findOne({
-      where: { login: data.nick },
-    });
+    const admin = await this.adminService.findAdministratorByLogin(data.nick);
     if (!admin) {
       return false;
     }
@@ -33,9 +28,9 @@ export class LoginService {
   }
 
   async checkIsLogin(administrator_id: string): Promise<LoginResponse | false> {
-    const admin = await this.AdminModel.findOne({
-      where: { id: administrator_id },
-    });
+    const admin = await this.adminService.findAdministratorById(
+      administrator_id
+    );
     if (!admin) {
       return false;
     }

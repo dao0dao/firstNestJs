@@ -29,7 +29,7 @@ export class SessionsService {
     return { key, date };
   }
 
-  async findSession(session_id: string): Promise<string | false> {
+  async findAdminIdInSession(session_id: string): Promise<string | false> {
     const session = await this.sessionModel.findOne({ where: { session_id } });
     if (!session) {
       return false;

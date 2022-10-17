@@ -7,16 +7,23 @@ import {
   staticFolder,
 } from "./app.module.config";
 import { LoginModule } from "./login/login.module";
-import { APP_PIPE, RouterModule, RouteTree } from "@nestjs/core";
+import {
+  APP_GUARD,
+  APP_INTERCEPTOR,
+  APP_PIPE,
+  RouterModule,
+  RouteTree,
+} from "@nestjs/core";
 import { SharedModule } from "./utils/shared/shared.module";
-import { ClassValidationPipe } from "./class-validation.pipe";
+import { ClassValidationPipe } from "./pipes/class-validation.pipe";
 import { SessionsService } from "./utils/shared/session.service";
 import { AdministratorModule } from "./administrator/administrator.module";
+import { AuthGuard } from "./guards/auth.guard";
 
 const routs: RouteTree[] = [
   {
     path: "api",
-    children: [LoginModule],
+    children: [LoginModule, AdministratorModule],
   },
 ];
 
@@ -25,13 +32,17 @@ const routs: RouteTree[] = [
     envConfig,
     staticFolder,
     sequelizeIntegration,
-    LoginModule,
     RouterModule.register(routs),
+    LoginModule,
     SharedModule,
     AdministratorModule,
   ],
   controllers: [AppController],
-  providers: [AppService, { provide: APP_PIPE, useClass: ClassValidationPipe }],
+  providers: [
+    AppService,
+    { provide: APP_PIPE, useClass: ClassValidationPipe },
+    { provide: APP_GUARD, useClass: AuthGuard },
+  ],
   exports: [],
 })
 export class AppModule {

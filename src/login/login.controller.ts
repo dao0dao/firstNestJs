@@ -44,7 +44,9 @@ export class LoginController {
     if (!req.cookies.key) {
       throw new HttpException("UNAUTHORIZED", HttpStatus.UNAUTHORIZED);
     }
-    const session_id = await this.sessionService.findSession(req.cookies.key);
+    const session_id = await this.sessionService.findAdminIdInSession(
+      req.cookies.key
+    );
     if (!session_id) {
       throw new HttpException({ session: "fail" }, HttpStatus.UNAUTHORIZED);
     }
