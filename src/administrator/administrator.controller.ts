@@ -9,7 +9,6 @@ import {
 } from "@nestjs/common";
 import { Role } from "src/guards/roles.decorators";
 import { RequestDTO } from "src/request.dto";
-import { createPassword } from "src/utils/bcript";
 import { AdministratorDataHandlerService } from "./administrator-data-handler.service";
 import { AdministratorDTO } from "./administrator.dto";
 import {
@@ -78,5 +77,13 @@ export class AdministratorController {
     if (Object.keys(errors).length > 0) {
       throw new HttpException(errors, HttpStatus.BAD_REQUEST);
     }
+    const result = await this.adminService.createAdministrator(body);
+    if (!result) {
+      throw new HttpException(
+        { readWrite: "fail" },
+        HttpStatus.INTERNAL_SERVER_ERROR
+      );
+    }
+    return { created: true };
   }
 }

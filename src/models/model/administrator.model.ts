@@ -1,8 +1,9 @@
 import { Table, Column, Model } from "sequelize-typescript";
+import { DataType } from "sequelize-typescript";
 
 @Table
 export class Administrator extends Model {
-  @Column({ primaryKey: true })
+  @Column({ primaryKey: true, defaultValue: DataType.UUIDV4 })
   id: string;
 
   @Column

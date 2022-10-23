@@ -16,18 +16,18 @@ export class AdministratorService {
     });
   }
 
-  findAdministratorByLogin(login: string) {
+  findAdministratorByLogin(login: string): Promise<Administrator | null> {
     return this.administratorModel.findOne({ where: { login } });
   }
 
-  returnAdminNickAndNameByName(name: string) {
+  returnAdminNickAndNameByName(name: string): Promise<Administrator | null> {
     return this.administratorModel.findOne({
       where: { name },
       attributes: ["name", "login"],
     });
   }
 
-  findAllAdministrators() {
+  findAllAdministrators(): Promise<Administrator[]> {
     return this.administratorModel.findAll();
   }
 
@@ -46,5 +46,14 @@ export class AdministratorService {
       });
     }
     return admin.save();
+  }
+
+  async createAdministrator(data: AdministratorDTO): Promise<Administrator> {
+    const password = await createPassword(data.password);
+    return this.administratorModel.create({
+      name: data.name,
+      login: data.login,
+      password,
+    });
   }
 }
