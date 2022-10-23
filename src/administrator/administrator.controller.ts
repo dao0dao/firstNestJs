@@ -49,7 +49,7 @@ export class AdministratorController {
     const result = await this.adminService.updateAdministrator(body, admin);
     if (!result) {
       throw new HttpException(
-        { readWrite: "faile" },
+        { readWrite: "fail" },
         HttpStatus.INTERNAL_SERVER_ERROR
       );
     }
