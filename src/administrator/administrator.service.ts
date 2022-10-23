@@ -1,6 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
 import { Administrator } from "src/models/model/administrator.model";
+import { createPassword } from "src/utils/bcript";
+import { AdministratorDTO } from "./administrator.dto";
 
 @Injectable()
 export class AdministratorService {
@@ -27,5 +29,22 @@ export class AdministratorService {
 
   findAllAdministrators() {
     return this.administratorModel.findAll();
+  }
+
+  updateAdministrator(
+    data: AdministratorDTO,
+    admin: Administrator
+  ): Promise<Administrator> {
+    admin.set({
+      name: data.name,
+      login: data.login,
+    });
+    if (data.newPassword) {
+      const password = createPassword(data.newPassword);
+      admin.set({
+        password,
+      });
+    }
+    return admin.save();
   }
 }

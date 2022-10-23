@@ -46,12 +46,7 @@ export class AdministratorController {
     if (!admin) {
       throw new HttpException({ notAllowed: true }, HttpStatus.UNAUTHORIZED);
     }
-    const password = await createPassword(body.newPassword);
-    const result = await admin.update({
-      name: body.name,
-      login: body.login,
-      password,
-    });
+    const result = await this.adminService.updateAdministrator(body, admin);
     if (!result) {
       throw new HttpException(
         { readWrite: "faile" },

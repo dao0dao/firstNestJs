@@ -15,11 +15,11 @@ export class AdministratorDTO {
   @IsString()
   @MaxLength(10)
   @MinLength(5)
-  newPassword: string;
+  newPassword?: string;
 
   @ValidateIf((c) => c.newPassword != "")
   @IsString()
   @MaxLength(10)
   @MinLength(5)
-  confirmNewPassword: string;
+  confirmNewPassword?: string;
 }
