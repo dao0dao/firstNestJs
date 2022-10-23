@@ -31,7 +31,7 @@ export class AdministratorService {
     return this.administratorModel.findAll();
   }
 
-  updateAdministrator(
+  async updateAdministrator(
     data: AdministratorDTO,
     admin: Administrator
   ): Promise<Administrator> {
@@ -40,7 +40,7 @@ export class AdministratorService {
       login: data.login,
     });
     if (data.newPassword) {
-      const password = createPassword(data.newPassword);
+      const password = await createPassword(data.newPassword);
       admin.set({
         password,
       });
