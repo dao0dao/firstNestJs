@@ -40,6 +40,7 @@ export class AuthGuard implements CanActivate {
       throw new UnauthorizedException();
     }
     req.ADMIN_NAME = admin.name;
+    req.ADMIN_ID = admin.id;
     const roles = [];
     if (admin.isAdmin) {
       roles.push("admin", "login");

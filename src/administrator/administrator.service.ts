@@ -17,4 +17,15 @@ export class AdministratorService {
   findAdministratorByLogin(login: string) {
     return this.administratorModel.findOne({ where: { login } });
   }
+
+  returnAdminNickAndNameByName(name: string) {
+    return this.administratorModel.findOne({
+      where: { name },
+      attributes: ["name", "login"],
+    });
+  }
+
+  findAllAdministrators() {
+    return this.administratorModel.findAll();
+  }
 }

@@ -7,13 +7,7 @@ import {
   staticFolder,
 } from "./app.module.config";
 import { LoginModule } from "./login/login.module";
-import {
-  APP_GUARD,
-  APP_INTERCEPTOR,
-  APP_PIPE,
-  RouterModule,
-  RouteTree,
-} from "@nestjs/core";
+import { APP_GUARD, APP_PIPE, RouterModule, RouteTree } from "@nestjs/core";
 import { SharedModule } from "./utils/shared/shared.module";
 import { ClassValidationPipe } from "./pipes/class-validation.pipe";
 import { SessionsService } from "./utils/shared/session.service";
