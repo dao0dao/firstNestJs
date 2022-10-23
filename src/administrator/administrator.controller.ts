@@ -55,4 +55,11 @@ export class AdministratorController {
     }
     return { update: true };
   }
+
+  @Get("list")
+  @Role("admin")
+  async getAdministratorList() {
+    const administrators = await this.adminService.findAllAdministrators();
+    return { users: administrators };
+  }
 }
