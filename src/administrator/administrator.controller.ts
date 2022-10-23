@@ -12,7 +12,10 @@ import { RequestDTO } from "src/request.dto";
 import { createPassword } from "src/utils/bcript";
 import { AdministratorDataHandlerService } from "./administrator-data-handler.service";
 import { AdministratorDTO } from "./administrator.dto";
-import { AdministratorUpdateErrors } from "./administrator.interfaces";
+import {
+  AdministratorCreateErrors,
+  AdministratorUpdateErrors,
+} from "./administrator.interfaces";
 import { AdministratorService } from "./administrator.service";
 
 @Controller("administrator")
@@ -61,5 +64,19 @@ export class AdministratorController {
   async getAdministratorList() {
     const administrators = await this.adminService.findAllAdministrators();
     return { users: administrators };
+  }
+
+  @Post("create")
+  @Role("admin")
+  async createAdministrator(
+    @Req() req: RequestDTO,
+    @Body() body: AdministratorDTO
+  ) {
+    const allAdmins = await this.adminService.findAllAdministrators();
+    const errors: AdministratorCreateErrors =
+      this.dataHandler.checkCanAddAdministrator(body, allAdmins);
+    if (Object.keys(errors).length > 0) {
+      throw new HttpException(errors, HttpStatus.BAD_REQUEST);
+    }
   }
 }

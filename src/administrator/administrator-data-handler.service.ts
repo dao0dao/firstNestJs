@@ -1,7 +1,10 @@
 import { Injectable } from "@nestjs/common";
 import { Administrator } from "src/models/model/administrator.model";
 import { AdministratorDTO } from "./administrator.dto";
-import { AdministratorUpdateErrors } from "./administrator.interfaces";
+import {
+  AdministratorCreateErrors,
+  AdministratorUpdateErrors,
+} from "./administrator.interfaces";
 
 @Injectable()
 export class AdministratorDataHandlerService {
@@ -20,6 +23,19 @@ export class AdministratorDataHandlerService {
       }
       if (admin.newPassword !== admin.confirmNewPassword) {
         errors.passwordNotMatch = true;
+      }
+    }
+    return errors;
+  }
+
+  checkCanAddAdministrator(data: AdministratorDTO, allAdmins: Administrator[]) {
+    const errors = {} as AdministratorCreateErrors;
+    if (data.confirmNewPassword !== data.newPassword) {
+      errors.passwordDoesNotMatch = true;
+    }
+    for (const el of allAdmins) {
+      if (el.name === data.name || el.login === data.login) {
+        errors.canNotCreateUser = true;
       }
     }
     return errors;

@@ -3,3 +3,8 @@ export interface AdministratorUpdateErrors {
   reservedName?: boolean;
   passwordNotMatch?: boolean;
 }
+
+export interface AdministratorCreateErrors {
+  canNotCreateUser: boolean;
+  passwordDoesNotMatch: boolean;
+}
