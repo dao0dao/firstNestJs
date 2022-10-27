@@ -10,24 +10,24 @@ export class AdministratorService {
     @InjectModel(Administrator) private administratorModel: typeof Administrator
   ) {}
 
-  findAdministratorById(id: string): Promise<Administrator | null> {
+  findAdministratorById(id: string) {
     return this.administratorModel.findOne({
       where: { id },
     });
   }
 
-  findAdministratorByLogin(login: string): Promise<Administrator | null> {
+  findAdministratorByLogin(login: string) {
     return this.administratorModel.findOne({ where: { login } });
   }
 
-  returnAdminNickAndNameByName(name: string): Promise<Administrator | null> {
+  returnAdminNickAndNameByName(name: string) {
     return this.administratorModel.findOne({
       where: { name },
       attributes: ["name", "login"],
     });
   }
 
-  findAllAdministrators(): Promise<Administrator[]> {
+  findAllAdministrators() {
     return this.administratorModel.findAll();
   }
 
