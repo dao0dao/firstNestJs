@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   Post,
+  Delete,
   Req,
   Body,
   Param,
@@ -112,6 +113,38 @@ export class AdministratorController {
     if (Object.keys(errors).length > 0) {
       throw new HttpException(errors, HttpStatus.BAD_REQUEST);
     }
-    return { status: "ok" };
+    const editedAdmin = allAdmins.find((el) => el.id === admin_id);
+    const result = await this.adminService.updateAdministrator(
+      body,
+      editedAdmin
+    );
+    if (!result) {
+      throw new HttpException(
+        { readWrite: "fail" },
+        HttpStatus.INTERNAL_SERVER_ERROR
+      );
+    }
+    return { update: true };
+  }
+
+  @Delete("delete/:id")
+  @Role("admin")
+  async deleteAdministrator(@Param("id") admin_id: string) {
+    if (!admin_id) {
+      throw new HttpException("Bad id", HttpStatus.BAD_REQUEST);
+    }
+    const admin = await this.adminService.findAdministratorById(admin_id);
+    return await admin
+      .destroy()
+      .then(() => {
+        return { deleted: true };
+      })
+      .catch(
+        () =>
+          new HttpException(
+            { readWrite: "fail" },
+            HttpStatus.INTERNAL_SERVER_ERROR
+          )
+      );
   }
 }
