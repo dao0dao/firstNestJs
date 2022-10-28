@@ -4,6 +4,7 @@ import {
   Post,
   Req,
   Body,
+  Param,
   HttpException,
   HttpStatus,
 } from "@nestjs/common";
@@ -14,6 +15,7 @@ import { AdministratorDTO } from "./administrator.dto";
 import {
   AdministratorCreateErrors,
   AdministratorUpdateErrors,
+  LoginAdministratorUpdateErrors,
 } from "./administrator.interfaces";
 import { AdministratorService } from "./administrator.service";
 
@@ -39,8 +41,12 @@ export class AdministratorController {
     @Body() body: AdministratorDTO
   ) {
     const allAdmins = await this.adminService.findAllAdministrators();
-    const errors: AdministratorUpdateErrors =
-      this.dataHandler.checkCanUpdateUser(req.ADMIN_ID, body, allAdmins);
+    const errors: LoginAdministratorUpdateErrors =
+      this.dataHandler.checkCanUpdateLoginAdministrator(
+        req.ADMIN_ID,
+        body,
+        allAdmins
+      );
     if (Object.keys(errors).length > 0) {
       throw new HttpException(errors, HttpStatus.BAD_REQUEST);
     }
@@ -92,5 +98,20 @@ export class AdministratorController {
   async getListOfAdministrators() {
     const admins = await this.adminService.findAllAdministrators();
     return { user: admins };
+  }
+
+  @Post("update/:id")
+  @Role("admin")
+  async updateAdministrator(
+    @Param("id") admin_id: string,
+    @Body() body: AdministratorDTO
+  ) {
+    const allAdmins = await this.adminService.findAllAdministrators();
+    const errors: AdministratorUpdateErrors =
+      this.dataHandler.checkCanUpdateAdministrator(admin_id, body, allAdmins);
+    if (Object.keys(errors).length > 0) {
+      throw new HttpException(errors, HttpStatus.BAD_REQUEST);
+    }
+    return { status: "ok" };
   }
 }

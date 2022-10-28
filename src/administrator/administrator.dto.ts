@@ -1,6 +1,16 @@
-import { IsString, ValidateIf, MaxLength, MinLength } from "class-validator";
+import {
+  IsString,
+  ValidateIf,
+  MaxLength,
+  MinLength,
+  IsUUID,
+} from "class-validator";
 
 export class AdministratorDTO {
+  @ValidateIf((c) => c.id !== undefined)
+  @IsUUID()
+  id: string;
+
   @IsString()
   @MaxLength(10)
   @MinLength(2)
@@ -11,25 +21,25 @@ export class AdministratorDTO {
   @MinLength(2)
   login: string;
 
-  @ValidateIf((c) => c.password !== undefined)
+  @ValidateIf((c) => c.password !== undefined && c.password !== "")
   @IsString()
   @MaxLength(10)
   @MinLength(5)
   password?: string;
 
-  @ValidateIf((c) => c.password !== undefined)
+  @ValidateIf((c) => c.password !== undefined && c.password !== "")
   @IsString()
   @MaxLength(10)
   @MinLength(5)
   confirmPassword?: string;
 
-  @ValidateIf((c) => c.newPassword !== undefined)
+  @ValidateIf((c) => c.newPassword !== undefined && c.newPassword !== "")
   @IsString()
   @MaxLength(10)
   @MinLength(5)
   newPassword?: string;
 
-  @ValidateIf((c) => c.newPassword !== undefined)
+  @ValidateIf((c) => c.newPassword !== undefined && c.newPassword !== "")
   @IsString()
   @MaxLength(10)
   @MinLength(5)

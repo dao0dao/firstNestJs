@@ -1,4 +1,4 @@
-export interface AdministratorUpdateErrors {
+export interface LoginAdministratorUpdateErrors {
   reservedLogin?: boolean;
   reservedName?: boolean;
   passwordNotMatch?: boolean;
@@ -7,4 +7,10 @@ export interface AdministratorUpdateErrors {
 export interface AdministratorCreateErrors {
   canNotCreateUser: boolean;
   passwordDoesNotMatch: boolean;
+}
+export interface AdministratorUpdateErrors {
+  id: boolean;
+  name: boolean;
+  reservedLogin: boolean;
+  confirmNewPassword: boolean;
 }
