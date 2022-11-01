@@ -1,5 +1,4 @@
-import { Table, Column, Model } from "sequelize-typescript";
-import { DataType } from "sequelize-typescript";
+import { Table, Column, Model, DataType } from "sequelize-typescript";
 
 @Table
 export class Administrator extends Model {

@@ -1,7 +1,6 @@
 import { QueryInterface } from "sequelize";
 import { DataType } from "sequelize-typescript";
 
-/** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface: QueryInterface) {
     return queryInterface
