@@ -13,10 +13,11 @@ export class SessionsService {
   }
 
   async createSession(
-    administrator_id: string
+    administrator_id: string,
+    name: string
   ): Promise<{ key: string; date: Date }> {
     const rounds = parseInt((Math.random() * 10).toFixed(0));
-    const key = await bcrypt.hash("secretKey", rounds);
+    const key = await bcrypt.hash("MySecret" + name + "key", rounds);
     const date = new Date(Date.now() + 2 * 3600 * 1000);
     const dateSQL = this.toSqlDate(date);
     this.sessionModel

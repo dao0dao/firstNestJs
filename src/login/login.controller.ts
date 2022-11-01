@@ -25,7 +25,10 @@ export class LoginController {
     if (!login) {
       throw new HttpException("UNAUTHORIZED", HttpStatus.UNAUTHORIZED);
     }
-    const session = await this.sessionService.createSession(login.user_id);
+    const session = await this.sessionService.createSession(
+      login.user_id,
+      login.user
+    );
     res.cookie("key", session.key, {
       expires: session.date,
       httpOnly: true,
