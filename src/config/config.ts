@@ -1,10 +1,10 @@
 module.exports = {
   development: {
-    username: 'root',
-    password: 'admin',
-    database: 'korty',
-    host: '127.0.0.1',
-    dialect: 'mysql',
+    username: "root",
+    password: "admin",
+    database: "korty",
+    host: "127.0.0.1",
+    dialect: "mysql",
     port: 3306,
   },
   production: {
@@ -13,6 +13,6 @@ module.exports = {
     database: process.env.DATABASE_database,
     host: process.env.DATABASE_host,
     port: process.env.DATABASE_port,
-    dialect: 'mysql',
+    dialect: "mysql",
   },
 };

@@ -2,49 +2,55 @@ import { QueryInterface } from "sequelize";
 import { DataType } from "sequelize-typescript";
 module.exports = {
   async up(queryInterface: QueryInterface) {
-    queryInterface.createTable("player_account", {
-      id: {
-        primaryKey: true,
-        type: DataType.INTEGER,
-        autoIncrement: true,
-        allowNull: false,
-      },
-      wallet: {
-        type: DataType.DECIMAL(10, 2),
-        allowNull: false,
-        defaultValue: 0.0,
-      },
-      playerId: {
-        type: DataType.UUID,
-        allowNull: false,
-        references: {
-          model: "players",
-          key: "id",
+    return queryInterface
+      .createTable("player_account", {
+        id: {
+          primaryKey: true,
+          type: DataType.INTEGER,
+          autoIncrement: true,
+          allowNull: false,
         },
-        onUpdate: "CASCADE",
-        onDelete: "CASCADE",
-      },
-      playerName: {
-        type: DataType.STRING,
-        allowNull: false,
-        references: {
-          model: "players",
-          key: "name",
+        wallet: {
+          type: DataType.DECIMAL(10, 2),
+          allowNull: false,
+          defaultValue: 0.0,
         },
-        onUpdate: "CASCADE",
-        onDelete: "CASCADE",
-      },
-      playerSurname: {
-        type: DataType.STRING,
-        allowNull: false,
-        references: {
-          model: "players",
-          key: "surname",
+        playerId: {
+          type: DataType.UUID,
+          references: {
+            model: "players",
+            key: "id",
+          },
+          onUpdate: "CASCADE",
+          onDelete: "CASCADE",
         },
-        onUpdate: "CASCADE",
-        onDelete: "CASCADE",
-      },
-    });
+        // playerName: {
+        //   unique: true,
+        //   type: DataType.STRING(255),
+        //   references: {
+        //     model: "players",
+        //     key: "name",
+        //   },
+        //   onUpdate: "CASCADE",
+        //   onDelete: "CASCADE",
+        // },
+        // playerSurname: {
+        //   allowNull: false,
+        //   primaryKey: false,
+        //   unique: true,
+        //   type: DataType.STRING(255),
+        //   references: {
+        //     model: "players",
+        //     key: "surname",
+        //   },
+        //   onUpdate: "CASCADE",
+        //   onDelete: "CASCADE",
+        // },
+      })
+      .catch((e) => {
+        console.log(e);
+        throw new Error("Migration error");
+      });
   },
 
   async down(queryInterface: QueryInterface) {

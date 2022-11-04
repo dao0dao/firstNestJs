@@ -6,12 +6,12 @@ import {
   sequelizeIntegration,
   staticFolder,
 } from "./app.module.config";
-import { LoginModule } from "./login/login.module";
+import { LoginModule } from "./routs/login/login.module";
 import { APP_GUARD, APP_PIPE, RouterModule, RouteTree } from "@nestjs/core";
 import { SharedModule } from "./utils/shared/shared.module";
 import { ClassValidationPipe } from "./pipes/class-validation.pipe";
 import { SessionsService } from "./utils/shared/session.service";
-import { AdministratorModule } from "./administrator/administrator.module";
+import { AdministratorModule } from "./routs/administrator/administrator.module";
 import { AuthGuard } from "./guards/auth.guard";
 
 const routs: RouteTree[] = [

@@ -47,6 +47,6 @@ export class Player extends Model {
   @HasMany(() => Opponent)
   opponents: Opponent[];
 
-  @HasOne(() => PlayerAccount)
+  @HasOne(() => PlayerAccount, "id")
   account: PlayerAccount;
 }
