@@ -24,28 +24,6 @@ module.exports = {
           onUpdate: "CASCADE",
           onDelete: "CASCADE",
         },
-        // playerName: {
-        //   unique: true,
-        //   type: DataType.STRING(255),
-        //   references: {
-        //     model: "players",
-        //     key: "name",
-        //   },
-        //   onUpdate: "CASCADE",
-        //   onDelete: "CASCADE",
-        // },
-        // playerSurname: {
-        //   allowNull: false,
-        //   primaryKey: false,
-        //   unique: true,
-        //   type: DataType.STRING(255),
-        //   references: {
-        //     model: "players",
-        //     key: "surname",
-        //   },
-        //   onUpdate: "CASCADE",
-        //   onDelete: "CASCADE",
-        // },
       })
       .catch((e) => {
         console.log(e);
