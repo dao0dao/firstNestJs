@@ -19,7 +19,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "createDatabase": "npm run build && node dist/createDatabase.js && npm run migration:migrate",
+    "set_project": "npm run build && node dist/createDatabase.js && npm run migration:migrate",
     "migration:create": "npx sequelize-cli migration:create  --migrations-path ./src/migrations --name",
     "migration:migrate": "npx sequelize-cli db:migrate"
   },
