@@ -1,5 +1,4 @@
 import { QueryInterface } from "sequelize";
-import { DataType } from "sequelize-typescript";
 import * as bcrypt from "bcrypt";
 const saltRounds = 13;
 
