@@ -9,7 +9,7 @@ import { Player } from "./player.models";
 
 @Table({ modelName: "opponents" })
 export class Opponent extends Model {
-  @Column({ primaryKey: true, autoIncrement: true })
+  @Column({ primaryKey: true, autoIncrement: true, allowNull: true })
   id: number;
 
   @Column

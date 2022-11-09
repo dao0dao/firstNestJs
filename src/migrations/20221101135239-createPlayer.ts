@@ -38,7 +38,7 @@ module.exports = {
           allowNull: true,
           type: DataType.STRING,
         },
-        racquet: {
+        balls: {
           allowNull: true,
           type: DataType.STRING,
         },

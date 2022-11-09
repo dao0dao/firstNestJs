@@ -33,13 +33,13 @@ export class Player extends Model {
   stringsName: string;
 
   @Column
-  tensions: string;
+  tension: string;
 
   @Column
-  racquet: string;
+  balls: string;
 
   @Column
-  weeks: JSON;
+  weeks: string;
 
   @Column
   notes: string;

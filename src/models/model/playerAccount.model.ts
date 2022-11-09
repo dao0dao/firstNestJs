@@ -1,7 +1,13 @@
-import { Table, Model, Column, BelongsTo } from "sequelize-typescript";
+import {
+  Table,
+  Model,
+  Column,
+  BelongsTo,
+  ForeignKey,
+} from "sequelize-typescript";
 import { Player } from "./player.models";
 
-@Table({ modelName: "player_account" })
+@Table({ modelName: "player_account", freezeTableName: true })
 export class PlayerAccount extends Model {
   @Column({ primaryKey: true, autoIncrement: true })
   id: number;
@@ -9,13 +15,10 @@ export class PlayerAccount extends Model {
   @Column
   wallet: number;
 
-  @BelongsTo(() => Player, "id")
+  @ForeignKey(() => Player)
   @Column
   playerId: string;
 
-  @BelongsTo(() => Player, "name")
-  playerName: string;
-
-  @BelongsTo(() => Player, "surname")
-  playerSurname: string;
+  @BelongsTo(() => Player)
+  player: Player;
 }

@@ -16,6 +16,15 @@ export class ClassValidationPipe implements PipeTransform {
     const object = plainToInstance(metatype, value);
     const errors = await validate(object);
     if (errors.length > 0) {
+      if (process.env.MODE === "dev") {
+        for (const e of errors) {
+          console.group("===========");
+          console.log(e.property);
+          console.log(e.constraints);
+          console.log("property value: " + e.value);
+          console.groupEnd();
+        }
+      }
       throw new BadRequestException("Validation failed");
     }
     return value;
