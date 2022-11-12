@@ -4,8 +4,11 @@ import {
   ArgumentMetadata,
   BadRequestException,
 } from "@nestjs/common";
-import { validate } from "class-validator";
+import { access, mkdir, writeFile } from "node:fs/promises";
+import { join } from "path";
+import { validate, ValidationError } from "class-validator";
 import { plainToInstance } from "class-transformer";
+import { logsFolderPath } from "src/utils/staticFiles";
 
 @Injectable()
 export class ClassValidationPipe implements PipeTransform {
@@ -17,13 +20,7 @@ export class ClassValidationPipe implements PipeTransform {
     const errors = await validate(object);
     if (errors.length > 0) {
       if (process.env.MODE === "dev") {
-        for (const e of errors) {
-          console.group("===========");
-          console.log(e.property);
-          console.log(e.constraints);
-          console.log("property value: " + e.value);
-          console.groupEnd();
-        }
+        this.writeErrorToLog(errors);
       }
       throw new BadRequestException("Validation failed");
     }
@@ -34,5 +31,38 @@ export class ClassValidationPipe implements PipeTransform {
     // eslint-disable-next-line @typescript-eslint/ban-types
     const types: Function[] = [String, Boolean, Number, Array, Object];
     return !types.includes(metatype);
+  }
+
+  private async writeErrorToLog(errors: ValidationError[]) {
+    const checkFolder = new Promise<boolean>((resolve, reject) => {
+      access(logsFolderPath)
+        .then(() => {
+          resolve(true);
+        })
+        .catch(() => {
+          resolve(false);
+        });
+    });
+    const isFolderExist = await checkFolder;
+    if (!isFolderExist) {
+      await mkdir(logsFolderPath);
+    }
+    this.createErrorLog(errors);
+  }
+
+  private createErrorLog(errors: ValidationError[]) {
+    let content = "";
+    for (const e of errors) {
+      const obj = {
+        name: e.property,
+        constraints: e.constraints,
+        value: e.value,
+      };
+      content = content + e.toString() + JSON.stringify(obj) + "\n ----- \n";
+    }
+    const date = new Date();
+    const fileName = date.toISOString().replace(/:/g, "-") + ".log";
+    const pathToFile = join(logsFolderPath, fileName);
+    writeFile(pathToFile, content, { encoding: "utf-8" });
   }
 }
