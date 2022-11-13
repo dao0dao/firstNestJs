@@ -45,3 +45,8 @@ export class AdministratorDTO {
   @MinLength(5)
   confirmNewPassword?: string;
 }
+
+export class AdministratorQuery {
+  @IsUUID()
+  id: string;
+}

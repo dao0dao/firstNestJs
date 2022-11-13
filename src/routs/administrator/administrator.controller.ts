@@ -12,7 +12,7 @@ import {
 import { Role } from "src/guards/roles.decorators";
 import { RequestDTO } from "src/request.dto";
 import { AdministratorDataHandlerService } from "./administrator-data-handler.service";
-import { AdministratorDTO } from "./administrator.dto";
+import { AdministratorDTO, AdministratorQuery } from "./administrator.dto";
 import {
   AdministratorCreateErrors,
   AdministratorUpdateErrors,
@@ -104,16 +104,16 @@ export class AdministratorController {
   @Post("update/:id")
   @Role("admin")
   async updateAdministrator(
-    @Param("id") admin_id: string,
+    @Param() query: AdministratorQuery,
     @Body() body: AdministratorDTO
   ) {
     const allAdmins = await this.adminService.findAllAdministrators();
     const errors: AdministratorUpdateErrors =
-      this.dataHandler.checkCanUpdateAdministrator(admin_id, body, allAdmins);
+      this.dataHandler.checkCanUpdateAdministrator(query.id, body, allAdmins);
     if (Object.keys(errors).length > 0) {
       throw new HttpException(errors, HttpStatus.BAD_REQUEST);
     }
-    const editedAdmin = allAdmins.find((el) => el.id === admin_id);
+    const editedAdmin = allAdmins.find((el) => el.id === query.id);
     const result = await this.adminService.updateAdministrator(
       body,
       editedAdmin
@@ -129,11 +129,11 @@ export class AdministratorController {
 
   @Delete("delete/:id")
   @Role("admin")
-  async deleteAdministrator(@Param("id") admin_id: string) {
-    if (!admin_id) {
+  async deleteAdministrator(@Param() query: AdministratorQuery) {
+    if (!query) {
       throw new HttpException("Bad id", HttpStatus.BAD_REQUEST);
     }
-    const admin = await this.adminService.findAdministratorById(admin_id);
+    const admin = await this.adminService.findAdministratorById(query.id);
     return await admin
       .destroy()
       .then(() => {
