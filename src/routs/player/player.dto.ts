@@ -9,6 +9,7 @@ import {
   IsEmail,
   IsArray,
   ValidateNested,
+  IsOptional,
 } from "class-validator";
 
 interface OpponentInputDto {
@@ -51,19 +52,19 @@ export class PlayerInputDTO {
   @MinLength(9)
   telephone: string;
 
-  @ValidateIf((c) => c.account != undefined)
+  @IsOptional()
   @IsNumber()
-  account: number;
+  account?: number;
 
   @ValidateIf((c) => c.email != "")
   @IsEmail()
   email: string;
 
+  @IsOptional()
   @ValidateIf((c) => c.priceListId != "")
   @IsUUID()
   priceListId: string;
 
-  @ValidateIf((c) => c.court != undefined)
   @IsNumber()
   court: number;
 
@@ -97,3 +98,18 @@ export class PlayerInputDTO {
   @ValidateNested({ each: true })
   opponents: OpponentInputDto[];
 }
+
+export class PlayerIdParamDTO {
+  @IsUUID()
+  id: string;
+}
+
+export interface OpponentOutputDTO {
+  id: string;
+  name: string;
+  surname: string;
+}
+
+// export class PlayerOutputDTO extends PlayerInputDTO {
+//   opponents: OpponentOutputDTO[];
+// }
