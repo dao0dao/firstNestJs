@@ -49,13 +49,13 @@ export class PlayerInputDTO {
   @IsString()
   @MaxLength(9)
   @MinLength(9)
-  telephone: number;
+  telephone: string;
 
   @ValidateIf((c) => c.account != undefined)
   @IsNumber()
   account: number;
 
-  @ValidateIf((c) => c.email != undefined)
+  @ValidateIf((c) => c.email != "")
   @IsEmail()
   email: string;
 

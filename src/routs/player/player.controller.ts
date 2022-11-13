@@ -27,14 +27,20 @@ export class PlayerController {
   @Post("add")
   async addPlayer(@Body() body: PlayerInputDTO) {
     const allPlayers = await this.playerService.findAllPlayers();
-    const isExist = this.dataHandler.isPlayerExist(
+    const condition = this.dataHandler.isPlayerExist({
       allPlayers,
-      body.name,
-      body.surname
-    );
-    if (isExist) {
+      name: body.name,
+      surname: body.surname,
+      telephone: body.telephone,
+    });
+    if (condition.playerExist) {
       throw new HttpException(
         { reason: "Taki gracz istniej" },
+        HttpStatus.NOT_ACCEPTABLE
+      );
+    } else if (condition.numberExist) {
+      throw new HttpException(
+        { reason: "Taki numer kom. już istnieje" },
         HttpStatus.NOT_ACCEPTABLE
       );
     }

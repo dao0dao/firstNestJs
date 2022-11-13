@@ -20,7 +20,7 @@ module.exports = {
         },
         telephone: {
           allowNull: false,
-          type: DataType.INTEGER,
+          type: DataType.STRING(255),
         },
         email: {
           allowNull: true,

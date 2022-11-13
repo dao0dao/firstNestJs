@@ -21,7 +21,7 @@ export class Player extends Model {
   surname: string;
 
   @Column
-  telephone: number;
+  telephone: string;
 
   @Column
   email: string;
