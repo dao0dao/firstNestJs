@@ -6,6 +6,7 @@ import {
   HttpException,
   HttpStatus,
   Param,
+  Delete,
 } from "@nestjs/common";
 import { PlayerService } from "./player.service";
 import { Role } from "src/guards/roles.decorators";
@@ -111,5 +112,12 @@ export class PlayerController {
       );
     }
     return { updated: true };
+  }
+
+  @Delete("delete/:id")
+  @Role("admin")
+  async deletePlayer(@Param() Query: PlayerIdParamDTO) {
+    const result = await this.playerService.deletePlayer(Query.id);
+    return result;
   }
 }

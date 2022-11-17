@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
+import { Op } from "sequelize";
 import { Opponent } from "src/models/model/opponent.model";
 import { Player } from "src/models/model/player.models";
 import { PlayerAccount } from "src/models/model/playerAccount.model";
@@ -123,5 +124,16 @@ export class PlayerService {
       });
     }
     return player.save();
+  }
+
+  async deletePlayer(playerId: string) {
+    const player = await this.playerModel.findOne({ where: { id: playerId } });
+    await this.opponentModel.destroy({
+      where: {
+        [Op.or]: [{ opponentId: playerId }, { playerId: playerId }],
+      },
+    });
+    await player.destroy();
+    return true;
   }
 }
