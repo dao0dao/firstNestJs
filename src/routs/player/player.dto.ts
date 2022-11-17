@@ -16,7 +16,7 @@ interface OpponentInputDto {
   id: string;
 }
 
-interface Week {
+export interface Week {
   days: {
     0?: boolean | undefined;
     1?: boolean | undefined;
@@ -63,7 +63,7 @@ export class PlayerInputDTO {
   @IsOptional()
   @ValidateIf((c) => c.priceListId != "")
   @IsUUID()
-  priceListId: string;
+  priceListId?: string;
 
   @IsNumber()
   court: number;
@@ -91,7 +91,7 @@ export class PlayerInputDTO {
   @ValidateIf((c) => c.weeks != undefined && c.weeks?.length != 0)
   @IsArray()
   @ValidateNested({ each: true })
-  weeks: Week[];
+  weeks: string;
 
   @ValidateIf((c) => c.opponents != undefined && c.opponents?.length != 0)
   @IsArray()
@@ -110,6 +110,6 @@ export interface OpponentOutputDTO {
   surname: string;
 }
 
-// export class PlayerOutputDTO extends PlayerInputDTO {
-//   opponents: OpponentOutputDTO[];
-// }
+export class PlayerOutputDTO extends PlayerInputDTO {
+  opponents: OpponentOutputDTO[];
+}

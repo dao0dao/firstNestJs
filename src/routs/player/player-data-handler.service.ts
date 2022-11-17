@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { Player } from "src/models/model/player.models";
+import { OpponentOutputDTO, PlayerOutputDTO } from "./player.dto";
 
 interface IsPlayerExist {
   allPlayers: Player[];
@@ -12,6 +13,51 @@ interface IsPlayerExist {
 
 @Injectable()
 export class PlayerDataHandlerService {
+  parsePlayerOpponents(data: Player[]) {
+    const newPlayers: PlayerOutputDTO[] = [];
+    for (const player of data) {
+      const newOpponents: OpponentOutputDTO[] = [];
+      for (const el of player.opponents) {
+        const op = data.find((pl) => pl.id === el.opponentId);
+        const newOpponent: OpponentOutputDTO = {
+          id: op.id,
+          name: op.name,
+          surname: op.surname,
+        };
+        newOpponents.push(newOpponent);
+      }
+      const {
+        id,
+        name,
+        surname,
+        telephone,
+        email,
+        court,
+        stringsName,
+        tension,
+        balls,
+        weeks,
+        notes,
+      } = player;
+      const newPlayer: PlayerOutputDTO = {
+        id,
+        name,
+        surname,
+        telephone,
+        email,
+        court,
+        stringsName,
+        tension,
+        balls,
+        weeks,
+        notes,
+        opponents: newOpponents,
+      };
+      newPlayers.push(newPlayer);
+    }
+    return newPlayers;
+  }
+
   isPlayerExist(data: IsPlayerExist, isUpdatingPlayer?: boolean) {
     let isPlayer = false;
     let isNumber = false;

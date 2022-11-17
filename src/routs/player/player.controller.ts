@@ -22,7 +22,8 @@ export class PlayerController {
 
   @Get()
   async getAllPayers() {
-    const players = await this.playerService.findAllPlayers();
+    const data = await this.playerService.findAllPlayers();
+    const players = this.dataHandler.parsePlayerOpponents(data);
     return { players };
   }
   @Post("add")
@@ -102,7 +103,7 @@ export class PlayerController {
         HttpStatus.NOT_ACCEPTABLE
       );
     }
-    const result = this.playerService.updatePlayer(player, body);
+    const result = await this.playerService.updatePlayer(player, body);
     if (!result) {
       throw new HttpException(
         { readWrite: "fail" },

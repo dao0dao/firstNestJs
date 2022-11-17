@@ -118,7 +118,7 @@ export class PlayerService {
       }
     }
     if (newOpponents.length > 0) {
-      this.opponentModel.bulkCreate(newOpponents, {
+      await this.opponentModel.bulkCreate(newOpponents, {
         validate: true,
       });
     }
