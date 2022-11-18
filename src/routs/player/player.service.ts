@@ -130,7 +130,7 @@ export class PlayerService {
     const player = await this.playerModel.findOne({ where: { id: playerId } });
     await this.opponentModel.destroy({
       where: {
-        [Op.or]: [{ opponentId: playerId }, { playerId: playerId }],
+        [Op.or]: [{ opponentId: playerId }],
       },
     });
     await player.destroy();
