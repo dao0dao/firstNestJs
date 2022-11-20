@@ -11,25 +11,10 @@ import {
   ValidateNested,
   IsOptional,
 } from "class-validator";
+import { Week } from "src/models/model/player.models";
 
 interface OpponentInputDto {
   id: string;
-}
-
-export interface Week {
-  days: {
-    0?: boolean | undefined;
-    1?: boolean | undefined;
-    2?: boolean | undefined;
-    3?: boolean | undefined;
-    4?: boolean | undefined;
-    5?: boolean | undefined;
-    6?: boolean | undefined;
-  };
-  time: {
-    from: string;
-    to: string;
-  };
 }
 
 export class PlayerInputDTO {
@@ -91,7 +76,7 @@ export class PlayerInputDTO {
   @ValidateIf((c) => c.weeks != undefined && c.weeks?.length != 0)
   @IsArray()
   @ValidateNested({ each: true })
-  weeks: string;
+  weeks: Week[];
 
   @ValidateIf((c) => c.opponents != undefined && c.opponents?.length != 0)
   @IsArray()

@@ -9,6 +9,22 @@ import {
 import { Opponent } from "./opponent.model";
 import { PlayerAccount } from "./playerAccount.model";
 
+export interface Week {
+  days: {
+    0?: boolean | undefined;
+    1?: boolean | undefined;
+    2?: boolean | undefined;
+    3?: boolean | undefined;
+    4?: boolean | undefined;
+    5?: boolean | undefined;
+    6?: boolean | undefined;
+  };
+  time: {
+    from: string;
+    to: string;
+  };
+}
+
 @Table({ modelName: "players" })
 export class Player extends Model {
   @Column({ primaryKey: true, defaultValue: DataType.UUIDV4 })
@@ -38,8 +54,8 @@ export class Player extends Model {
   @Column
   balls: string;
 
-  @Column
-  weeks: string;
+  @Column(DataType.STRING(255))
+  weeks: Week[];
 
   @Column
   notes: string;
