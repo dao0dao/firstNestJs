@@ -6,7 +6,7 @@ export type Hours = {
     price: number;
     days?: number[];
   };
-  defaultPrice: number;
+  defaultPrice?: number;
 };
 
 @Table({ modelName: "price_list" })

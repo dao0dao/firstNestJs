@@ -18,11 +18,12 @@ import { LoginModule } from "./routs/login/login.module";
 import { SharedModule } from "./utils/shared/shared.module";
 import { AdministratorModule } from "./routs/administrator/administrator.module";
 import { PlayerModule } from "./routs/player/player.module";
+import { PriceListModule } from "./routs/price-list/price-list.module";
 
 const routs: RouteTree[] = [
   {
     path: "api",
-    children: [LoginModule, AdministratorModule, PlayerModule],
+    children: [LoginModule, AdministratorModule, PlayerModule, PriceListModule],
   },
 ];
 
@@ -36,6 +37,7 @@ const routs: RouteTree[] = [
     SharedModule,
     AdministratorModule,
     PlayerModule,
+    PriceListModule,
   ],
   controllers: [AppController],
   providers: [
