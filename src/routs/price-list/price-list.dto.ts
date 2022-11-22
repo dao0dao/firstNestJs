@@ -12,3 +12,8 @@ export class PriceListDTO {
   @ValidateNested()
   hours: Hours;
 }
+
+export class PriceListQueryDTO {
+  @IsUUID()
+  id: string;
+}
