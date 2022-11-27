@@ -1,4 +1,5 @@
-import { Table, Model, Column, DataType } from "sequelize-typescript";
+import { Table, Model, Column, DataType, HasMany } from "sequelize-typescript";
+import { Player } from "./player.models";
 export type Hours = {
   [key: number]: {
     from: string;
@@ -19,4 +20,7 @@ export class PriceList extends Model {
 
   @Column(DataType.JSON)
   hours: Hours;
+
+  @HasMany(() => Player)
+  players: Player;
 }

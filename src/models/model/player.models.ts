@@ -5,9 +5,12 @@ import {
   DataType,
   HasMany,
   HasOne,
+  BelongsTo,
+  ForeignKey,
 } from "sequelize-typescript";
 import { Opponent } from "./opponent.model";
 import { PlayerAccount } from "./playerAccount.model";
+import { PriceList } from "./priceList.model";
 
 export interface Week {
   days: {
@@ -45,6 +48,13 @@ export class Player extends Model {
   @Column
   court: number;
 
+  @ForeignKey(() => PriceList)
+  @Column
+  price_list_id: string;
+
+  @BelongsTo(() => PriceList)
+  priceList: PriceList;
+
   @Column
   stringsName: string;
 
@@ -63,6 +73,6 @@ export class Player extends Model {
   @HasMany(() => Opponent)
   opponents: Opponent[];
 
-  @HasOne(() => PlayerAccount, "id")
+  @HasOne(() => PlayerAccount)
   account: PlayerAccount;
 }

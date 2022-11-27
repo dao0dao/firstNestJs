@@ -4,6 +4,7 @@ import { Op } from "sequelize";
 import { Opponent } from "src/models/model/opponent.model";
 import { Player } from "src/models/model/player.models";
 import { PlayerAccount } from "src/models/model/playerAccount.model";
+import { PriceList } from "src/models/model/priceList.model";
 import { PlayerInputDTO } from "./player.dto";
 
 @Injectable()
@@ -15,7 +16,9 @@ export class PlayerService {
   ) {}
 
   findAllPlayers() {
-    return this.playerModel.findAll({ include: ["opponents"] });
+    return this.playerModel.findAll({
+      include: [Opponent, PriceList, PlayerAccount],
+    });
   }
 
   async createPlayer(body: PlayerInputDTO) {
@@ -40,7 +43,7 @@ export class PlayerService {
       email,
       name,
       notes,
-      priceListId,
+      price_list_id: priceListId,
       stringsName,
       surname,
       telephone,
@@ -91,7 +94,7 @@ export class PlayerService {
       email,
       name,
       notes,
-      priceListId,
+      price_list_id: priceListId,
       stringsName,
       surname,
       telephone,

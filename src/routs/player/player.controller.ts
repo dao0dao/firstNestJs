@@ -10,11 +10,15 @@ import {
 } from "@nestjs/common";
 import { PlayerService } from "./player.service";
 import { Role } from "src/guards/roles.decorators";
-import { PlayerIdParamDTO, PlayerInputDTO } from "./player.dto";
+import {
+  PlayerIdParamDTO,
+  PlayerInputDTO,
+  PlayerOutputDTO,
+} from "./player.dto";
 import { PlayerDataHandlerService } from "./player-data-handler.service";
 
 @Controller("players")
-@Role("login")
+// @Role("login")
 export class PlayerController {
   constructor(
     private playerService: PlayerService,

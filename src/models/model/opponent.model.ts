@@ -19,6 +19,6 @@ export class Opponent extends Model {
   @Column
   playerId: string;
 
-  @BelongsTo(() => Player, "id")
+  @BelongsTo(() => Player)
   player: Player;
 }

@@ -11,9 +11,11 @@ import {
   ValidateNested,
   IsOptional,
 } from "class-validator";
+import { Model } from "sequelize";
 import { Week } from "src/models/model/player.models";
+import { PriceList } from "src/models/model/priceList.model";
 
-interface OpponentInputDto {
+interface OpponentId {
   id: string;
 }
 
@@ -39,7 +41,7 @@ export class PlayerInputDTO {
 
   @IsOptional()
   @IsNumber()
-  account?: number;
+  account: number;
 
   @ValidateIf((c) => c.email != "")
   @IsEmail()
@@ -48,7 +50,7 @@ export class PlayerInputDTO {
   @IsOptional()
   @ValidateIf((c) => c.priceListId != "")
   @IsUUID()
-  priceListId?: string;
+  priceListId?: PriceList;
 
   @IsNumber()
   court: number;
@@ -81,7 +83,7 @@ export class PlayerInputDTO {
   @ValidateIf((c) => c.opponents != undefined && c.opponents?.length != 0)
   @IsArray()
   @ValidateNested({ each: true })
-  opponents: OpponentInputDto[];
+  opponents: OpponentId[];
 }
 
 export class PlayerIdParamDTO {
@@ -95,6 +97,19 @@ export interface OpponentOutputDTO {
   surname: string;
 }
 
-export class PlayerOutputDTO extends PlayerInputDTO {
+export class PlayerOutputDTO {
+  id: string;
+  name: string;
+  surname: string;
+  telephone: string;
+  account: number;
+  email: string;
+  priceListId: string;
+  court: number;
+  stringsName: string;
+  tension: string;
+  balls: string;
+  notes: string;
+  weeks: Week[];
   opponents: OpponentOutputDTO[];
 }

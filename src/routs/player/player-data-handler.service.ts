@@ -27,6 +27,7 @@ export class PlayerDataHandlerService {
         newOpponents.push(newOpponent);
       }
       const {
+        account,
         id,
         name,
         surname,
@@ -34,18 +35,21 @@ export class PlayerDataHandlerService {
         email,
         court,
         stringsName,
+        price_list_id,
         tension,
         balls,
         weeks,
         notes,
       } = player;
       const newPlayer: PlayerOutputDTO = {
+        account: account.wallet,
         id,
         name,
         surname,
         telephone,
         email,
         court,
+        priceListId: price_list_id,
         stringsName,
         tension,
         balls,
