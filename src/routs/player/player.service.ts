@@ -17,7 +17,7 @@ export class PlayerService {
 
   findAllPlayers() {
     return this.playerModel.findAll({
-      include: [Opponent, PriceList, PlayerAccount],
+      include: [Opponent, PlayerAccount],
     });
   }
 
@@ -138,5 +138,15 @@ export class PlayerService {
     });
     await player.destroy();
     return true;
+  }
+
+  async clearPlayerPriceListById(id: string) {
+    const players = await this.playerModel.findAll({
+      where: { price_list_id: id },
+    });
+    for (const player of players) {
+      player.set({ price_list_id: "" });
+      player.save();
+    }
   }
 }

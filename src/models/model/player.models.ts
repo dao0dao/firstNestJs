@@ -48,8 +48,8 @@ export class Player extends Model {
   @Column
   court: number;
 
-  @ForeignKey(() => PriceList)
   @Column
+  @ForeignKey(() => PriceList)
   price_list_id: string;
 
   @BelongsTo(() => PriceList)

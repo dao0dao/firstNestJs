@@ -20,7 +20,4 @@ export class PriceList extends Model {
 
   @Column(DataType.JSON)
   hours: Hours;
-
-  @HasMany(() => Player)
-  players: Player;
 }

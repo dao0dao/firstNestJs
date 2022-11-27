@@ -18,7 +18,7 @@ import {
 import { PlayerDataHandlerService } from "./player-data-handler.service";
 
 @Controller("players")
-// @Role("login")
+@Role("login")
 export class PlayerController {
   constructor(
     private playerService: PlayerService,

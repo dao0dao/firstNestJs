@@ -1,14 +1,17 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
 import { Role } from "src/guards/roles.decorators";
+import { Player } from "src/models/model/player.models";
 import { PriceList } from "src/models/model/priceList.model";
+import { PlayerService } from "../player/player.service";
 import { PriceListDTO, PriceListQueryDTO } from "./price-list.dto";
 
 @Injectable()
 @Role("admin")
 export class PriceListService {
   constructor(
-    @InjectModel(PriceList) private priceListMode: typeof PriceList
+    @InjectModel(PriceList) private priceListMode: typeof PriceList,
+    private playerService: PlayerService
   ) {}
 
   getAllPriceList() {
@@ -41,6 +44,7 @@ export class PriceListService {
     const result = await this.priceListMode.destroy({
       where: { id: query.id },
     });
+    this.playerService.clearPlayerPriceListById(query.id);
     return result;
   }
 }

@@ -11,6 +11,6 @@ import { Opponent } from "src/models/model/opponent.model";
   imports: [SequelizeModule.forFeature([Player, PlayerAccount, Opponent])],
   providers: [PlayerService, PlayerDataHandlerService],
   controllers: [PlayerController],
-  exports: [],
+  exports: [PlayerService],
 })
 export class PlayerModule {}
