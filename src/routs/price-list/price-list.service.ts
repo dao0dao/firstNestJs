@@ -1,7 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
 import { Role } from "src/guards/roles.decorators";
-import { Player } from "src/models/model/player.models";
 import { PriceList } from "src/models/model/priceList.model";
 import { PlayerService } from "../player/player.service";
 import { PriceListDTO, PriceListQueryDTO } from "./price-list.dto";

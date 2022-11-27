@@ -4,7 +4,6 @@ import { Op } from "sequelize";
 import { Opponent } from "src/models/model/opponent.model";
 import { Player } from "src/models/model/player.models";
 import { PlayerAccount } from "src/models/model/playerAccount.model";
-import { PriceList } from "src/models/model/priceList.model";
 import { PlayerInputDTO } from "./player.dto";
 
 @Injectable()
