@@ -19,9 +19,12 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "set_project": "npm run build && node dist/createDatabase.js && npm run migration:migrate",
+    "set_project": "npm run build && node dist/createDatabase.js && npm run migration:migrate && npm run seeder:seed",
+    "set_project:start-dev": "npm run set_project && npm run start:dev",
     "migration:create": "npx sequelize-cli migration:create  --migrations-path ./src/migrations --name",
-    "migration:migrate": "npx sequelize-cli db:migrate"
+    "migration:migrate": "npx sequelize-cli db:migrate",
+    "seeder:create": "npx sequelize-cli seed:create --seeders-path ./src/seeders --name",
+    "seeder:seed": "npx sequelize-cli db:seed:all"
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",
@@ -41,7 +44,8 @@
     "rxjs": "^7.2.0",
     "sequelize": "^6.23.2",
     "sequelize-cli": "^6.5.1",
-    "sequelize-typescript": "^2.1.3"
+    "sequelize-typescript": "^2.1.3",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^9.0.0",

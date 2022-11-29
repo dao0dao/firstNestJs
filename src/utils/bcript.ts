@@ -1,5 +1,5 @@
 import * as bcrypt from "bcrypt";
-const saltRounds = 13;
+const saltRounds = parseInt(process.env.SALT_ROUNDS);
 
 export const isSamePasswords = (
   password: string,

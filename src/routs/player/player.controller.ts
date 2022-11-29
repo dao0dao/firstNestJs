@@ -118,6 +118,6 @@ export class PlayerController {
   @Role("admin")
   async deletePlayer(@Param() Query: PlayerIdParamDTO) {
     const result = await this.playerService.deletePlayer(Query.id);
-    return result;
+    return { deleted: result };
   }
 }

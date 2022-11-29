@@ -8,6 +8,7 @@ module.exports = {
     port: process.env.DATABASE_port,
     dialect: "mysql",
     migrationStorageTableName: "migrations",
+    seederStorageTableName: "seeders",
   },
   production: {
     username: process.env.DATABASE_username,
@@ -17,5 +18,6 @@ module.exports = {
     port: process.env.DATABASE_port,
     dialect: "mysql",
     migrationStorageTableName: "migrations",
+    seederStorageTableName: "seeders",
   },
 };

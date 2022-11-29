@@ -1,15 +1,17 @@
+import * as dotenv from "dotenv";
+dotenv.config();
+import { v4 as uuidv4 } from "uuid";
 import { QueryInterface } from "sequelize";
 import * as bcrypt from "bcrypt";
-const saltRounds = 13;
 
 module.exports = {
   async up(queryInterface: QueryInterface) {
     return queryInterface.bulkInsert("administrators", [
       {
-        id: "04ca1979-f150-46b3-a217-956395ffe53c",
+        id: uuidv4(),
         name: "admin",
         login: "admin",
-        password: await bcrypt.hash("admin", saltRounds),
+        password: await bcrypt.hash("admin", parseInt(process.env.SALT_ROUNDS)),
         isAdmin: true,
       },
     ]);
@@ -19,5 +21,11 @@ module.exports = {
     return queryInterface.bulkDelete("administrators", {
       name: "admin",
     });
+    /**
+     * Add commands to revert seed here.
+     *
+     * Example:
+     * await queryInterface.bulkDelete('People', null, {});
+     */
   },
 };

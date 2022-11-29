@@ -1,6 +1,6 @@
 import mysql = require("mysql2");
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-require("dotenv").config();
+import * as dotenv from "dotenv";
+dotenv.config();
 
 const pool = mysql.createPool({
   host: process.env.DATABASE_host,
