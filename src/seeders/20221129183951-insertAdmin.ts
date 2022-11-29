@@ -21,11 +21,5 @@ module.exports = {
     return queryInterface.bulkDelete("administrators", {
       name: "admin",
     });
-    /**
-     * Add commands to revert seed here.
-     *
-     * Example:
-     * await queryInterface.bulkDelete('People', null, {});
-     */
   },
 };
