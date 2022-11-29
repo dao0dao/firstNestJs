@@ -15,8 +15,9 @@ DATABASE_database={schema name that you want to create}
 DATABASE_host={your mySQL host}
 DATABASE_port={your mySQL port}
 SALT_ROUNDS={number to bcrypt salt}
+PORT={number of port in which server should run}
 ```
 ## Set up project
 1. `npm install`
 2. `npm run set_project`
-3. `npm run start:dev` for local
+3. `npm run set_project:start-dev` for local serve
