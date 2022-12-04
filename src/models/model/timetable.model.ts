@@ -12,38 +12,35 @@ export class Timetable extends Model {
   date: string;
 
   @Column
-  timeFrom: string;
+  time_from: string;
 
   @Column
-  timeTo: string;
+  time_to: string;
 
   @Column
   court: string;
 
   @Column
-  playerOne: string;
+  player_one: string;
 
   @Column
-  playerTwo: string;
+  player_two: string;
 
   @Column
-  guestOne: string;
+  guest_one: string;
 
   @Column
-  guestTwo: string;
+  guest_two: string;
 
   @Column
   hour_count: number;
 
-  @Column
-  is_editable: boolean;
-
-  @Column
+  @Column({ defaultValue: false })
   is_player_one_payed: boolean;
 
-  @Column
+  @Column({ defaultValue: false })
   is_player_two_payed: boolean;
 
-  @Column
+  @Column({ defaultValue: false })
   is_first_payment: boolean;
 }
