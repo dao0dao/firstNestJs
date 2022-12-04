@@ -4,6 +4,7 @@ import { Player } from "./model/player.models";
 import { PlayerAccount } from "./model/playerAccount.model";
 import { PriceList } from "./model/priceList.model";
 import { Sessions } from "./model/session.model";
+import { Timetable } from "./model/timetable.model";
 
 export const modelsForRoot = [
   Administrator,
@@ -12,4 +13,5 @@ export const modelsForRoot = [
   Opponent,
   PlayerAccount,
   PriceList,
+  Timetable,
 ];

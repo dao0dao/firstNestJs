@@ -1,5 +1,4 @@
-import { Table, Model, Column, DataType, HasMany } from "sequelize-typescript";
-import { Player } from "./player.models";
+import { Table, Model, Column, DataType } from "sequelize-typescript";
 export type Hours = {
   [key: number]: {
     from: string;
