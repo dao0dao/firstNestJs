@@ -11,7 +11,6 @@ import {
   ValidateNested,
   IsOptional,
 } from "class-validator";
-import { Model } from "sequelize";
 import { Week } from "src/models/model/player.models";
 import { PriceList } from "src/models/model/priceList.model";
 
