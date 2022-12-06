@@ -14,7 +14,6 @@ import { TimetableQuery } from "./timetable.dto";
 import { TimetableService } from "./timetable.service";
 
 @Controller("timetable")
-@Role("login")
 export class TimetableController {
   constructor(
     private timetable: TimetableService,
@@ -23,6 +22,7 @@ export class TimetableController {
   ) {}
 
   @Get()
+  @Role("login")
   async getReservationByDate(
     @Req() req: RequestDTO,
     @Query() query: TimetableQuery

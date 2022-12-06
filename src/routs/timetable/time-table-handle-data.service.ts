@@ -11,7 +11,6 @@ export class TimeTableHandleDataService {
     timetable: Timetable[],
     role: RequestDTO["ROLE"]
   ) {
-    console.log(role);
     const reservations: ReservationOutputDTO[] = [];
     return reservations;
   }

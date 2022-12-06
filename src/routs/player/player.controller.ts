@@ -14,7 +14,6 @@ import { PlayerIdParamDTO, PlayerInputDTO } from "./player.dto";
 import { PlayerDataHandlerService } from "./player-data-handler.service";
 
 @Controller("players")
-@Role("login")
 export class PlayerController {
   constructor(
     private playerService: PlayerService,
@@ -22,12 +21,14 @@ export class PlayerController {
   ) {}
 
   @Get()
+  @Role("login")
   async getAllPayers() {
     const data = await this.playerService.findAllPlayers();
     const players = this.dataHandler.parsePlayerOpponents(data);
     return { players };
   }
   @Post("add")
+  @Role("login")
   async addPlayer(@Body() body: PlayerInputDTO) {
     const allPlayers = await this.playerService.findAllPlayers();
     const condition = this.dataHandler.isPlayerExist({
