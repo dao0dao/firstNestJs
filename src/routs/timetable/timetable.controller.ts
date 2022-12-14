@@ -3,14 +3,16 @@ import {
   Get,
   HttpException,
   HttpStatus,
+  Post,
   Query,
   Req,
+  Body,
 } from "@nestjs/common";
 import { Role } from "src/guards/roles.decorators";
 import { RequestDTO } from "src/request.dto";
 import { PlayerService } from "../player/player.service";
 import { TimeTableHandleDataService } from "./time-table-handle-data.service";
-import { TimetableQuery } from "./timetable.dto";
+import { InputReservationDTO, TimetableQuery } from "./timetable.dto";
 import { TimetableService } from "./timetable.service";
 
 @Controller("timetable")
@@ -46,5 +48,11 @@ export class TimetableController {
     return {
       reservations,
     };
+  }
+
+  @Post("reservation-add")
+  @Role("login")
+  async addReservation(@Body() body: InputReservationDTO) {
+    return { status: "ok" };
   }
 }

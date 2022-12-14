@@ -26,22 +26,18 @@ export class AuthGuard implements CanActivate {
     );
     console.log(role);
     if (!role) {
-      console.log(0);
       return true;
     }
     const session_id: string = req.cookies.key;
     if (!session_id) {
-      console.log(1);
       throw new UnauthorizedException();
     }
     const admin_id = await this.sessionService.findAdminIdInSession(session_id);
     if (!admin_id) {
-      console.log(2);
       throw new HttpException({ session: "fail" }, HttpStatus.UNAUTHORIZED);
     }
     const admin = await this.adminService.findAdministratorById(admin_id);
     if (!admin) {
-      console.log(3);
       throw new UnauthorizedException();
     }
     req.ADMIN_NAME = admin.name;
@@ -49,19 +45,15 @@ export class AuthGuard implements CanActivate {
 
     const roles = [];
     if (admin.isAdmin) {
-      console.log(4);
       roles.push("admin", "login");
       req.ROLE = "admin";
     } else {
-      console.log(5);
       roles.push("login");
       req.ROLE = "login";
     }
     if (roles.includes(role)) {
-      console.log(6);
       return true;
     } else {
-      console.log(7);
       throw new UnauthorizedException();
     }
   }

@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { Player } from "src/models/model/player.models";
 import { Timetable } from "src/models/model/timetable.model";
 import { RequestDTO } from "src/request.dto";
-import { ReservationOutputDTO } from "./timetable.dto";
+import { InputReservationDTO } from "./timetable.dto";
 
 @Injectable()
 export class TimeTableHandleDataService {
@@ -11,7 +11,7 @@ export class TimeTableHandleDataService {
     timetable: Timetable[],
     role: RequestDTO["ROLE"]
   ) {
-    const reservations: ReservationOutputDTO[] = [];
+    const reservations: InputReservationDTO[] = [];
     return reservations;
   }
 }

@@ -5,7 +5,7 @@ export class Timetable extends Model {
   @Column({ primaryKey: true, defaultValue: DataType.UUIDV4 })
   id: string;
 
-  @Column
+  @Column({ defaultValue: 10 })
   layer: number;
 
   @Column
