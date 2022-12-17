@@ -5,7 +5,6 @@ import {
   IsUUID,
   IsNumber,
   ValidateNested,
-  IsBoolean,
 } from "class-validator";
 
 class Form {
