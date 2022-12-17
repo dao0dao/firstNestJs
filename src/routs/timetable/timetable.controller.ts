@@ -39,20 +39,31 @@ export class TimetableController {
       query.date
     );
     const allPlayers = await this.playerService.findAllPlayers();
-    const reservations =
-      this.timetableHandleData.parseDailyTimeTableToReservation(
-        allPlayers,
-        dailyTimetable,
-        req.ROLE
-      );
     return {
-      reservations,
+      reservations: [],
     };
   }
 
   @Post("reservation-add")
   @Role("login")
   async addReservation(@Body() body: InputReservationDTO) {
-    return { status: "ok" };
+    const hourCount = this.timetableHandleData.countTime(
+      body.form.timeFrom,
+      body.form.timeTo
+    );
+    if (hourCount === "wrong_time_formate") {
+      throw new HttpException(
+        { reason: "Błędny format godziny" },
+        HttpStatus.NOT_ACCEPTABLE
+      );
+    }
+    const reservation = await this.timetable.addReservation(body, hourCount);
+    if (!reservation) {
+      throw new HttpException(
+        { readWrite: "fail" },
+        HttpStatus.INTERNAL_SERVER_ERROR
+      );
+    }
+    return { status: "added", id: reservation.id };
   }
 }

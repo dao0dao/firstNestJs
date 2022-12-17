@@ -42,12 +42,6 @@ class Form {
   guestTwo: string;
 }
 
-class Payment {
-  @IsOptional()
-  @IsNumber()
-  hourCount: number;
-}
-
 export class TimetableQuery {
   @IsString()
   @Length(10, 10)
@@ -59,32 +53,11 @@ export class InputReservationDTO {
   @IsUUID()
   id: string;
 
-  @IsOptional()
   @IsNumber()
   layer: number;
 
   @ValidateNested()
   form: Form;
-
-  @IsOptional()
-  @ValidateNested()
-  payment: Payment;
-
-  @IsOptional()
-  @IsBoolean()
-  isEditable?: boolean; //zależy czy admin czy nie
-
-  @IsOptional()
-  @IsBoolean()
-  isPlayerOnePayed: boolean;
-
-  @IsOptional()
-  @IsBoolean()
-  isPlayerTwoPayed: boolean;
-
-  @IsOptional()
-  @IsBoolean()
-  isFirstPayment?: boolean;
 }
 
 export interface OutputReservationDTO {
