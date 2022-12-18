@@ -15,6 +15,7 @@ import { TimeTableHandleDataService } from "./time-table-handle-data.service";
 import {
   CreateReservationDTO,
   InputReservationDTO,
+  OutputReservationDTO,
   TimetableQuery,
 } from "./timetable.dto";
 import { TimetableService } from "./timetable.service";
@@ -32,7 +33,7 @@ export class TimetableController {
   async getReservationByDate(
     @Req() req: RequestDTO,
     @Query() query: TimetableQuery
-  ) {
+  ): Promise<{ reservations: OutputReservationDTO[] }> {
     if (!query.date) {
       throw new HttpException(
         { reason: "Nie prawidłowa data" },
@@ -43,8 +44,14 @@ export class TimetableController {
       query.date
     );
     const allPlayers = await this.playerService.findAllPlayers();
+    const reservations =
+      this.timetableHandleData.parseTimetableToReservationModel(
+        dailyTimetable,
+        allPlayers,
+        req.ROLE
+      );
     return {
-      reservations: [],
+      reservations,
     };
   }
 

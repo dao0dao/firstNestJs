@@ -69,8 +69,8 @@ export interface OutputReservationDTO {
     timeFrom: string;
     timeTo: string;
     court: string;
-    playerOne: Player | undefined;
-    playerTwo: Player | undefined;
+    playerOne: ReservationPlayerDTO | undefined;
+    playerTwo: ReservationPlayerDTO | undefined;
     guestOne: string;
     guestTwo: string;
   };
@@ -83,14 +83,7 @@ export interface OutputReservationDTO {
   isFirstPayment: boolean;
 }
 
-interface Player {
-  id: string;
-  name: string;
-  surname: string;
-  telephone: string;
-}
-
-interface ReservationPlayerDTO {
+export interface ReservationPlayerDTO {
   id: string;
   name: string;
   surname: string;
