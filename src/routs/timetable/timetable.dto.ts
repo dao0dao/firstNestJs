@@ -60,11 +60,8 @@ export class InputReservationDTO {
 }
 
 export interface OutputReservationDTO {
-  id?: string;
+  id: string;
   timetable: {
-    transformY: number;
-    transformX: number;
-    ceilHeight: number;
     layer: number;
   };
   form: {
@@ -77,14 +74,13 @@ export interface OutputReservationDTO {
     guestOne: string;
     guestTwo: string;
   };
-  payment?: {
+  payment: {
     hourCount: number;
   };
-
-  isEditable?: boolean; //zależy czy admin czy nie
-  isPlayerOnePayed?: boolean;
-  isPlayerTwoPayed?: boolean;
-  isFirstPayment?: boolean;
+  isEditable: boolean; //zależy czy admin czy nie
+  isPlayerOnePayed: boolean;
+  isPlayerTwoPayed: boolean;
+  isFirstPayment: boolean;
 }
 
 interface Player {
@@ -92,4 +88,15 @@ interface Player {
   name: string;
   surname: string;
   telephone: string;
+}
+
+interface ReservationPlayerDTO {
+  id: string;
+  name: string;
+  surname: string;
+  telephone: string;
+}
+
+export interface CreateReservationDTO {
+  status: "created";
 }

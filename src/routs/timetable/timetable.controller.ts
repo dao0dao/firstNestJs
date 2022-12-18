@@ -12,7 +12,11 @@ import { Role } from "src/guards/roles.decorators";
 import { RequestDTO } from "src/request.dto";
 import { PlayerService } from "../player/player.service";
 import { TimeTableHandleDataService } from "./time-table-handle-data.service";
-import { InputReservationDTO, TimetableQuery } from "./timetable.dto";
+import {
+  CreateReservationDTO,
+  InputReservationDTO,
+  TimetableQuery,
+} from "./timetable.dto";
 import { TimetableService } from "./timetable.service";
 
 @Controller("timetable")
@@ -46,7 +50,9 @@ export class TimetableController {
 
   @Post("reservation-add")
   @Role("login")
-  async addReservation(@Body() body: InputReservationDTO) {
+  async addReservation(
+    @Body() body: InputReservationDTO
+  ): Promise<CreateReservationDTO> {
     const hourCount = this.timetableHandleData.countTime(
       body.form.timeFrom,
       body.form.timeTo
@@ -64,6 +70,8 @@ export class TimetableController {
         HttpStatus.INTERNAL_SERVER_ERROR
       );
     }
-    return { status: "added", id: reservation.id };
+    return {
+      status: "created",
+    };
   }
 }
