@@ -59,6 +59,17 @@ export class InputReservationDTO {
   form: Form;
 }
 
+export class InputUpdateReservationDTO {
+  @IsUUID()
+  id: string;
+
+  @IsNumber()
+  layer: number;
+
+  @ValidateNested()
+  form: Form;
+}
+
 export interface OutputReservationDTO {
   id: string;
   timetable: {

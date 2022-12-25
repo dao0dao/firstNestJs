@@ -16,6 +16,7 @@ import { TimeTableHandleDataService } from "./time-table-handle-data.service";
 import {
   CreateReservationDTO,
   InputReservationDTO,
+  InputUpdateReservationDTO,
   OutputReservationDTO,
   TimetableQuery,
 } from "./timetable.dto";
@@ -98,7 +99,7 @@ export class TimetableController {
   @Role("login")
   async updateReservation(
     @Req() req: RequestDTO,
-    @Body() body: InputReservationDTO
+    @Body() body: InputUpdateReservationDTO
   ): Promise<{ reservation: OutputReservationDTO }> {
     const canCreate = this.timetableHandleData.checkCanCreateOrUpdate(
       body.form.date,
