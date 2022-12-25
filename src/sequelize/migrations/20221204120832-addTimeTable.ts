@@ -11,7 +11,7 @@ module.exports = {
       },
       date: {
         allowNull: false,
-        type: DataType.STRING,
+        type: DataType.DATEONLY,
       },
       layer: {
         allowNull: false,

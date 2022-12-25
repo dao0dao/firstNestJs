@@ -43,7 +43,7 @@ export class TimeTableHandleDataService {
     return reservationPlayer;
   }
 
-  private checkIsEditable(date: string, role: string) {
+  checkCanCreateOrUpdate(date: string, role: string) {
     if (role === "admin") {
       return true;
     }
@@ -52,34 +52,44 @@ export class TimeTableHandleDataService {
     return new Date(date) >= today;
   }
 
-  parseTimetableToReservationModel(
+  parseTimetableToReservationModelArray(
     timetable: Timetable[],
     allPlayers: Player[],
     role: string
   ) {
     const reservationsArr: OutputReservationDTO[] = [];
     for (const el of timetable) {
-      const reservation: OutputReservationDTO = {
-        id: el.id,
-        form: {
-          court: el.court,
-          date: el.date,
-          guestOne: el.guest_one,
-          guestTwo: el.guest_two,
-          playerOne: this.setReservationPlayer(allPlayers, el.player_one),
-          playerTwo: this.setReservationPlayer(allPlayers, el.player_two),
-          timeFrom: el.time_from,
-          timeTo: el.time_to,
-        },
-        isEditable: this.checkIsEditable(el.date, role),
-        isFirstPayment: el.is_first_payment,
-        isPlayerOnePayed: el.is_player_one_payed,
-        isPlayerTwoPayed: el.is_player_two_payed,
-        payment: { hourCount: el.hour_count },
-        timetable: { layer: el.layer },
-      };
+      const reservation: OutputReservationDTO =
+        this.parseTimetableToReservation(el, allPlayers, role);
       reservationsArr.push(reservation);
     }
     return reservationsArr;
+  }
+
+  parseTimetableToReservation(
+    timetable: Timetable,
+    allPlayers: Player[],
+    role: string
+  ) {
+    const reservation: OutputReservationDTO = {
+      id: timetable.id,
+      form: {
+        court: timetable.court,
+        date: timetable.date,
+        guestOne: timetable.guest_one,
+        guestTwo: timetable.guest_two,
+        playerOne: this.setReservationPlayer(allPlayers, timetable.player_one),
+        playerTwo: this.setReservationPlayer(allPlayers, timetable.player_two),
+        timeFrom: timetable.time_from,
+        timeTo: timetable.time_to,
+      },
+      isEditable: this.checkCanCreateOrUpdate(timetable.date, role),
+      isFirstPayment: timetable.is_first_payment,
+      isPlayerOnePayed: timetable.is_player_one_payed,
+      isPlayerTwoPayed: timetable.is_player_two_payed,
+      payment: { hourCount: parseFloat(timetable.hour_count) },
+      timetable: { layer: timetable.layer },
+    };
+    return reservation;
   }
 }

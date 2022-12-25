@@ -7,6 +7,7 @@ import {
   Query,
   Req,
   Body,
+  Put,
 } from "@nestjs/common";
 import { Role } from "src/guards/roles.decorators";
 import { RequestDTO } from "src/request.dto";
@@ -45,7 +46,7 @@ export class TimetableController {
     );
     const allPlayers = await this.playerService.findAllPlayers();
     const reservations =
-      this.timetableHandleData.parseTimetableToReservationModel(
+      this.timetableHandleData.parseTimetableToReservationModelArray(
         dailyTimetable,
         allPlayers,
         req.ROLE
@@ -55,11 +56,22 @@ export class TimetableController {
     };
   }
 
-  @Post("reservation-add")
+  @Post("reservation/add")
   @Role("login")
   async addReservation(
+    @Req() req: RequestDTO,
     @Body() body: InputReservationDTO
   ): Promise<CreateReservationDTO> {
+    const canCreate = this.timetableHandleData.checkCanCreateOrUpdate(
+      body.form.date,
+      req.ROLE
+    );
+    if (!canCreate) {
+      throw new HttpException(
+        { reason: "Brak uprawnień, nie można dodać z datą wsteczną." },
+        HttpStatus.NOT_ACCEPTABLE
+      );
+    }
     const hourCount = this.timetableHandleData.countTime(
       body.form.timeFrom,
       body.form.timeTo
@@ -80,5 +92,41 @@ export class TimetableController {
     return {
       status: "created",
     };
+  }
+
+  @Put("reservation/update")
+  @Role("login")
+  async updateReservation(
+    @Req() req: RequestDTO,
+    @Body() body: InputReservationDTO
+  ): Promise<{ reservation: OutputReservationDTO }> {
+    const canCreate = this.timetableHandleData.checkCanCreateOrUpdate(
+      body.form.date,
+      req.ROLE
+    );
+    if (!canCreate) {
+      throw new HttpException(
+        { reason: "Brak uprawnień, nie można dodać z datą wsteczną." },
+        HttpStatus.NOT_ACCEPTABLE
+      );
+    }
+    const hourCount = this.timetableHandleData.countTime(
+      body.form.timeFrom,
+      body.form.timeTo
+    );
+    if (hourCount === "wrong_time_formate") {
+      throw new HttpException(
+        { reason: "Błędny format godziny" },
+        HttpStatus.NOT_ACCEPTABLE
+      );
+    }
+    const timetable = await this.timetable.updateReservation(body, hourCount);
+    const allPlayers = await this.playerService.findAllPlayers();
+    const reservation = this.timetableHandleData.parseTimetableToReservation(
+      timetable,
+      allPlayers,
+      req.ROLE
+    );
+    return { reservation: reservation };
   }
 }

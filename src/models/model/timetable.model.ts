@@ -33,7 +33,7 @@ export class Timetable extends Model {
   guest_two: string;
 
   @Column
-  hour_count: number;
+  hour_count: string;
 
   @Column({ defaultValue: false })
   is_player_one_payed: boolean;
