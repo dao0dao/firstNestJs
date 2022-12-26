@@ -1,13 +1,5 @@
 import { Table, Model, Column, DataType } from "sequelize-typescript";
-export type Hours = {
-  [key: number]: {
-    from: string;
-    to: string;
-    price: number;
-    days?: number[];
-  };
-  defaultPrice?: number;
-};
+import { Hours } from "src/routs/price-list/price-list.dto";
 
 @Table({ modelName: "price_list", freezeTableName: true })
 export class PriceList extends Model {

@@ -4,11 +4,9 @@ import {
   ArgumentMetadata,
   BadRequestException,
 } from "@nestjs/common";
-import { access, mkdir, writeFile } from "node:fs/promises";
-import { join } from "path";
-import { validate, ValidationError } from "class-validator";
+import { validate } from "class-validator";
 import { plainToInstance } from "class-transformer";
-import { logsFolderPath } from "src/utils/staticFiles";
+import { writeErrorToLog } from "src/utils/writeLogs";
 
 @Injectable()
 export class ClassValidationPipe implements PipeTransform {
@@ -20,7 +18,7 @@ export class ClassValidationPipe implements PipeTransform {
     const errors = await validate(object);
     if (errors.length > 0) {
       if (process.env.MODE === "dev") {
-        this.writeErrorToLog(errors);
+        writeErrorToLog(errors);
       }
       throw new BadRequestException("Validation failed");
     }
@@ -30,38 +28,5 @@ export class ClassValidationPipe implements PipeTransform {
   private toValidate(metatype): boolean {
     const types = [String, Boolean, Number, Array, Object];
     return !types.includes(metatype);
-  }
-
-  private async writeErrorToLog(errors: ValidationError[]) {
-    const checkFolder = new Promise<boolean>((resolve) => {
-      access(logsFolderPath)
-        .then(() => {
-          resolve(true);
-        })
-        .catch(() => {
-          resolve(false);
-        });
-    });
-    const isFolderExist = await checkFolder;
-    if (!isFolderExist) {
-      await mkdir(logsFolderPath);
-    }
-    this.createErrorLog(errors);
-  }
-
-  private createErrorLog(errors: ValidationError[]) {
-    let content = "";
-    for (const e of errors) {
-      const obj = {
-        name: e.property,
-        constraints: e.constraints,
-        value: e.value,
-      };
-      content = content + e.toString() + JSON.stringify(obj) + "\n ----- \n";
-    }
-    const date = new Date();
-    const fileName = date.toISOString().replace(/:/g, "-") + ".log";
-    const pathToFile = join(logsFolderPath, fileName);
-    writeFile(pathToFile, content, { encoding: "utf-8" });
   }
 }
