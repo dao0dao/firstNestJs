@@ -28,13 +28,12 @@ export class ClassValidationPipe implements PipeTransform {
   }
 
   private toValidate(metatype): boolean {
-    // eslint-disable-next-line @typescript-eslint/ban-types
-    const types: Function[] = [String, Boolean, Number, Array, Object];
+    const types = [String, Boolean, Number, Array, Object];
     return !types.includes(metatype);
   }
 
   private async writeErrorToLog(errors: ValidationError[]) {
-    const checkFolder = new Promise<boolean>((resolve, reject) => {
+    const checkFolder = new Promise<boolean>((resolve) => {
       access(logsFolderPath)
         .then(() => {
           resolve(true);
