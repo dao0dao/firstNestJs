@@ -11,4 +11,7 @@ export class PriceList extends Model {
 
   @Column(DataType.JSON)
   hours: Hours;
+
+  @Column
+  default_Price: string;
 }

@@ -9,12 +9,12 @@ import {
   UsePipes,
 } from "@nestjs/common";
 import { Role } from "src/guards/roles.decorators";
-import { PriceListHourValidationPipe } from "src/pipes/priceListHour-validator";
+import { OptionalPriceListHourValidationPipe } from "src/pipes/priceListHour-validator";
 import { PriceListDTO, PriceListQueryDTO } from "./price-list.dto";
 import { PriceListService } from "./price-list.service";
 
 @Controller("price-list")
-@UsePipes(PriceListHourValidationPipe)
+@UsePipes(OptionalPriceListHourValidationPipe)
 export class PriceListController {
   constructor(private priceList: PriceListService) {}
 
