@@ -1,10 +1,4 @@
-import {
-  IsNumber,
-  IsOptional,
-  IsString,
-  IsUUID,
-  ValidateNested,
-} from "class-validator";
+import { IsNumber, IsOptional, IsString, IsUUID } from "class-validator";
 
 export interface Hours {
   [key: number]: HoursDTO;

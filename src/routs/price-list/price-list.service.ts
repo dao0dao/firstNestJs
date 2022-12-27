@@ -9,16 +9,16 @@ import { PriceListDTO, PriceListQueryDTO } from "./price-list.dto";
 @Role("admin")
 export class PriceListService {
   constructor(
-    @InjectModel(PriceList) private priceListMode: typeof PriceList,
+    @InjectModel(PriceList) private priceListModel: typeof PriceList,
     private playerService: PlayerService
   ) {}
 
   getAllPriceList() {
-    return this.priceListMode.findAll();
+    return this.priceListModel.findAll();
   }
 
   async createPriceList(data: PriceListDTO) {
-    const priceList = await this.priceListMode.create({
+    const priceList = await this.priceListModel.create({
       name: data.name,
       hours: data.hours,
     });
@@ -26,7 +26,7 @@ export class PriceListService {
   }
 
   async updatePriceList(data: PriceListDTO, query: PriceListQueryDTO) {
-    const priceList = await this.priceListMode.findOne({
+    const priceList = await this.priceListModel.findOne({
       where: { id: query.id },
     });
     if (!priceList) {
@@ -40,7 +40,7 @@ export class PriceListService {
   }
 
   async deletePriceList(query: PriceListQueryDTO) {
-    const result = await this.priceListMode.destroy({
+    const result = await this.priceListModel.destroy({
       where: { id: query.id },
     });
     this.playerService.clearPlayerPriceListById(query.id);

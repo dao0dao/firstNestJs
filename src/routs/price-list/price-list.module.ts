@@ -6,10 +6,11 @@ import { OptionalPriceListHourValidationPipe } from "src/pipes/priceListHour-val
 import { PlayerModule } from "../player/player.module";
 import { PriceListController } from "./price-list.controller";
 import { PriceListService } from "./price-list.service";
+import { PriceListHandleDataService } from "./price-list-handle-data.service";
 
 @Module({
   imports: [SequelizeModule.forFeature([PriceList]), PlayerModule],
   controllers: [PriceListController],
-  providers: [PriceListService],
+  providers: [PriceListService, PriceListHandleDataService],
 })
 export class PriceListModule {}

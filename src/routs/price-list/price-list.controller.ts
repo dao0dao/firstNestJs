@@ -10,18 +10,23 @@ import {
 } from "@nestjs/common";
 import { Role } from "src/guards/roles.decorators";
 import { OptionalPriceListHourValidationPipe } from "src/pipes/priceListHour-validator";
+import { PriceListHandleDataService } from "./price-list-handle-data.service";
 import { PriceListDTO, PriceListQueryDTO } from "./price-list.dto";
 import { PriceListService } from "./price-list.service";
 
 @Controller("price-list")
 @UsePipes(OptionalPriceListHourValidationPipe)
 export class PriceListController {
-  constructor(private priceList: PriceListService) {}
+  constructor(
+    private priceList: PriceListService,
+    private handleData: PriceListHandleDataService
+  ) {}
 
   @Get()
   @Role("admin")
   async getAllPriceLists() {
-    const priceList = await this.priceList.getAllPriceList();
+    const priceListModel = await this.priceList.getAllPriceList();
+    const priceList = this.handleData.parsePriceListModelToDTO(priceListModel);
     return { priceList };
   }
 

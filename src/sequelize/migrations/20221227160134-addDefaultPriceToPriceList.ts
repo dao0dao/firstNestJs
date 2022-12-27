@@ -4,9 +4,9 @@ import { DataType } from "sequelize-typescript";
 module.exports = {
   async up(queryInterface: QueryInterface, Sequelize) {
     return queryInterface.addColumn("price_list", "default_Price", {
-      type: DataType.INTEGER,
+      type: DataType.DECIMAL(10, 2),
       allowNull: false,
-      defaultValue: 0,
+      defaultValue: 0.0,
     });
     /**
      * Add altering commands here.
