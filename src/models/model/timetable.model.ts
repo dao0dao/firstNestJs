@@ -2,8 +2,8 @@ import { Table, Model, Column, DataType } from "sequelize-typescript";
 
 @Table({ modelName: "timetable", freezeTableName: true })
 export class Timetable extends Model {
-  @Column({ primaryKey: true, defaultValue: DataType.UUIDV4 })
-  id: string;
+  @Column({ primaryKey: true })
+  id: number;
 
   @Column
   layer: number;

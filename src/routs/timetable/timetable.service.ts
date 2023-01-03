@@ -13,7 +13,7 @@ export class TimetableService {
     return this.timetableMode.findAll({ where: { date } });
   }
 
-  private findOneReservationById(id: string) {
+  private findOneReservationById(id: number) {
     return this.timetableMode.findOne({ where: { id } });
   }
 

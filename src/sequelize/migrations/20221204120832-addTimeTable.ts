@@ -6,8 +6,8 @@ module.exports = {
     return queryInterface.createTable("timetable", {
       id: {
         primaryKey: true,
-        type: DataType.UUID,
-        defaultValue: DataType.UUIDV4,
+        type: DataType.INTEGER,
+        autoIncrement: true,
       },
       date: {
         allowNull: false,

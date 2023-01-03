@@ -49,8 +49,8 @@ export class TimetableQuery {
 
 export class InputReservationDTO {
   @IsOptional()
-  @IsUUID()
-  id: string;
+  @IsNumber()
+  id: number;
 
   @IsNumber()
   layer: number;
@@ -60,8 +60,8 @@ export class InputReservationDTO {
 }
 
 export class InputUpdateReservationDTO {
-  @IsUUID()
-  id: string;
+  @IsNumber()
+  id: number;
 
   @IsNumber()
   layer: number;
@@ -71,7 +71,7 @@ export class InputUpdateReservationDTO {
 }
 
 export interface OutputReservationDTO {
-  id: string;
+  id: number;
   timetable: {
     layer: number;
   };
