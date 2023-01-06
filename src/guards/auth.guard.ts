@@ -10,6 +10,7 @@ import { Reflector } from "@nestjs/core";
 import { AdministratorService } from "src/routs/administrator/administrator.service";
 import { RequestDTO } from "src/request.dto";
 import { SessionsService } from "src/utils/shared/session.service";
+import { Response } from "express";
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -33,6 +34,8 @@ export class AuthGuard implements CanActivate {
     }
     const admin_id = await this.sessionService.findAdminIdInSession(session_id);
     if (!admin_id) {
+      const res: Response = context.switchToHttp().getResponse();
+      res.clearCookie("key");
       throw new HttpException({ session: "fail" }, HttpStatus.UNAUTHORIZED);
     }
     const admin = await this.adminService.findAdministratorById(admin_id);
