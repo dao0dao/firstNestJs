@@ -8,6 +8,8 @@ import {
   Req,
   Body,
   Put,
+  Delete,
+  Param,
 } from "@nestjs/common";
 import { Role } from "src/guards/roles.decorators";
 import { RequestDTO } from "src/request.dto";
@@ -18,6 +20,7 @@ import {
   InputReservationDTO,
   InputUpdateReservationDTO,
   OutputReservationDTO,
+  TimetableDeleteParam,
   TimetableQuery,
 } from "./timetable.dto";
 import { TimetableService } from "./timetable.service";
@@ -129,5 +132,12 @@ export class TimetableController {
       req.ROLE
     );
     return { reservation: reservation };
+  }
+
+  @Delete("reservation/delete/:id")
+  @Role("login")
+  deleteReservation(@Param() param: TimetableDeleteParam) {
+    console.log(param);
+    return;
   }
 }

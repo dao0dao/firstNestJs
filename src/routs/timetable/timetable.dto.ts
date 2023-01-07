@@ -5,6 +5,7 @@ import {
   IsUUID,
   IsNumber,
   ValidateNested,
+  Matches,
 } from "class-validator";
 
 class Form {
@@ -103,4 +104,9 @@ export interface ReservationPlayerDTO {
 
 export interface CreateReservationDTO {
   status: "created";
+}
+
+export class TimetableDeleteParam {
+  @Matches(/\d/)
+  id: number;
 }
