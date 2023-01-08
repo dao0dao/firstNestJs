@@ -1,5 +1,6 @@
 import { Administrator } from "./model/administrator.model";
 import { Opponent } from "./model/opponent.model";
+import { PlayerHistory } from "./model/player-history/playerHistory.model";
 import { Player } from "./model/player.models";
 import { PlayerAccount } from "./model/playerAccount.model";
 import { PriceList } from "./model/priceList.model";
@@ -14,4 +15,5 @@ export const modelsForRoot = [
   PlayerAccount,
   PriceList,
   Timetable,
+  PlayerHistory,
 ];

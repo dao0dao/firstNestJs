@@ -20,6 +20,8 @@ import { AdministratorModule } from "./routs/administrator/administrator.module"
 import { PlayerModule } from "./routs/player/player.module";
 import { PriceListModule } from "./routs/price-list/price-list.module";
 import { TimetableModule } from "./routs/timetable/timetable.module";
+import { PlayerHistoryModule } from './models/model/player-history/player-history.module';
+import { PlayerHistoryModule } from './routs/player-history/player-history.module';
 
 const routs: RouteTree[] = [
   {
@@ -46,6 +48,7 @@ const routs: RouteTree[] = [
     PlayerModule,
     PriceListModule,
     TimetableModule,
+    PlayerHistoryModule,
   ],
   controllers: [AppController],
   providers: [

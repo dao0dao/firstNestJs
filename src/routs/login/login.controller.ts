@@ -46,16 +46,19 @@ export class LoginController {
   @Get()
   async checkIsLogin(@Req() req: Request) {
     if (!req.cookies.key) {
+      console.log(1);
       throw new HttpException("UNAUTHORIZED", HttpStatus.UNAUTHORIZED);
     }
     const session_id = await this.sessionService.findAdminIdInSession(
       req.cookies.key
     );
     if (!session_id) {
+      console.log(2);
       throw new HttpException({ session: "fail" }, HttpStatus.UNAUTHORIZED);
     }
     const admin = await this.loginService.checkIsLogin(session_id);
     if (!admin) {
+      console.log(3);
       throw new HttpException("UNAUTHORIZED", HttpStatus.UNAUTHORIZED);
     }
     return admin;
