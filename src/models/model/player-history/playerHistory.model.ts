@@ -22,7 +22,7 @@ export class PlayerHistory extends Model {
   @ForeignKey(() => Player)
   player_id: string;
 
-  @BelongsTo(() => Player, "playerId")
+  @BelongsTo(() => Player, "player_id")
   player: Player;
 
   @Column(DataType.DECIMAL(1, 0))

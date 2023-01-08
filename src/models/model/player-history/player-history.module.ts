@@ -1,11 +1,11 @@
 import { Module } from "@nestjs/common";
 import { SequelizeModule } from "@nestjs/sequelize";
 import { PlayerHistory } from "./playerHistory.model";
-import { PlayerHistoryService } from "./player-history.service";
+import { PlayerHistoryModelService } from "./player-history.service";
 
 @Module({
   imports: [SequelizeModule.forFeature([PlayerHistory])],
-  providers: [PlayerHistoryService],
-  exports: [PlayerHistoryService],
+  providers: [PlayerHistoryModelService],
+  exports: [PlayerHistoryModelService],
 })
-export class PlayerHistoryModule {}
+export class PlayerHistoryModelModule {}
