@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { PlayerHistory } from "src/models/model/player-history/playerHistory.model";
-import { HistoryOutputDTO, PlayerHistoryOutputDTO } from "./player-history.dto";
+import { HistoryOutputDTO } from "./player-history.dto";
 
 @Injectable()
 export class PlayerHistoryHandleDataService {

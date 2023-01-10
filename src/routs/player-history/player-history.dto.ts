@@ -1,5 +1,4 @@
 import { IsUUID, Matches } from "class-validator";
-import { Model } from "sequelize-typescript";
 
 export class PlayerHistoryQuery {
   @IsUUID()
