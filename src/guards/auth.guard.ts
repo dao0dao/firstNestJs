@@ -32,13 +32,17 @@ export class AuthGuard implements CanActivate {
     if (!session_id) {
       throw new UnauthorizedException();
     }
-    const admin_id = await this.sessionService.findAdminIdInSession(session_id);
-    if (!admin_id) {
+    const adminModel = await this.sessionService.findAdminIdInSession(
+      session_id
+    );
+    if (!adminModel) {
       const res: Response = context.switchToHttp().getResponse();
       res.clearCookie("key");
       throw new HttpException({ session: "fail" }, HttpStatus.UNAUTHORIZED);
     }
-    const admin = await this.adminService.findAdministratorById(admin_id);
+    const admin = await this.adminService.findAdministratorById(
+      adminModel.administrator_id
+    );
     if (!admin) {
       throw new UnauthorizedException();
     }

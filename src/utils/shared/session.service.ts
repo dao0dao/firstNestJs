@@ -17,29 +17,28 @@ export class SessionsService {
     name: string
   ): Promise<{ key: string; date: Date }> {
     const rounds = parseInt((Math.random() * 10).toFixed(0));
-    const key = await bcrypt.hash("MySecret" + name + "key", rounds);
+    const key = (await bcrypt.hash("MySecret" + name + "key", rounds)).replace(
+      /\.*\$*/g,
+      ""
+    );
     const date = new Date(Date.now() + 2 * 3600 * 1000);
     const dateSQL = this.toSqlDate(date);
-    this.sessionModel
-      .create({
-        session_id: key,
-        expired_at: dateSQL,
-        administrator_id: administrator_id,
-      })
-      .catch((e) => console.log(e));
-    return { key, date };
+    const session = await this.sessionModel.create({
+      session_id: key,
+      expired_at: dateSQL,
+      administrator_id: administrator_id,
+    });
+    return { key: session.session_id, date };
   }
 
-  async findAdminIdInSession(session_id: string): Promise<string | false> {
-    const session = await this.sessionModel.findOne({ where: { session_id } });
-    if (!session) {
-      return false;
-    }
-    return session.administrator_id;
+  findAdminIdInSession(session_id: string) {
+    return this.sessionModel.findOne({ where: { session_id } });
   }
 
   async removeSession(session_id: string): Promise<boolean | Sessions> {
-    const session = await this.sessionModel.findOne({ where: { session_id } });
+    const session = await this.sessionModel.findOne({
+      where: { session_id: session_id },
+    });
     if (!session) {
       return false;
     }

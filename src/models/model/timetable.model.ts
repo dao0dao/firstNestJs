@@ -1,4 +1,4 @@
-import { Table, Model, Column, DataType } from "sequelize-typescript";
+import { Table, Model, Column } from "sequelize-typescript";
 
 @Table({ modelName: "timetable", freezeTableName: true })
 export class Timetable extends Model {

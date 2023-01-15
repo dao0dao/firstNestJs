@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
   HttpException,
   HttpStatus,
@@ -21,7 +20,10 @@ export class LoginController {
     private sessionService: SessionsService
   ) {}
   @Post()
-  async logIn(@Res() res: Response, @Body() body: LoginInputDTO) {
+  async logIn(
+    @Res({ passthrough: true }) res: Response,
+    @Body() body: LoginInputDTO
+  ) {
     const login = await this.loginService.login(body);
     if (!login) {
       throw new HttpException("UNAUTHORIZED", HttpStatus.UNAUTHORIZED);
@@ -49,16 +51,14 @@ export class LoginController {
     if (!req.cookies.key) {
       throw new HttpException("UNAUTHORIZED", HttpStatus.UNAUTHORIZED);
     }
-    const session_id = await this.sessionService.findAdminIdInSession(
+    const adminModel = await this.sessionService.findAdminIdInSession(
       req.cookies.key
     );
-    if (!session_id) {
-      console.log(2);
+    if (!adminModel) {
       throw new HttpException({ session: "fail" }, HttpStatus.UNAUTHORIZED);
     }
-    const admin = await this.loginService.checkIsLogin(session_id);
+    const admin = await this.loginService.checkIsLogin(adminModel.session_id);
     if (!admin) {
-      console.log(3);
       throw new HttpException("UNAUTHORIZED", HttpStatus.UNAUTHORIZED);
     }
     return admin;
