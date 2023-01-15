@@ -34,8 +34,8 @@ export class PlayerHistory extends Model {
   @Column
   service_name: string;
 
-  @Column
-  price: number;
+  @Column(DataType.DECIMAL(10, 2))
+  price: string;
 
   @Column
   is_paid: boolean;
@@ -47,5 +47,26 @@ export class PlayerHistory extends Model {
   payment_date: string;
 
   @Column
+  cashier: string;
+}
+
+export interface History {
+  id?: number;
+  timetable_id?: string;
+  player_id: string;
+  player_position?: number;
+  service_date: string;
+  service_name: string;
+  price: string;
+  is_paid: boolean;
+  payment_method?: string;
+  payment_date?: string;
+  cashier?: string;
+}
+
+export interface PaidHistory {
+  id: number;
+  payment_method: string;
+  payment_date: string;
   cashier: string;
 }

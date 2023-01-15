@@ -9,7 +9,7 @@ export class PlayerHistoryHandleDataService {
     const history: HistoryOutputDTO[] = [];
     for (const el of data) {
       if (!el.is_paid) {
-        totalPrice += el.price;
+        totalPrice += parseFloat(el.price);
       }
       history.push({
         cashier: el.cashier,
@@ -17,7 +17,7 @@ export class PlayerHistoryHandleDataService {
         isPaid: el.is_paid,
         paymentDate: el.payment_date,
         paymentMethod: el.payment_method,
-        price: el.price,
+        price: parseFloat(el.price),
         serviceDate: el.service_date,
         serviceName: el.service_name,
       });
