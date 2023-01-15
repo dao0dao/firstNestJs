@@ -5,7 +5,7 @@ import {
   PipeTransform,
 } from "@nestjs/common";
 import { ValidationError } from "class-validator";
-import { HoursDTO } from "src/routs/price-list/price-list.dto";
+import { HoursDTO } from "src/routs/protected-routs/price-list/price-list.dto";
 import { writeErrorToLog } from "src/utils/writeLogs";
 
 class HourValidation {

@@ -12,27 +12,19 @@ import {
   staticFolder,
 } from "./app.module.config";
 import { ClassValidationPipe } from "./pipes/class-validation.pipe";
-import { AuthGuard } from "./guards/auth.guard";
 //modules
 import { LoginModule } from "./routs/login/login.module";
 import { SharedModule } from "./utils/shared/shared.module";
-import { AdministratorModule } from "./routs/administrator/administrator.module";
-import { PlayerModule } from "./routs/player/player.module";
-import { PriceListModule } from "./routs/price-list/price-list.module";
-import { TimetableModule } from "./routs/timetable/timetable.module";
-import { PlayerHistoryModule } from "./routs/player-history/player-history.module";
+import { ProtectedRoutsModule } from "./routs/protected-routs/protected-routs.module";
 
 const routs: RouteTree[] = [
   {
     path: "api",
-    children: [
-      LoginModule,
-      AdministratorModule,
-      PlayerModule,
-      PriceListModule,
-      TimetableModule,
-      PlayerHistoryModule,
-    ],
+    children: [LoginModule],
+  },
+  {
+    path: "",
+    module: ProtectedRoutsModule,
   },
 ];
 
@@ -44,18 +36,10 @@ const routs: RouteTree[] = [
     RouterModule.register(routs),
     LoginModule,
     SharedModule,
-    AdministratorModule,
-    PlayerModule,
-    PriceListModule,
-    TimetableModule,
-    PlayerHistoryModule,
+    ProtectedRoutsModule,
   ],
   controllers: [AppController],
-  providers: [
-    AppService,
-    { provide: APP_PIPE, useClass: ClassValidationPipe },
-    { provide: APP_GUARD, useClass: AuthGuard },
-  ],
+  providers: [AppService, { provide: APP_PIPE, useClass: ClassValidationPipe }],
   exports: [],
 })
 export class AppModule {

@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { AdministratorService } from "src/routs/administrator/administrator.service";
+import { AdministratorService } from "src/routs/protected-routs/administrator/administrator.service";
 import { isSamePasswords } from "src/utils/bcript";
 import { LoginInputDTO, LoginResponse } from "./login.dto";
 

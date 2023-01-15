@@ -30,23 +30,23 @@ export class LoginController {
       login.user_id,
       login.user
     );
-    res.cookie("key", session.key, {
-      expires: session.date,
-      httpOnly: true,
-      secure: true,
-      path: "/",
-    });
-    res.json({
-      isLogin: login.isLogin,
-      isAdmin: login.isAdmin,
-      user: login.user,
-    });
+    res
+      .cookie("key", session.key, {
+        expires: session.date,
+        httpOnly: true,
+        secure: true,
+        path: "/",
+      })
+      .json({
+        isLogin: login.isLogin,
+        isAdmin: login.isAdmin,
+        user: login.user,
+      });
   }
 
   @Get()
   async checkIsLogin(@Req() req: Request) {
     if (!req.cookies.key) {
-      console.log(1);
       throw new HttpException("UNAUTHORIZED", HttpStatus.UNAUTHORIZED);
     }
     const session_id = await this.sessionService.findAdminIdInSession(

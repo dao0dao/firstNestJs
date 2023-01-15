@@ -1,5 +1,5 @@
 import { Table, Model, Column, DataType } from "sequelize-typescript";
-import { Hours } from "src/routs/price-list/price-list.dto";
+import { Hours } from "src/routs/protected-routs/price-list/price-list.dto";
 
 @Table({ modelName: "price_list", freezeTableName: true })
 export class PriceList extends Model {

@@ -7,7 +7,7 @@ import {
   UnauthorizedException,
 } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
-import { AdministratorService } from "src/routs/administrator/administrator.service";
+import { AdministratorService } from "src/routs/protected-routs/administrator/administrator.service";
 import { RequestDTO } from "src/request.dto";
 import { SessionsService } from "src/utils/shared/session.service";
 import { Response } from "express";
