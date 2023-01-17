@@ -136,7 +136,20 @@ export class TimetableController {
 
   @Delete("reservation/delete/:id")
   @Role("login")
-  deleteReservation(@Param() param: TimetableDeleteParam) {
+  deleteReservation(
+    @Req() req: RequestDTO,
+    @Param() param: TimetableDeleteParam
+  ) {
+    const canDelete = this.timetableHandleData.checkCanCreateOrUpdate(
+      new Date().toString(),
+      req.ROLE
+    );
+    if (!canDelete) {
+      throw new HttpException(
+        { reason: "Brak uprawnień" },
+        HttpStatus.NOT_ACCEPTABLE
+      );
+    }
     return this.timetable.deleteReservationById(param.id);
   }
 }
