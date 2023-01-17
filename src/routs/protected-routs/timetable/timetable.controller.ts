@@ -12,6 +12,7 @@ import {
   Param,
 } from "@nestjs/common";
 import { Role } from "src/guards/roles.decorators";
+import { TimetableService } from "src/models/model/timetable/timetable.service";
 import { RequestDTO } from "src/request.dto";
 import { PlayerService } from "../player/player.service";
 import { TimeTableHandleDataService } from "./time-table-handle-data.service";
@@ -23,7 +24,6 @@ import {
   TimetableDeleteParam,
   TimetableQuery,
 } from "./timetable.dto";
-import { TimetableService } from "./timetable.service";
 
 @Controller("timetable")
 export class TimetableController {
@@ -137,7 +137,6 @@ export class TimetableController {
   @Delete("reservation/delete/:id")
   @Role("login")
   deleteReservation(@Param() param: TimetableDeleteParam) {
-    console.log(param);
-    return;
+    return this.timetable.deleteReservationById(param.id);
   }
 }

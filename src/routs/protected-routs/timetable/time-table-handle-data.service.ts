@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { Player } from "src/models/model/player.models";
-import { Timetable } from "src/models/model/timetable.model";
+import { Timetable } from "src/models/model/timetable/timetable.model";
 import { OutputReservationDTO, ReservationPlayerDTO } from "./timetable.dto";
 
 @Injectable()

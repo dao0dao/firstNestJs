@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
-import { Timetable } from "src/models/model/timetable.model";
-import { InputReservationDTO } from "./timetable.dto";
+import { InputReservationDTO } from "src/routs/protected-routs/timetable/timetable.dto";
+import { Timetable } from "./timetable.model";
 
 @Injectable()
 export class TimetableService {
@@ -58,5 +58,9 @@ export class TimetableService {
       is_first_payment: false,
     });
     return reservation.save();
+  }
+
+  deleteReservationById(id: number) {
+    return this.timetableMode.destroy({ where: { id } });
   }
 }

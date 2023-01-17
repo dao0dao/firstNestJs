@@ -7,7 +7,7 @@ import {
   Table,
 } from "sequelize-typescript";
 import { Player } from "../player.models";
-import { Timetable } from "../timetable.model";
+import { Timetable } from "../timetable/timetable.model";
 
 @Table({ modelName: "player_history", freezeTableName: true })
 export class PlayerHistory extends Model {

@@ -1,14 +1,18 @@
 import { Module } from "@nestjs/common";
 import { SequelizeModule } from "@nestjs/sequelize";
-import { Timetable } from "src/models/model/timetable.model";
+import { Timetable } from "src/models/model/timetable/timetable.model";
 import { TimetableController } from "./timetable.controller";
-import { TimetableService } from "./timetable.service";
 import { TimeTableHandleDataService } from "./time-table-handle-data.service";
 import { PlayerModule } from "../player/player.module";
+import { ModelsModule } from "src/models/models.module";
 
 @Module({
-  imports: [SequelizeModule.forFeature([Timetable]), PlayerModule],
+  imports: [
+    SequelizeModule.forFeature([Timetable]),
+    PlayerModule,
+    ModelsModule,
+  ],
   controllers: [TimetableController],
-  providers: [TimetableService, TimeTableHandleDataService],
+  providers: [TimeTableHandleDataService],
 })
 export class TimetableModule {}
