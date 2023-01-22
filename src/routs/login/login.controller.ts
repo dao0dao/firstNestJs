@@ -57,7 +57,9 @@ export class LoginController {
     if (!adminModel) {
       throw new HttpException({ session: "fail" }, HttpStatus.UNAUTHORIZED);
     }
-    const admin = await this.loginService.checkIsLogin(adminModel.session_id);
+    const admin = await this.loginService.checkIsLogin(
+      adminModel.administrator_id
+    );
     if (!admin) {
       throw new HttpException("UNAUTHORIZED", HttpStatus.UNAUTHORIZED);
     }
