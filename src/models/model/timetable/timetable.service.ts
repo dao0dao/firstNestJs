@@ -42,16 +42,28 @@ export class TimetableService {
     if (!reservation) {
       return null;
     }
+    const player_one = form.playerOne ? form.playerOne : "";
+    const player_two = form.playerTwo ? form.playerTwo : "";
+    const guest_one = form.guestOne ? form.guestOne : "";
+    const guest_two = form.guestTwo ? form.guestTwo : "";
+    if (
+      player_one === "" &&
+      player_two === "" &&
+      guest_one === "" &&
+      guest_two === ""
+    ) {
+      return null;
+    }
     reservation.set({
       date: form.date,
       layer: layer,
       time_from: form.timeFrom,
       time_to: form.timeTo,
       court: form.court,
-      player_one: form.playerOne,
-      player_two: form.playerTwo,
-      guest_one: form.guestOne,
-      guest_two: form.guestTwo,
+      player_one,
+      player_two,
+      guest_one,
+      guest_two,
       hour_count: hourCount,
       is_player_one_payed: false,
       is_player_two_payed: false,

@@ -125,6 +125,12 @@ export class TimetableController {
       );
     }
     const timetable = await this.timetable.updateReservation(body, hourCount);
+    if (timetable === null) {
+      throw new HttpException(
+        { reason: "Brak rezerwacji lub nie podano gracza" },
+        HttpStatus.NOT_ACCEPTABLE
+      );
+    }
     const allPlayers = await this.playerService.findAllPlayers();
     const reservation = this.timetableHandleData.parseTimetableToReservation(
       timetable,
