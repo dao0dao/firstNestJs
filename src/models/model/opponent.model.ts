@@ -5,7 +5,7 @@ import {
   BelongsTo,
   ForeignKey,
 } from "sequelize-typescript";
-import { Player } from "./player.models";
+import { Player } from "./player/player.models";
 
 @Table({ modelName: "opponents" })
 export class Opponent extends Model {

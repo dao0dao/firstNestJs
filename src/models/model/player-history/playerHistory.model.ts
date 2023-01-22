@@ -6,7 +6,7 @@ import {
   Model,
   Table,
 } from "sequelize-typescript";
-import { Player } from "../player.models";
+import { Player } from "../player/player.models";
 import { Timetable } from "../timetable/timetable.model";
 
 @Table({ modelName: "player_history", freezeTableName: true })
@@ -52,7 +52,7 @@ export class PlayerHistory extends Model {
 
 export interface History {
   id?: number;
-  timetable_id?: string;
+  timetable_id?: number;
   player_id: string;
   player_position?: number;
   service_date: string;

@@ -5,7 +5,7 @@ import {
   BelongsTo,
   ForeignKey,
 } from "sequelize-typescript";
-import { Player } from "./player.models";
+import { Player } from "../player/player.models";
 
 @Table({ modelName: "player_account", freezeTableName: true })
 export class PlayerAccount extends Model {

@@ -8,10 +8,10 @@ import {
   Param,
   Delete,
 } from "@nestjs/common";
-import { PlayerService } from "./player.service";
 import { Role } from "src/guards/roles.decorators";
 import { PlayerIdParamDTO, PlayerInputDTO } from "./player.dto";
 import { PlayerDataHandlerService } from "./player-data-handler.service";
+import { PlayerService } from "src/models/model/player/player.service";
 
 @Controller("players")
 export class PlayerController {

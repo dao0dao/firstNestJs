@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { Player } from "src/models/model/player.models";
+import { Player } from "src/models/model/player/player.models";
 import { Timetable } from "src/models/model/timetable/timetable.model";
 import { OutputReservationDTO, ReservationPlayerDTO } from "./timetable.dto";
 
@@ -38,8 +38,16 @@ export class TimeTableHandleDataService {
 
   private setReservationPlayer(allPlayers: Player[], playerId: string) {
     const player = allPlayers.find((pl) => pl.id === playerId);
-    if (!player) {
+    if (!player && playerId === "") {
       return undefined;
+    }
+    if (!player) {
+      return {
+        id: playerId,
+        name: "",
+        surname: "[gracz usunięty]",
+        telephone: "",
+      };
     }
     const reservationPlayer: ReservationPlayerDTO = {
       id: player.id,

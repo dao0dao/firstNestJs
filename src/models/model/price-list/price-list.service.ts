@@ -1,12 +1,13 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
-import { Role } from "src/guards/roles.decorators";
-import { PriceList } from "src/models/model/priceList.model";
+import {
+  PriceListDTO,
+  PriceListQueryDTO,
+} from "src/routs/protected-routs/price-list/price-list.dto";
 import { PlayerService } from "../player/player.service";
-import { PriceListDTO, PriceListQueryDTO } from "./price-list.dto";
+import { PriceList } from "./priceList.model";
 
 @Injectable()
-@Role("admin")
 export class PriceListService {
   constructor(
     @InjectModel(PriceList) private priceListModel: typeof PriceList,

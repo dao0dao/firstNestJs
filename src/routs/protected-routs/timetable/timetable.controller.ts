@@ -12,9 +12,9 @@ import {
   Param,
 } from "@nestjs/common";
 import { Role } from "src/guards/roles.decorators";
+import { PlayerService } from "src/models/model/player/player.service";
 import { TimetableService } from "src/models/model/timetable/timetable.service";
 import { RequestDTO } from "src/request.dto";
-import { PlayerService } from "../player/player.service";
 import { TimeTableHandleDataService } from "./time-table-handle-data.service";
 import {
   CreateReservationDTO,

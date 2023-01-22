@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
 import { Op } from "sequelize";
-import { Player } from "../player.models";
+import { Player } from "../player/player.models";
 import { History, PaidHistory, PlayerHistory } from "./playerHistory.model";
 
 @Injectable()

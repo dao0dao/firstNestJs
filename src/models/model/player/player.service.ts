@@ -1,10 +1,10 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
 import { Op } from "sequelize";
-import { Opponent } from "src/models/model/opponent.model";
-import { Player } from "src/models/model/player.models";
-import { PlayerAccount } from "src/models/model/playerAccount.model";
-import { PlayerInputDTO } from "./player.dto";
+import { PlayerInputDTO } from "src/routs/protected-routs/player/player.dto";
+import { Opponent } from "../opponent.model";
+import { PlayerAccount } from "../player-account/playerAccount.model";
+import { Player } from "./player.models";
 
 @Injectable()
 export class PlayerService {

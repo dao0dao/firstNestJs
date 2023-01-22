@@ -8,9 +8,9 @@ import {
   BelongsTo,
   ForeignKey,
 } from "sequelize-typescript";
-import { Opponent } from "./opponent.model";
-import { PlayerAccount } from "./playerAccount.model";
-import { PriceList } from "./priceList.model";
+import { Opponent } from "../opponent.model";
+import { PlayerAccount } from "../player-account/playerAccount.model";
+import { PriceList } from "../price-list/priceList.model";
 
 export interface Week {
   days: {

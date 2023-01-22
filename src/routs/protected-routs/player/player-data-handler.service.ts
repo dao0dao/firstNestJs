@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { Player } from "src/models/model/player.models";
+import { Player } from "src/models/model/player/player.models";
 import { OpponentOutputDTO, PlayerOutputDTO } from "./player.dto";
 
 interface IsPlayerExist {

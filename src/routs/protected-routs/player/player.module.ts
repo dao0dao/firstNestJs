@@ -1,16 +1,11 @@
 import { Module } from "@nestjs/common";
-import { PlayerService } from "./player.service";
 import { PlayerController } from "./player.controller";
-import { SequelizeModule } from "@nestjs/sequelize";
-import { Player } from "src/models/model/player.models";
 import { PlayerDataHandlerService } from "./player-data-handler.service";
-import { PlayerAccount } from "src/models/model/playerAccount.model";
-import { Opponent } from "src/models/model/opponent.model";
+import { ModelsModule } from "src/models/models.module";
 
 @Module({
-  imports: [SequelizeModule.forFeature([Player, PlayerAccount, Opponent])],
-  providers: [PlayerService, PlayerDataHandlerService],
+  imports: [ModelsModule],
+  providers: [PlayerDataHandlerService],
   controllers: [PlayerController],
-  exports: [PlayerService],
 })
 export class PlayerModule {}

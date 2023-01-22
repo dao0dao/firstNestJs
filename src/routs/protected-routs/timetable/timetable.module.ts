@@ -5,6 +5,7 @@ import { TimetableController } from "./timetable.controller";
 import { TimeTableHandleDataService } from "./time-table-handle-data.service";
 import { PlayerModule } from "../player/player.module";
 import { ModelsModule } from "src/models/models.module";
+import { TimetableHandlePlayerHistoryService } from "./timetable-handle-player-history.service";
 
 @Module({
   imports: [
@@ -13,6 +14,6 @@ import { ModelsModule } from "src/models/models.module";
     ModelsModule,
   ],
   controllers: [TimetableController],
-  providers: [TimeTableHandleDataService],
+  providers: [TimeTableHandleDataService, TimetableHandlePlayerHistoryService],
 })
 export class TimetableModule {}

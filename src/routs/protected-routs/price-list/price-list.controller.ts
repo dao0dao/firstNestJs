@@ -9,10 +9,10 @@ import {
   UsePipes,
 } from "@nestjs/common";
 import { Role } from "src/guards/roles.decorators";
+import { PriceListService } from "src/models/model/price-list/price-list.service";
 import { OptionalPriceListHourValidationPipe } from "src/pipes/priceListHour-validator";
 import { PriceListHandleDataService } from "./price-list-handle-data.service";
 import { PriceListDTO, PriceListQueryDTO } from "./price-list.dto";
-import { PriceListService } from "./price-list.service";
 
 @Controller("price-list")
 @UsePipes(OptionalPriceListHourValidationPipe)
