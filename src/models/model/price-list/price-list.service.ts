@@ -22,6 +22,7 @@ export class PriceListService {
     const priceList = await this.priceListModel.create({
       name: data.name,
       hours: data.hours,
+      default_Price: data.defaultPrice,
     });
     return priceList.id;
   }
@@ -36,7 +37,11 @@ export class PriceListService {
         HttpStatus.NOT_ACCEPTABLE
       );
     }
-    priceList.set({ name: data.name, hours: data.hours });
+    priceList.set({
+      name: data.name,
+      hours: data.hours,
+      default_Price: data.defaultPrice,
+    });
     return priceList.save();
   }
 

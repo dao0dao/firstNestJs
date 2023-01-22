@@ -8,7 +8,7 @@ import { Timetable } from "src/models/model/timetable/timetable.model";
 export class TimetableHandlePlayerHistoryService {
   constructor(private playerHistory: PlayerHistoryModelService) {}
 
-  createPlayerHistory(reservation: Timetable) {
+  createPlayerHistory(reservation: Timetable, priceList: PriceList[]) {
     const playerCount = this.countPlayers(reservation);
     if (playerCount === 0) {
       return null;
@@ -38,11 +38,36 @@ export class TimetableHandlePlayerHistoryService {
     return playerCount;
   }
 
-  // private createDataForPlayer(data: {
-  //   player_id: string;
-  //   playerCount: number;
-  //   player_position: number;
-  //   reservation: Timetable;
-  //   priceList: PriceList[];
-  // }) {}
+  private createDataForPlayer(data: {
+    player_id: string;
+    playerCount: number;
+    player_position: number;
+    reservation: Timetable;
+    priceList: PriceList[];
+  }) {
+    const history: History = {
+      player_id: data.player_id,
+      price: "0",
+      is_paid: false,
+      service_date: data.reservation.date,
+      service_name: "Wynajęcie kortu",
+      timetable_id: data.reservation.id,
+      player_position: data.player_position,
+    };
+  }
+
+  private setPlayerPrice(data: {
+    date: string;
+    time_from: string;
+    time_to: string;
+    priceList: PriceList;
+    playerCount: number;
+  }) {
+    if (!data.priceList) {
+      return 0;
+    }
+    
+    const price = parseFloat(data.priceList.default_Price) / data.playerCount;
+    return price;
+  }
 }

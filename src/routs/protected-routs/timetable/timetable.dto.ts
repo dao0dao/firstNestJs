@@ -1,3 +1,4 @@
+import { Type } from "class-transformer";
 import {
   IsOptional,
   IsString,
@@ -6,11 +7,16 @@ import {
   IsNumber,
   ValidateNested,
   Matches,
+  MaxLength,
+  MinLength,
+  Min,
+  Max,
 } from "class-validator";
 
 class Form {
   @IsString()
-  @Length(10, 10)
+  @MaxLength(10)
+  @MinLength(10)
   date: string;
 
   @IsString()
@@ -21,9 +27,10 @@ class Form {
   @Length(5, 5)
   timeTo: string;
 
-  @IsString()
-  @Length(1, 1)
-  court: string;
+  @IsNumber()
+  @Min(1)
+  @Max(3)
+  court: number;
 
   @IsOptional()
   @IsUUID()
@@ -57,6 +64,7 @@ export class InputReservationDTO {
   layer: number;
 
   @ValidateNested()
+  @Type(() => Form)
   form: Form;
 }
 
@@ -68,6 +76,7 @@ export class InputUpdateReservationDTO {
   layer: number;
 
   @ValidateNested()
+  @Type(() => Form)
   form: Form;
 }
 

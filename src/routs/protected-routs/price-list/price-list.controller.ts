@@ -3,6 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpException,
+  HttpStatus,
   Param,
   Post,
   Put,
@@ -33,6 +35,13 @@ export class PriceListController {
   @Post()
   @Role("admin")
   async createPriceList(@Body() body: PriceListDTO) {
+    const isWrongData = this.handleData.validateHoursAndDay(body);
+    if (isWrongData) {
+      throw new HttpException(
+        { reason: "Błędne dane" },
+        HttpStatus.NOT_ACCEPTABLE
+      );
+    }
     const id = await this.priceList.createPriceList(body);
     return { status: "created", id };
   }
@@ -43,6 +52,13 @@ export class PriceListController {
     @Body() body: PriceListDTO,
     @Param() query: PriceListQueryDTO
   ) {
+    const isWrongData = this.handleData.validateHoursAndDay(body);
+    if (isWrongData) {
+      throw new HttpException(
+        { reason: "Błędne dane" },
+        HttpStatus.NOT_ACCEPTABLE
+      );
+    }
     await this.priceList.updatePriceList(body, query);
     return { status: "updated" };
   }
