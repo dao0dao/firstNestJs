@@ -5,37 +5,6 @@ import { OutputReservationDTO, ReservationPlayerDTO } from "./timetable.dto";
 
 @Injectable()
 export class TimeTableHandleDataService {
-  private timeToNumber(data: string) {
-    const RegEx = /^\d{2}:\d{2}$/;
-    if (!data.match(RegEx)) {
-      return "wrong_time_formate";
-    }
-    const timeString = data.split(":");
-    const hour = parseInt(timeString[0]);
-    const minutes = parseFloat((parseInt(timeString[1]) / 60).toFixed(2));
-    const timeNumber = hour + minutes;
-    return timeNumber;
-  }
-
-  countTime(timeFrom: string, timeTo: string) {
-    const timeStart = this.timeToNumber(timeFrom);
-    const timeEnd = this.timeToNumber(timeTo);
-    let timeEndNumber = 0;
-    if (
-      timeStart === "wrong_time_formate" ||
-      timeEnd === "wrong_time_formate"
-    ) {
-      return "wrong_time_formate";
-    }
-    if (timeEnd === 0) {
-      timeEndNumber = 24;
-    } else {
-      timeEndNumber = timeEnd;
-    }
-
-    return timeEndNumber - timeStart;
-  }
-
   private setReservationPlayer(allPlayers: Player[], playerId: string) {
     const player = allPlayers.find((pl) => pl.id === playerId);
     if (!player && playerId === "") {

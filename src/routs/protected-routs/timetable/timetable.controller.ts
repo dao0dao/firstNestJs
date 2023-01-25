@@ -15,6 +15,7 @@ import { Role } from "src/guards/roles.decorators";
 import { PlayerService } from "src/models/model/player/player.service";
 import { TimetableService } from "src/models/model/timetable/timetable.service";
 import { RequestDTO } from "src/request.dto";
+import { countFromToTime } from "src/utils/time";
 import { TimeTableHandleDataService } from "./time-table-handle-data.service";
 import {
   CreateReservationDTO,
@@ -76,10 +77,7 @@ export class TimetableController {
         HttpStatus.NOT_ACCEPTABLE
       );
     }
-    const hourCount = this.timetableHandleData.countTime(
-      body.form.timeFrom,
-      body.form.timeTo
-    );
+    const hourCount = countFromToTime(body.form.timeFrom, body.form.timeTo);
     if (hourCount === "wrong_time_formate") {
       throw new HttpException(
         { reason: "Błędny format godziny" },
@@ -114,10 +112,7 @@ export class TimetableController {
         HttpStatus.NOT_ACCEPTABLE
       );
     }
-    const hourCount = this.timetableHandleData.countTime(
-      body.form.timeFrom,
-      body.form.timeTo
-    );
+    const hourCount = countFromToTime(body.form.timeFrom, body.form.timeTo);
     if (hourCount === "wrong_time_formate") {
       throw new HttpException(
         { reason: "Błędny format godziny" },
