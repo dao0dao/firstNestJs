@@ -1,9 +1,9 @@
-export function timeToNumber(data: string) {
+export function timeToNumber(time: string) {
   const RegEx = /^\d{2}:\d{2}$/;
-  if (!data.match(RegEx)) {
+  if (!time.match(RegEx)) {
     return "wrong_time_formate";
   }
-  const timeString = data.split(":");
+  const timeString = time.split(":");
   const hour = parseInt(timeString[0]);
   const minutes = parseFloat((parseInt(timeString[1]) / 60).toFixed(2));
   const timeNumber = hour + minutes;
@@ -11,8 +11,8 @@ export function timeToNumber(data: string) {
 }
 
 export function countFromToTime(timeFrom: string, timeTo: string) {
-  const timeStart = this.timeToNumber(timeFrom);
-  const timeEnd = this.timeToNumber(timeTo);
+  const timeStart = timeToNumber(timeFrom);
+  const timeEnd = timeToNumber(timeTo);
   let timeEndNumber = 0;
   if (timeStart === "wrong_time_formate" || timeEnd === "wrong_time_formate") {
     return "wrong_time_formate";

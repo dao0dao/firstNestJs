@@ -29,6 +29,7 @@ export class PlayerHistoryModelService {
     return this.history.create({
       timetable_id: data.timetable_id,
       player_id: data.player_id,
+      player_position: data.player_position,
       service_date: data.service_date,
       service_name: data.service_name,
       price: data.price,

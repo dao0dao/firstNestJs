@@ -148,4 +148,13 @@ export class PlayerService {
       player.save();
     }
   }
+
+  getPlayerPriceListId(player_id: string) {
+    return this.playerModel
+      .findOne({
+        where: { id: player_id },
+        attributes: ["price_list_id"],
+      })
+      .then((pl) => pl.price_list_id);
+  }
 }

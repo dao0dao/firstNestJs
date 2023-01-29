@@ -31,7 +31,7 @@ module.exports = {
       },
       player_position: {
         type: DataType.DECIMAL(1, 0),
-        allowNull: false,
+        allowNull: true,
       },
       service_date: {
         type: DataType.DATEONLY,

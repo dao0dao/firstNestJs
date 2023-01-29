@@ -13,10 +13,12 @@ import {
 } from "@nestjs/common";
 import { Role } from "src/guards/roles.decorators";
 import { PlayerService } from "src/models/model/player/player.service";
+import { PriceListService } from "src/models/model/price-list/price-list.service";
 import { TimetableService } from "src/models/model/timetable/timetable.service";
 import { RequestDTO } from "src/request.dto";
 import { countFromToTime } from "src/utils/time";
 import { TimeTableHandleDataService } from "./time-table-handle-data.service";
+import { TimetableHandlePlayerHistoryService } from "./timetable-handle-player-history.service";
 import {
   CreateReservationDTO,
   InputReservationDTO,
@@ -31,7 +33,9 @@ export class TimetableController {
   constructor(
     private timetable: TimetableService,
     private playerService: PlayerService,
-    private timetableHandleData: TimeTableHandleDataService
+    private timetableHandleData: TimeTableHandleDataService,
+    private timetableHandleHistory: TimetableHandlePlayerHistoryService,
+    private priceList: PriceListService
   ) {}
 
   @Get()
@@ -85,12 +89,38 @@ export class TimetableController {
       );
     }
     const reservation = await this.timetable.addReservation(body, hourCount);
+    console.log(reservation);
     if (!reservation) {
       throw new HttpException(
         { readWrite: "fail" },
         HttpStatus.INTERNAL_SERVER_ERROR
       );
     }
+    const priceList = await this.priceList.getAllPriceList();
+    let playerOne = undefined;
+    let playerTwo = undefined;
+    if (reservation.player_one) {
+      playerOne = {
+        id: reservation.player_one,
+        priceListId: await this.playerService.getPlayerPriceListId(
+          reservation.player_one
+        ),
+      };
+    }
+    if (reservation.player_two) {
+      playerTwo = {
+        id: reservation.player_two,
+        priceListId: await this.playerService.getPlayerPriceListId(
+          reservation.player_two
+        ),
+      };
+    }
+    const playersHistory =
+      await this.timetableHandleHistory.createPlayerHistory(
+        reservation,
+        priceList,
+        { playerOne, playerTwo }
+      );
     return {
       status: "created",
     };

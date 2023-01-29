@@ -5,6 +5,7 @@ module.exports = {
   async up(queryInterface: QueryInterface, Sequelize) {
     return queryInterface.createTable("timetable", {
       id: {
+        field: "id",
         primaryKey: true,
         type: DataType.INTEGER,
         autoIncrement: true,

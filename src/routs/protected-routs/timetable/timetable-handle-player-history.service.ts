@@ -26,6 +26,9 @@ export class TimetableHandlePlayerHistoryService {
   ) {
     const playerCount = this.countPlayers(reservation);
     if (playerCount === 0) {
+      return false;
+    }
+    if (priceList.length === 0) {
       return null;
     }
     if (players.playerOne) {
