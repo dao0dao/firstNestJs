@@ -2,7 +2,7 @@ import { Table, Model, Column } from "sequelize-typescript";
 
 @Table({ modelName: "timetable", freezeTableName: true })
 export class Timetable extends Model {
-  @Column({ primaryKey: true })
+  @Column({ primaryKey: true, autoIncrement: true })
   id: number;
 
   @Column
