@@ -40,8 +40,4 @@ const routs: RouteTree[] = [
   ],
   providers: [{ provide: APP_GUARD, useClass: AuthGuard }],
 })
-export class ProtectedRoutsModule {
-  constructor() {
-    console.log(1);
-  }
-}
+export class ProtectedRoutsModule {}

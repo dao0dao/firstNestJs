@@ -89,7 +89,6 @@ export class TimetableController {
       );
     }
     const reservation = await this.timetable.addReservation(body, hourCount);
-    console.log(reservation);
     if (!reservation) {
       throw new HttpException(
         { readWrite: "fail" },

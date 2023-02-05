@@ -123,10 +123,14 @@ export class TimetableHandlePlayerHistoryService {
       return 0;
     }
     if (Object.keys(data.priceList.hours).length === 0) {
-      return 0;
+      const price =
+        (parseFloat(data.priceList.default_Price) * data.hourCount) /
+        data.playerCount;
+      return price;
     }
     const day = new Date(data.date).getDay();
     const hoursArr: HoursDTO[] = [];
+    let leftHours: number = data.hourCount;
     for (const key in data.priceList.hours) {
       const el = data.priceList.hours[key];
       if (el.days.includes(day)) {
@@ -135,33 +139,50 @@ export class TimetableHandlePlayerHistoryService {
     }
     if (hoursArr.length > 0) {
       let price = 0;
-      const playForm = timeToNumber(data.time_from);
-      const playTo = timeToNumber(data.time_to);
+      const playFrom = timeToNumber(data.time_from);
+      const playTimeTo = timeToNumber(data.time_to);
       if (
-        playForm === "wrong_time_formate" ||
-        playTo === "wrong_time_formate"
+        playFrom === "wrong_time_formate" ||
+        playTimeTo === "wrong_time_formate"
       ) {
         const price =
           (parseFloat(data.priceList.default_Price) * data.hourCount) /
           data.playerCount;
         return price;
       }
+      const playTo = playTimeTo === 0 ? 24 : playTimeTo;
       for (const hour of hoursArr) {
         const hourFrom = timeToNumber(hour.from);
-        const hourTo = timeToNumber(hour.to);
+        const hourTimeTo = timeToNumber(hour.to);
         if (
           hourFrom === "wrong_time_formate" ||
-          hourTo === "wrong_time_formate"
+          hourTimeTo === "wrong_time_formate"
         ) {
           const price =
             (parseFloat(data.priceList.default_Price) * data.hourCount) /
             data.playerCount;
           return price;
         }
-        if (playForm >= hourFrom || (playTo <= hourTo && playTo > hourFrom)) {
+        const hourTo = hourTimeTo === 0 ? 24 : hourTimeTo;
+        if (
+          (playFrom < hourFrom && playTo < hourTo && playTo > hourFrom) ||
+          (playFrom > hourFrom && playFrom < hourTo && playTo > hourTo) ||
+          (playFrom >= hourFrom &&
+            playFrom < hourTo &&
+            playTo <= hourTo &&
+            playTo > hourFrom) ||
+          (playFrom < hourFrom && playTo > hourTo) ||
+          (playFrom >= hourFrom && playFrom < hourTo && playTo > hourTo) ||
+          (playFrom < hourFrom && playTo <= hourTo && playTo > hourFrom)
+        ) {
+          const startTime = playFrom >= hourFrom ? playFrom : hourFrom;
           const endTime = playTo <= hourTo ? playTo : hourTo;
-          price += (endTime - playForm) * hour.price;
+          price += (endTime - startTime) * hour.price;
+          leftHours -= endTime - startTime;
         }
+      }
+      if (leftHours > 0) {
+        price += leftHours * parseFloat(data.priceList.default_Price);
       }
       return price / data.playerCount;
     }

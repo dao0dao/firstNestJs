@@ -26,7 +26,6 @@ module.exports = {
         },
       })
       .catch((e) => {
-        console.log(e);
         throw new Error("Migration error");
       });
   },
