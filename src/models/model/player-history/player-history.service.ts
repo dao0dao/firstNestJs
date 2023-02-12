@@ -4,7 +4,6 @@ import { Op } from "sequelize";
 import { Player } from "../player/player.models";
 import {
   CreateTimetableHistory,
-  CreateTimetableHistory,
   PlayerHistory,
   UpdateHistory,
 } from "./playerHistory.model";
