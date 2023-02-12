@@ -126,7 +126,7 @@ export class TimetableHandlePlayerHistoryService {
         player_id: players.playerOne.id,
         player_position: 1,
         playerCount: playerCount,
-        priceList: priceList_one,
+        priceList: priceList_two,
         reservation: reservation,
       };
       const history_one = this.createDataForPlayerHistory(data_one);
