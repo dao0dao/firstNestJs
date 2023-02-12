@@ -19,7 +19,6 @@ export class PriceListHandleDataService {
 
   validateHoursAndDay(list: PriceListDTO) {
     if (this.checkCoveringHours(list)) {
-      console.log(1);
       return true;
     }
     if (this.compareFromToHours(list)) {
@@ -60,8 +59,6 @@ export class PriceListHandleDataService {
             (fromA >= fromB && toA <= toB && isSameDays) ||
             (fromA < toB && toA > toB && isSameDays)
           ) {
-            console.log(fromA, toA);
-            console.log(fromB, toB);
             isError = true;
           }
         }

@@ -122,6 +122,7 @@ export class TimetableController {
       );
     return {
       status: "created",
+      playersHistory,
     };
   }
 

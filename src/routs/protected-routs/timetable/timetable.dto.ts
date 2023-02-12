@@ -113,6 +113,7 @@ export interface ReservationPlayerDTO {
 
 export interface CreateReservationDTO {
   status: "created";
+  playersHistory: boolean | { playerTwo?: boolean; playerOne?: boolean };
 }
 
 export class TimetableDeleteParam {

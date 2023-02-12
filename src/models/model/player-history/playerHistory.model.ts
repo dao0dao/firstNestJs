@@ -50,9 +50,9 @@ export class PlayerHistory extends Model {
   cashier: string;
 }
 
-export interface History {
+export interface CreateTimetableHistory {
   id?: number;
-  timetable_id?: number;
+  timetable_id: number;
   player_id: string;
   player_position?: number;
   service_date: string;
@@ -64,9 +64,6 @@ export interface History {
   cashier?: string;
 }
 
-export interface PaidHistory {
+export interface UpdateHistory extends CreateTimetableHistory {
   id: number;
-  payment_method: string;
-  payment_date: string;
-  cashier: string;
 }

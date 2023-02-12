@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { PlayerHistoryModelService } from "src/models/model/player-history/player-history.service";
-import { History } from "src/models/model/player-history/playerHistory.model";
+import { CreateTimetableHistory } from "src/models/model/player-history/playerHistory.model";
 import { PriceList } from "src/models/model/price-list/priceList.model";
 import { Timetable } from "src/models/model/timetable/timetable.model";
 import { timeToNumber } from "src/utils/time";
@@ -35,13 +35,15 @@ export class TimetableHandlePlayerHistoryService {
       const playerPriceList = priceList.find(
         (el) => el.id === players.playerOne.priceListId
       );
-      const history: History = this.createDataForPlayer({
+      const data = {
         player_id: players.playerOne.id,
         player_position: 1,
         playerCount: playerCount,
         priceList: playerPriceList,
         reservation: reservation,
-      });
+      };
+      const history: CreateTimetableHistory =
+        this.createDataForPlayerHistory(data);
       const result = await this.playerHistory.createPlayerHistory(history);
       if (!result) {
         return { playerOne: false };
@@ -51,19 +53,92 @@ export class TimetableHandlePlayerHistoryService {
       const playerPriceList = priceList.find(
         (el) => el.id === players.playerTwo.priceListId
       );
-      const history: History = this.createDataForPlayer({
+      const data = {
         player_id: players.playerTwo.id,
         player_position: 2,
         playerCount: playerCount,
         priceList: playerPriceList,
         reservation: reservation,
-      });
+      };
+      const history: CreateTimetableHistory =
+        this.createDataForPlayerHistory(data);
       const result = await this.playerHistory.createPlayerHistory(history);
       if (!result) {
         return { playerTwo: false };
       }
     }
     return true;
+  }
+
+  async updatePlayerHistory(
+    reservation: Timetable,
+    priceList: PriceList[],
+    players: {
+      playerOne?: {
+        id: string;
+        priceListId: string;
+      };
+      playerTwo?: {
+        id: string;
+        priceListId: string;
+      };
+    }
+  ) {
+    const playerCount = this.countPlayers(reservation);
+    if (playerCount === 0) {
+      return false;
+    }
+    const playersHistoryTimetable =
+      await this.playerHistory.getAllPlayerHistoryByTimetableId(reservation.id);
+    if (playersHistoryTimetable.length === 0) {
+      //stwórz nową historię
+      return this.createPlayerHistory(reservation, priceList, players);
+    }
+    const { playerOne, playerTwo } = players;
+    if (
+      ((playerOne && !playerTwo) || (!playerOne && playerTwo)) &&
+      1 === playersHistoryTimetable.length
+    ) {
+      // edycja pojedynczego wpisu
+    }
+    if (
+      ((playerOne && !playerTwo) || (!playerOne && playerTwo)) &&
+      2 === playersHistoryTimetable.length
+    ) {
+      // edycja jednego wpisu i usunięcie drugiego
+    }
+    if (playerOne && playerTwo) {
+      // edycja dwóch wpisów albo nadpisanie wierszy
+      const priceList_one = priceList.find(
+        (el) => el.id === players.playerTwo.priceListId
+      );
+      const priceList_two = priceList.find(
+        (el) => el.id === players.playerTwo.priceListId
+      );
+      const data_one = {
+        player_id: players.playerOne.id,
+        player_position: 1,
+        playerCount: playerCount,
+        priceList: priceList_one,
+        reservation: reservation,
+      };
+      const data_two = {
+        player_id: players.playerOne.id,
+        player_position: 1,
+        playerCount: playerCount,
+        priceList: priceList_one,
+        reservation: reservation,
+      };
+      const history_one = this.createDataForPlayerHistory(data_one);
+      const history_two = this.createDataForPlayerHistory(data_two);
+      return this.playerHistory.createTwoPlayerHistoryTimetable(
+        history_one,
+        history_two
+      );
+    }
+    if (!playerOne && !playerTwo) {
+      // usunięcie wpisu lub spisów
+    }
   }
 
   private countPlayers(reservation: Timetable) {
@@ -83,7 +158,7 @@ export class TimetableHandlePlayerHistoryService {
     return playerCount;
   }
 
-  private createDataForPlayer(data: {
+  private createDataForPlayerHistory(data: {
     player_id: string;
     playerCount: number;
     player_position: number;
@@ -99,7 +174,7 @@ export class TimetableHandlePlayerHistoryService {
       time_to: data.reservation.time_to,
     });
 
-    const history: History = {
+    const history: CreateTimetableHistory = {
       player_id: data.player_id,
       price: price.toFixed(2),
       is_paid: false,
