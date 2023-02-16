@@ -120,7 +120,14 @@ export class PlayerHistoryModelService {
     );
   }
 
-  removePlayerHistoryTimetable(timetable_id: number, player_position: number) {
+  removeOneTimetablePlayerHistory(
+    timetable_id: number,
+    player_position: number
+  ) {
     return this.history.destroy({ where: { timetable_id, player_position } });
+  }
+
+  removeTwoTimetablePlayerHistory(timetable_id: number) {
+    return this.history.destroy({ where: { timetable_id } });
   }
 }

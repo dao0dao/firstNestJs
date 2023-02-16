@@ -16,7 +16,7 @@ export class PlayerHistory extends Model {
 
   @Column
   @ForeignKey(() => Timetable)
-  timetable_id: string;
+  timetable_id: number;
 
   @Column
   @ForeignKey(() => Player)
