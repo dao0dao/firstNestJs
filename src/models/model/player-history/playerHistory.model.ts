@@ -63,7 +63,3 @@ export interface CreateTimetableHistory {
   payment_date?: string;
   cashier?: string;
 }
-
-export interface UpdateHistory extends CreateTimetableHistory {
-  id: number;
-}

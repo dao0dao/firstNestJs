@@ -156,6 +156,29 @@ export class TimetableController {
         HttpStatus.NOT_ACCEPTABLE
       );
     }
+    const priceList = await this.priceList.getAllPriceList();
+    let playerOne = undefined;
+    let playerTwo = undefined;
+    if (timetable.player_one) {
+      playerOne = {
+        id: timetable.player_one,
+        priceListId: await this.playerService.getPlayerPriceListId(
+          timetable.player_one
+        ),
+      };
+    }
+    if (timetable.player_two) {
+      playerTwo = {
+        id: timetable.player_two,
+        priceListId: await this.playerService.getPlayerPriceListId(
+          timetable.player_two
+        ),
+      };
+    }
+    this.timetableHandleHistory.updatePlayerHistory(timetable, priceList, {
+      playerOne,
+      playerTwo,
+    });
     const allPlayers = await this.playerService.findAllPlayers();
     const reservation = this.timetableHandleData.parseTimetableToReservation(
       timetable,

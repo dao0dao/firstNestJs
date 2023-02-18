@@ -1,9 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { PlayerHistoryModelService } from "src/models/model/player-history/player-history.service";
-import {
-  CreateTimetableHistory,
-  UpdateHistory,
-} from "src/models/model/player-history/playerHistory.model";
+import { CreateTimetableHistory } from "src/models/model/player-history/playerHistory.model";
 import { PriceList } from "src/models/model/price-list/priceList.model";
 import { Timetable } from "src/models/model/timetable/timetable.model";
 import { timeToNumber } from "src/utils/time";
@@ -91,109 +88,8 @@ export class TimetableHandlePlayerHistoryService {
     if (playerCount === 0) {
       return false;
     }
-    const playersHistoryTimetable =
-      await this.playerHistory.getAllPlayerHistoryByTimetableId(reservation.id);
-    if (playersHistoryTimetable.length === 0) {
-      //stwórz nową historię
-      return this.createPlayerHistory(reservation, priceList, players);
-    }
-    const { playerOne, playerTwo } = players;
-    if (
-      ((playerOne && !playerTwo) || (!playerOne && playerTwo)) &&
-      1 === playersHistoryTimetable.length
-    ) {
-      // edycja pojedynczego wpisu
-    }
-    if (
-      ((playerOne && !playerTwo) || (!playerOne && playerTwo)) &&
-      2 === playersHistoryTimetable.length
-    ) {
-      // edycja jednego wpisu i usunięcie drugiego
-      if (!playerTwo) {
-        await this.playerHistory.removeOneTimetablePlayerHistory(
-          reservation.id,
-          2
-        );
-        const priceList_one = priceList.find(
-          (el) => el.id === players.playerOne.priceListId
-        );
-        const data_one = {
-          player_id: players.playerOne.id,
-          player_position: 1,
-          playerCount: playerCount,
-          priceList: priceList_one,
-          reservation: reservation,
-        };
-        const existHistory_one = playersHistoryTimetable.find(
-          (el) => 2 === el.player_position
-        );
-        const history_one: UpdateHistory = Object.assign(
-          this.createDataForPlayerHistory(data_one),
-          { id: existHistory_one.id }
-        );
-        return this.playerHistory.updateOnePlayerTimetableHistory(history_one);
-      }
-      if (!playerOne) {
-        await this.playerHistory.removeOneTimetablePlayerHistory(
-          reservation.id,
-          1
-        );
-        const priceList_two = priceList.find(
-          (el) => el.id === players.playerTwo.priceListId
-        );
-        const data_two = {
-          player_id: players.playerOne.id,
-          player_position: 1,
-          playerCount: playerCount,
-          priceList: priceList_two,
-          reservation: reservation,
-        };
-        const existHistory_two = playersHistoryTimetable.find(
-          (el) => 2 === el.player_position
-        );
-        const history_two: UpdateHistory = Object.assign(
-          this.createDataForPlayerHistory(data_two),
-          { id: existHistory_two.id }
-        );
-        return this.playerHistory.updateOnePlayerTimetableHistory(history_two);
-      }
-    }
-    if (playerOne && playerTwo) {
-      // edycja dwóch wpisów albo nadpisanie wierszy
-      for (const oldHis of playersHistoryTimetable) {
-        await oldHis.destroy();
-      }
-      const priceList_one = priceList.find(
-        (el) => el.id === players.playerOne.priceListId
-      );
-      const priceList_two = priceList.find(
-        (el) => el.id === players.playerTwo.priceListId
-      );
-      const data_one = {
-        player_id: players.playerOne.id,
-        player_position: 1,
-        playerCount: playerCount,
-        priceList: priceList_one,
-        reservation: reservation,
-      };
-      const data_two = {
-        player_id: players.playerOne.id,
-        player_position: 1,
-        playerCount: playerCount,
-        priceList: priceList_two,
-        reservation: reservation,
-      };
-      const history_one = this.createDataForPlayerHistory(data_one);
-      const history_two = this.createDataForPlayerHistory(data_two);
-      return this.playerHistory.createTwoPlayerHistoryTimetable(
-        history_one,
-        history_two
-      );
-    }
-    if (!playerOne && !playerTwo) {
-      // usunięcie wpisu lub spisów
-      this.playerHistory.removeTwoTimetablePlayerHistory(reservation.id);
-    }
+    await this.playerHistory.removeTwoTimetablePlayerHistory(reservation.id);
+    return this.createPlayerHistory(reservation, priceList, players);
   }
 
   private countPlayers(reservation: Timetable) {
