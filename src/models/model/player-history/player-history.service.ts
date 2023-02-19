@@ -38,6 +38,10 @@ export class PlayerHistoryModelService {
     });
   }
 
+  getPlayersHistoryByTimetableId(timetable_id: number) {
+    return this.history.findAll({ where: { timetable_id } });
+  }
+
   removeTwoTimetablePlayerHistory(timetable_id: number) {
     return this.history.destroy({ where: { timetable_id } });
   }

@@ -63,3 +63,14 @@ export interface CreateTimetableHistory {
   payment_date?: string;
   cashier?: string;
 }
+
+export interface TimetableHistoryPlayers {
+  playerOne?: {
+    id: string;
+    priceListId: string;
+  };
+  playerTwo?: {
+    id: string;
+    priceListId: string;
+  };
+}

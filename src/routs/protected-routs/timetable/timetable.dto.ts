@@ -89,7 +89,7 @@ export interface OutputReservationDTO {
     date: string;
     timeFrom: string;
     timeTo: string;
-    court: string;
+    court: number;
     playerOne: ReservationPlayerDTO | undefined;
     playerTwo: ReservationPlayerDTO | undefined;
     guestOne: string;

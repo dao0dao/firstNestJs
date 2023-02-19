@@ -131,7 +131,10 @@ export class TimetableController {
   async updateReservation(
     @Req() req: RequestDTO,
     @Body() body: InputUpdateReservationDTO
-  ): Promise<{ reservation: OutputReservationDTO }> {
+  ): Promise<{
+    reservation: OutputReservationDTO;
+    playersHistory: boolean | { playerTwo?: boolean; playerOne?: boolean };
+  }> {
     const canCreate = this.timetableHandleData.checkCanCreateOrUpdate(
       body.form.date,
       req.ROLE
@@ -175,17 +178,22 @@ export class TimetableController {
         ),
       };
     }
-    this.timetableHandleHistory.updatePlayerHistory(timetable, priceList, {
-      playerOne,
-      playerTwo,
-    });
+    const playersHistory =
+      await this.timetableHandleHistory.updatePlayerHistoryTimetable(
+        timetable,
+        priceList,
+        {
+          playerOne,
+          playerTwo,
+        }
+      );
     const allPlayers = await this.playerService.findAllPlayers();
     const reservation = this.timetableHandleData.parseTimetableToReservation(
       timetable,
       allPlayers,
       req.ROLE
     );
-    return { reservation: reservation };
+    return { reservation: reservation, playersHistory };
   }
 
   @Delete("reservation/delete/:id")

@@ -18,7 +18,7 @@ export class Timetable extends Model {
   time_to: string;
 
   @Column
-  court: string;
+  court: number;
 
   @Column
   player_one: string;
