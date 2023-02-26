@@ -12,6 +12,7 @@ import {
   Min,
   Max,
 } from "class-validator";
+import { PlayerHistory } from "src/models/model/player-history/playerHistory.model";
 
 class Form {
   @IsString()
@@ -116,7 +117,55 @@ export interface CreateReservationDTO {
   playersHistory: boolean | { playerTwo?: boolean; playerOne?: boolean };
 }
 
-export class TimetableDeleteParam {
+export class TimetableIdParam {
   @Matches(/\d/)
   id: number;
+}
+
+export interface PlayerHistoryPrice {
+  is_paid: boolean;
+  player_position: number;
+  price: number;
+  player: {
+    id: string;
+    name: string;
+    surname: string;
+  };
+}
+
+export interface OutputReservationPrice {
+  prices: PlayerHistoryPrice[];
+}
+
+export class PlayerPayment {
+  @IsOptional()
+  @IsUUID()
+  id: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(50)
+  name: string;
+
+  @IsString()
+  @Matches(/payment|cash|transfer|debet/)
+  method: "payment" | "cash" | "transfer" | "debet";
+
+  @IsNumber()
+  value: number;
+}
+
+export class InputReservationPayment {
+  @IsNumber()
+  reservationId: number;
+
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => PlayerPayment)
+  playerOne?: PlayerPayment;
+
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => PlayerPayment)
+  playerTwo?: PlayerPayment;
 }

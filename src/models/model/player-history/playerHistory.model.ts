@@ -26,7 +26,7 @@ export class PlayerHistory extends Model {
   player: Player;
 
   @Column(DataType.DECIMAL(1, 0))
-  player_position: number;
+  player_position: string;
 
   @Column(DataType.DATEONLY)
   service_date: string;

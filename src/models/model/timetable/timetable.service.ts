@@ -6,20 +6,20 @@ import { Timetable } from "./timetable.model";
 @Injectable()
 export class TimetableService {
   constructor(
-    @InjectModel(Timetable) private timetableMode: typeof Timetable
+    @InjectModel(Timetable) private timetableModel: typeof Timetable
   ) {}
 
   findAllReservationByDate(date: string) {
-    return this.timetableMode.findAll({ where: { date } });
+    return this.timetableModel.findAll({ where: { date } });
   }
 
   private findOneReservationById(id: number) {
-    return this.timetableMode.findOne({ where: { id } });
+    return this.timetableModel.findOne({ where: { id } });
   }
 
   addReservation(data: InputReservationDTO, hourCount: number) {
     const { form, layer } = data;
-    return this.timetableMode.create({
+    return this.timetableModel.create({
       date: form.date,
       layer: layer,
       time_from: form.timeFrom,
@@ -73,6 +73,34 @@ export class TimetableService {
   }
 
   deleteReservationById(id: number) {
-    return this.timetableMode.destroy({ where: { id } });
+    return this.timetableModel.destroy({ where: { id } });
+  }
+
+  async setReservationPayedForPlayerOne(reservation_id) {
+    const reservation = await this.timetableModel.findOne({
+      where: { id: reservation_id },
+    });
+    reservation.set({ is_player_one_payed: true, is_first_payment: true });
+    return reservation.save();
+  }
+
+  async setReservationPayedForPlayerTwo(reservation_id) {
+    const reservation = await this.timetableModel.findOne({
+      where: { id: reservation_id },
+    });
+    reservation.set({ is_player_two_payed: true, is_first_payment: true });
+    return reservation.save();
+  }
+
+  async setReservationPayedForBothPlayers(reservation_id: number) {
+    const reservation = await this.timetableModel.findOne({
+      where: { id: reservation_id },
+    });
+    reservation.set({
+      is_player_one_payed: true,
+      is_player_two_payed: true,
+      is_first_payment: true,
+    });
+    return reservation.save();
   }
 }

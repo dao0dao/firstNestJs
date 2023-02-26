@@ -22,9 +22,11 @@ import { TimetableHandlePlayerHistoryService } from "./timetable-handle-player-h
 import {
   CreateReservationDTO,
   InputReservationDTO,
+  InputReservationPayment,
   InputUpdateReservationDTO,
   OutputReservationDTO,
-  TimetableDeleteParam,
+  OutputReservationPrice,
+  TimetableIdParam,
   TimetableQuery,
 } from "./timetable.dto";
 
@@ -135,13 +137,13 @@ export class TimetableController {
     reservation: OutputReservationDTO;
     playersHistory: boolean | { playerTwo?: boolean; playerOne?: boolean };
   }> {
-    const canCreate = this.timetableHandleData.checkCanCreateOrUpdate(
+    const canUpdate = this.timetableHandleData.checkCanCreateOrUpdate(
       body.form.date,
       req.ROLE
     );
-    if (!canCreate) {
+    if (!canUpdate) {
       throw new HttpException(
-        { reason: "Brak uprawnień, nie można dodać z datą wsteczną." },
+        { reason: "Brak uprawnień." },
         HttpStatus.NOT_ACCEPTABLE
       );
     }
@@ -198,9 +200,9 @@ export class TimetableController {
 
   @Delete("reservation/delete/:id")
   @Role("login")
-  deleteReservation(
+  async deleteReservation(
     @Req() req: RequestDTO,
-    @Param() param: TimetableDeleteParam
+    @Param() param: TimetableIdParam
   ) {
     const canDelete = this.timetableHandleData.checkCanCreateOrUpdate(
       new Date().toString(),
@@ -212,6 +214,43 @@ export class TimetableController {
         HttpStatus.NOT_ACCEPTABLE
       );
     }
+    await this.timetableHandleHistory.deletePlayerHistoryByTimetableId(
+      param.id
+    );
     return this.timetable.deleteReservationById(param.id);
+  }
+
+  @Get("reservation/price/:id")
+  @Role("login")
+  async getReservationPrice(
+    @Param() param: TimetableIdParam
+  ): Promise<OutputReservationPrice> {
+    const data = await this.timetableHandleHistory.getReservationPrice(
+      param.id
+    );
+    return { prices: data };
+  }
+
+  @Post("reservation/pay")
+  @Role("login")
+  async payForReservations(
+    @Req() req: RequestDTO,
+    @Body() body: InputReservationPayment
+  ) {
+    const result =
+      await this.timetableHandleHistory.payForPlayerHistoryTimetable(req, body);
+    if (result.access_denied) {
+      throw new HttpException(
+        { reason: "Brak uprawnień." },
+        HttpStatus.NOT_ACCEPTABLE
+      );
+    }
+    if (result.wrong_value) {
+      throw new HttpException(
+        { reason: "Brak uprawnień do zmiany kwoty." },
+        HttpStatus.NOT_ACCEPTABLE
+      );
+    }
+    return { updated: true };
   }
 }

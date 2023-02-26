@@ -45,4 +45,36 @@ export class PlayerHistoryModelService {
   removeTwoTimetablePlayerHistory(timetable_id: number) {
     return this.history.destroy({ where: { timetable_id } });
   }
+
+  getPriceFromPlayerHistoryByTimetableId(timetable_id: number) {
+    return this.history.findAll({
+      where: { timetable_id },
+      attributes: ["player_position", "price", "is_paid"],
+      include: [{ model: Player, attributes: ["id", "name", "surname"] }],
+    });
+  }
+
+  async payForPlayerHistoryByTimetableIdAnPosition(
+    timetable_id: number,
+    player_position: number,
+    price: number,
+    payment_method: string,
+    cashier: string,
+    payment_date: string
+  ) {
+    const history = await this.history.findOne({
+      where: { timetable_id, player_position },
+    });
+    if (!history) {
+      return false;
+    }
+    history.set({
+      is_paid: true,
+      price,
+      payment_method,
+      cashier,
+      payment_date,
+    });
+    return history.save();
+  }
 }

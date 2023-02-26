@@ -7,12 +7,18 @@ import {
 } from "src/models/model/player-history/playerHistory.model";
 import { PriceList } from "src/models/model/price-list/priceList.model";
 import { Timetable } from "src/models/model/timetable/timetable.model";
-import { timeToNumber } from "src/utils/time";
+import { TimetableService } from "src/models/model/timetable/timetable.service";
+import { RequestDTO } from "src/request.dto";
+import { timeToNumber, todaySQLDate } from "src/utils/time";
 import { HoursDTO } from "../price-list/price-list.dto";
+import { InputReservationPayment, PlayerHistoryPrice } from "./timetable.dto";
 
 @Injectable()
 export class TimetableHandlePlayerHistoryService {
-  constructor(private playerHistory: PlayerHistoryModelService) {}
+  constructor(
+    private playerHistory: PlayerHistoryModelService,
+    private timetableModel: TimetableService
+  ) {}
 
   async createPlayerHistory(
     reservation: Timetable,
@@ -73,8 +79,10 @@ export class TimetableHandlePlayerHistoryService {
     priceList: PriceList[],
     players: TimetableHistoryPlayers
   ) {
+    const history = await this.playerHistory.getPlayersHistoryByTimetableId(
+      reservation.id
+    );
     if (3 === reservation.court) {
-      //jeśli lista rezerwowych usuń historię
       await this.playerHistory.removeTwoTimetablePlayerHistory(reservation.id);
       return true;
     }
@@ -82,9 +90,6 @@ export class TimetableHandlePlayerHistoryService {
     if (playerNumber === 0) {
       return false;
     }
-    const history = await this.playerHistory.getPlayersHistoryByTimetableId(
-      reservation.id
-    );
     if (0 === history.length) {
       //stwórz nową historię jeśli jej brak
       return this.createPlayerHistory(reservation, priceList, players);
@@ -113,7 +118,7 @@ export class TimetableHandlePlayerHistoryService {
         (el) => playerTwo.id === el.player_id
       );
       if (!player_history) {
-        new_Players.playerTwo = playerOne;
+        new_Players.playerTwo = playerTwo;
       }
     }
     const history_to_delete: PlayerHistory[] = history.filter(
@@ -157,6 +162,113 @@ export class TimetableHandlePlayerHistoryService {
       //jeśli jest nowy wpis- stwórz
       return this.createPlayerHistory(reservation, priceList, new_Players);
     }
+  }
+
+  deletePlayerHistoryByTimetableId(timetable_id: number) {
+    return this.playerHistory.removeTwoTimetablePlayerHistory(timetable_id);
+  }
+
+  async payForPlayerHistoryTimetable(
+    req: RequestDTO,
+    data: InputReservationPayment
+  ) {
+    const history = await this.playerHistory.getPlayersHistoryByTimetableId(
+      data.reservationId
+    );
+    if (0 === history.length) {
+      await this.timetableModel.setReservationPayedForBothPlayers(
+        data.reservationId
+      );
+      return { updated: true };
+    }
+    if (!this.checkCanPayForReservation(req.ROLE, history)) {
+      return { access_denied: true };
+    }
+    if (!this.checkCanChangePrice(req.ROLE, data, history)) {
+      return { wrong_value: true };
+    }
+    const { reservationId, playerOne, playerTwo } = data;
+    const date = new Date();
+    if (!playerOne?.id && playerOne?.name) {
+      await this.timetableModel.setReservationPayedForPlayerOne(reservationId);
+    }
+    if (playerOne?.id && playerOne.name) {
+      await this.playerHistory.payForPlayerHistoryByTimetableIdAnPosition(
+        reservationId,
+        1,
+        playerOne.value,
+        data.playerOne.method,
+        req.ADMIN_NAME,
+        todaySQLDate()
+      );
+      await this.timetableModel.setReservationPayedForPlayerOne(reservationId);
+    }
+    if (!playerTwo?.id && playerTwo.name) {
+      await this.timetableModel.setReservationPayedForPlayerTwo(reservationId);
+    }
+    if (playerTwo?.id && playerTwo.name) {
+      await this.playerHistory.payForPlayerHistoryByTimetableIdAnPosition(
+        reservationId,
+        2,
+        playerTwo.value,
+        data.playerOne.method,
+        req.ADMIN_NAME,
+        todaySQLDate()
+      );
+      await this.timetableModel.setReservationPayedForPlayerTwo(reservationId);
+    }
+    return { updated: true };
+  }
+
+  //  HELPERS
+
+  private checkCanChangePrice(
+    role: RequestDTO["ROLE"],
+    data: InputReservationPayment,
+    history: PlayerHistory[]
+  ) {
+    if ("admin" === role) {
+      return true;
+    }
+    const { playerOne, playerTwo } = data;
+    if (playerOne?.id) {
+      const h = history.find((el) => el.player_id === playerOne.id);
+      if (!h) {
+        return false;
+      }
+      if (parseFloat(h.price) !== playerOne.value) {
+        return false;
+      }
+    }
+    if (playerTwo?.id) {
+      const h = history.find((el) => el.player_id === playerTwo.id);
+      if (!h) {
+        return false;
+      }
+      if (parseFloat(h.price) !== playerTwo.value) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private checkCanPayForReservation(
+    role: RequestDTO["ROLE"],
+    history: PlayerHistory[]
+  ) {
+    if ("admin" === role) {
+      return true;
+    }
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    for (const h of history) {
+      const date = new Date(h.service_date);
+      date.setHours(0, 0, 0, 0);
+      if (today > date) {
+        return false;
+      }
+    }
+    return true;
   }
 
   private countPlayers(reservation: Timetable) {
@@ -283,5 +395,22 @@ export class TimetableHandlePlayerHistoryService {
       (parseFloat(data.priceList.default_Price) * data.hourCount) /
       data.playerCount;
     return price;
+  }
+
+  async getReservationPrice(reservation_id: number) {
+    const data: PlayerHistoryPrice[] = [];
+    const history =
+      await this.playerHistory.getPriceFromPlayerHistoryByTimetableId(
+        reservation_id
+      );
+    for (const h of history) {
+      data.push({
+        is_paid: h.is_paid,
+        player: h.player,
+        player_position: parseInt(h.player_position),
+        price: parseFloat(h.price),
+      });
+    }
+    return data;
   }
 }

@@ -25,3 +25,14 @@ export function countFromToTime(timeFrom: string, timeTo: string) {
 
   return timeEndNumber - timeStart;
 }
+
+export function todaySQLDate() {
+  const date = new Date();
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  let day: string | number = date.getDate();
+  if (day < 9) {
+    day = "0" + day;
+  }
+  return year + "-" + month + "-" + day;
+}
