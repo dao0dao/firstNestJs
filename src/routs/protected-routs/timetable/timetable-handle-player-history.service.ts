@@ -167,7 +167,18 @@ export class TimetableHandlePlayerHistoryService {
     }
   }
 
-  deletePlayerHistoryByTimetableId(timetable_id: number) {
+  async deletePlayerHistoryByTimetableId(timetable_id: number) {
+    const history = await this.playerHistory.getPlayersHistoryByTimetableId(
+      timetable_id
+    );
+    for (const h of history) {
+      if (h.payment_method === "payment") {
+        await this.accountModel.addToPlayerWallet(
+          h.player_id,
+          parseFloat(h.price)
+        );
+      }
+    }
     return this.playerHistory.removeTwoTimetablePlayerHistory(timetable_id);
   }
 

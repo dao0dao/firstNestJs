@@ -41,7 +41,7 @@ export class PlayerHistory extends Model {
   is_paid: boolean;
 
   @Column
-  payment_method: string;
+  payment_method: "payment" | "cash" | "transfer" | "none";
 
   @Column(DataType.DATEONLY)
   payment_date: string;
