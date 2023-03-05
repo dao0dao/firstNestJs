@@ -101,7 +101,7 @@ export class PlayerOutputDTO {
   name: string;
   surname: string;
   telephone: string;
-  account: number;
+  account: string;
   email: string;
   priceListId: string;
   court: number;

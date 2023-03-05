@@ -149,6 +149,11 @@ export class PlayerPayment {
 
   @IsString()
   @Matches(/payment|cash|transfer|none/)
+  /** payment- przelew
+   *  chash- gotówka
+   *  transfer- pobranie z wirtualnego konta
+   *  none- brak wpłaty
+   */
   method: "payment" | "cash" | "transfer" | "none";
 
   @IsNumber()

@@ -1,4 +1,5 @@
 import { Injectable } from "@nestjs/common";
+import { PlayerAccountService } from "src/models/model/player-account/player-account.service";
 import { PlayerHistoryModelService } from "src/models/model/player-history/player-history.service";
 import {
   CreateTimetableHistory,
@@ -18,7 +19,8 @@ export class TimetableHandlePlayerHistoryService {
   constructor(
     private playerHistory: PlayerHistoryModelService,
     private timetableModel: TimetableService,
-    private dataFactory: FactoryDataTimetablePlayerHistory
+    private dataFactory: FactoryDataTimetablePlayerHistory,
+    private accountModel: PlayerAccountService
   ) {}
 
   async createPlayerHistory(
@@ -173,6 +175,12 @@ export class TimetableHandlePlayerHistoryService {
     req: RequestDTO,
     data: InputReservationPayment
   ) {
+    const result = {
+      updated: false,
+      access_denied: false,
+      wrong_value: false,
+      no_wallet: false,
+    };
     const history = await this.playerHistory.getPlayersHistoryByTimetableId(
       data.reservationId
     );
@@ -180,24 +188,36 @@ export class TimetableHandlePlayerHistoryService {
       await this.timetableModel.setReservationPayedForBothPlayers(
         data.reservationId
       );
-      return { updated: true };
+      result.updated = true;
+      return result;
     }
     if (!this.dataFactory.checkCanPayForReservation(req.ROLE, history)) {
-      return { access_denied: true };
+      result.access_denied = true;
+      return result;
     }
     if (!this.dataFactory.checkCanChangePrice(req.ROLE, data, history)) {
-      return { wrong_value: true };
+      result.wrong_value = true;
+      return result;
     }
     const { reservationId, playerOne, playerTwo } = data;
     if (!playerOne?.id && playerOne?.name) {
       await this.timetableModel.setReservationPayedForPlayerOne(reservationId);
     }
-    if (playerOne?.id && playerOne.name && "none" !== data.playerOne.method) {
+    if (playerOne?.id && playerOne.name && "none" !== playerOne.method) {
+      if ("payment" === playerOne.method) {
+        const wallet = await this.accountModel.subtractToPlayerWallet(
+          playerOne.id,
+          playerOne.value
+        );
+        if (!wallet) {
+          result.no_wallet = true;
+        }
+      }
       await this.playerHistory.payForPlayerHistoryByTimetableIdAnPosition(
         reservationId,
         1,
         playerOne.value,
-        data.playerOne.method,
+        playerOne.method,
         req.ADMIN_NAME,
         todaySQLDate()
       );
@@ -207,6 +227,15 @@ export class TimetableHandlePlayerHistoryService {
       await this.timetableModel.setReservationPayedForPlayerTwo(reservationId);
     }
     if (playerTwo?.id && playerTwo.name && "none" !== data.playerTwo.method) {
+      if ("payment" === playerTwo.method) {
+        const wallet = await this.accountModel.subtractToPlayerWallet(
+          playerTwo.id,
+          playerTwo.value
+        );
+        if (!wallet) {
+          result.no_wallet = true;
+        }
+      }
       await this.playerHistory.payForPlayerHistoryByTimetableIdAnPosition(
         reservationId,
         2,
@@ -217,7 +246,8 @@ export class TimetableHandlePlayerHistoryService {
       );
       await this.timetableModel.setReservationPayedForPlayerTwo(reservationId);
     }
-    return { updated: true };
+    result.updated = true;
+    return result;
   }
 
   async getReservationPrice(reservation_id: number) {

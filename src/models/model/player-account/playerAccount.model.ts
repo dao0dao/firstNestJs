@@ -4,6 +4,7 @@ import {
   Column,
   BelongsTo,
   ForeignKey,
+  DataType,
 } from "sequelize-typescript";
 import { Player } from "../player/player.models";
 
@@ -12,8 +13,8 @@ export class PlayerAccount extends Model {
   @Column({ primaryKey: true, autoIncrement: true })
   id: number;
 
-  @Column
-  wallet: number;
+  @Column(DataType.DECIMAL(10, 2))
+  wallet: string;
 
   @ForeignKey(() => Player)
   @Column
