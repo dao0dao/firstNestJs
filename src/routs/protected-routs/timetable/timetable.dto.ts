@@ -12,7 +12,6 @@ import {
   Min,
   Max,
 } from "class-validator";
-import { PlayerHistory } from "src/models/model/player-history/playerHistory.model";
 
 class Form {
   @IsString()
