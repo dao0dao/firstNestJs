@@ -148,8 +148,8 @@ export class PlayerPayment {
   name: string;
 
   @IsString()
-  @Matches(/payment|cash|transfer|debet/)
-  method: "payment" | "cash" | "transfer" | "debet";
+  @Matches(/payment|cash|transfer|none/)
+  method: "payment" | "cash" | "transfer" | "none";
 
   @IsNumber()
   value: number;
