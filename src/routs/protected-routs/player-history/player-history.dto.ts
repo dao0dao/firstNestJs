@@ -1,4 +1,6 @@
-import { IsUUID, Matches } from "class-validator";
+import { IsNumber, IsString, IsUUID, Matches, Min } from "class-validator";
+
+const paymentMethodRegExp = /payment|cash|transfer|debet|game/;
 
 export class PlayerHistoryQuery {
   @IsUUID()
@@ -25,4 +27,22 @@ export interface HistoryOutputDTO {
 export interface PlayerHistoryOutputDTO {
   history: HistoryOutputDTO[];
   totalPrice: number;
+}
+
+export class InputPayForHistory {
+  @IsNumber()
+  @Min(0)
+  id: number;
+
+  @IsString()
+  @Matches(paymentMethodRegExp)
+  payment_method: string;
+
+  @IsString()
+  price: string;
+}
+
+export class PlayerHistoryParam {
+  @IsNumber()
+  id: number;
 }

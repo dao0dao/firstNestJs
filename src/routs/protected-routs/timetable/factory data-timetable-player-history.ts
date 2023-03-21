@@ -1,12 +1,10 @@
 import { Injectable } from "@nestjs/common";
-import { PlayerHistoryModelService } from "src/models/model/player-history/player-history.service";
 import {
   PlayerHistory,
   CreateTimetableHistory,
 } from "src/models/model/player-history/playerHistory.model";
 import { PriceList } from "src/models/model/price-list/priceList.model";
 import { Timetable } from "src/models/model/timetable/timetable.model";
-import { TimetableService } from "src/models/model/timetable/timetable.service";
 import { RequestDTO } from "src/request.dto";
 import { timeToNumber } from "src/utils/time";
 import { HoursDTO } from "../price-list/price-list.dto";
@@ -14,11 +12,6 @@ import { InputReservationPayment } from "./timetable.dto";
 
 @Injectable()
 export class FactoryDataTimetablePlayerHistory {
-  constructor(
-    private historyModel: PlayerHistoryModelService,
-    private timetableModel: TimetableService
-  ) {}
-
   checkCanChangePrice(
     role: RequestDTO["ROLE"],
     data: InputReservationPayment,
