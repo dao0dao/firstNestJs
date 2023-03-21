@@ -63,10 +63,10 @@ export class FactoryDataTimetablePlayerHistory {
 
   countPlayers(reservation: Timetable) {
     let playerCount = 0;
-    if (reservation.player_one !== "") {
+    if (reservation.player_one !== "" && reservation.player_one !== undefined) {
       playerCount++;
     }
-    if (reservation.player_two !== "") {
+    if (reservation.player_two !== "" && reservation.player_two !== undefined) {
       playerCount++;
     }
     if (reservation.guest_one !== "") {

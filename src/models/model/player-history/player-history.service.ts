@@ -78,7 +78,7 @@ export class PlayerHistoryModelService {
     return history.save();
   }
 
-  deletePlayerHistoryById(id: number) {
+  deletePlayerHistoryById(id: string) {
     return this.history.destroy({ where: { id } });
   }
 }

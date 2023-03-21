@@ -44,6 +44,6 @@ export class InputPayForHistory {
 }
 
 export class PlayerHistoryParam {
-  @IsNumber()
-  id: number;
+  @IsString()
+  id: string;
 }

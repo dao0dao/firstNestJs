@@ -73,7 +73,22 @@ export class PlayerHistoryController {
 
   @Delete("remove/:id")
   @Role("admin")
-  deleteHistory(@Param() param: PlayerHistoryParam) {
-    return this.playerHistoryModel.deletePlayerHistoryById(param.id);
+  async deleteHistory(@Param() param: PlayerHistoryParam) {
+    const history = await this.playerHistoryModel.getPlayerHistoryById(
+      parseInt(param.id)
+    );
+    if (!history) {
+      throw new HttpException(
+        { reason: "Brak wpisu" },
+        HttpStatus.NOT_ACCEPTABLE
+      );
+    }
+    if (history.payment_method === "payment") {
+      await this.accountModel.addToPlayerWallet(
+        history.player_id,
+        parseFloat(history.price)
+      );
+    }
+    return history.destroy();
   }
 }
