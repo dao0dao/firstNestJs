@@ -1,4 +1,5 @@
 import { Injectable } from "@nestjs/common";
+import { PlayerAccountService } from "src/models/model/player-account/player-account.service";
 import { PlayerHistoryModelService } from "src/models/model/player-history/player-history.service";
 import { PlayerHistory } from "src/models/model/player-history/playerHistory.model";
 import { TimetableService } from "src/models/model/timetable/timetable.service";
@@ -10,7 +11,8 @@ import { HistoryOutputDTO, InputPayForHistory } from "./player-history.dto";
 export class PlayerHistoryHandleDataService {
   constructor(
     private historyModel: PlayerHistoryModelService,
-    private timetableModel: TimetableService
+    private timetableModel: TimetableService,
+    private accountModel: PlayerAccountService
   ) {}
   parsePlayerHistoryToDTO(data: PlayerHistory[]) {
     let totalPrice = 0;
@@ -63,6 +65,12 @@ export class PlayerHistoryHandleDataService {
           history.timetable_id
         );
       }
+    }
+    if (data.payment_method === "payment") {
+      await this.accountModel.subtractToPlayerWallet(
+        history.player_id,
+        parseFloat(data.price)
+      );
     }
     if (data.price) {
       history.set({
