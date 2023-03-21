@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { PlayerAccountService } from "src/models/model/player-account/player-account.service";
+import { PlayerAccount } from "src/models/model/player-account/playerAccount.model";
 import { PlayerHistoryModelService } from "src/models/model/player-history/player-history.service";
 import { PlayerHistory } from "src/models/model/player-history/playerHistory.model";
 import { TimetableService } from "src/models/model/timetable/timetable.service";
@@ -14,7 +15,7 @@ export class PlayerHistoryHandleDataService {
     private timetableModel: TimetableService,
     private accountModel: PlayerAccountService
   ) {}
-  parsePlayerHistoryToDTO(data: PlayerHistory[]) {
+  parsePlayerHistoryToDTO(data: PlayerHistory[], playerBlance: PlayerAccount) {
     let totalPrice = 0;
     const history: HistoryOutputDTO[] = [];
     for (const el of data) {
@@ -35,6 +36,7 @@ export class PlayerHistoryHandleDataService {
     return {
       history,
       totalPrice,
+      balance: playerBlance?.wallet,
     };
   }
 

@@ -11,6 +11,7 @@ import {
   Param,
 } from "@nestjs/common";
 import { Role } from "src/guards/roles.decorators";
+import { PlayerAccountService } from "src/models/model/player-account/player-account.service";
 import { PlayerHistoryModelService } from "src/models/model/player-history/player-history.service";
 import { RequestDTO } from "src/request.dto";
 import { PlayerHistoryHandleDataService } from "./player-history-handle-data.service";
@@ -25,7 +26,8 @@ import {
 export class PlayerHistoryController {
   constructor(
     private playerHistoryModel: PlayerHistoryModelService,
-    private handleData: PlayerHistoryHandleDataService
+    private handleData: PlayerHistoryHandleDataService,
+    private accountModel: PlayerAccountService
   ) {}
 
   @Get()
@@ -37,8 +39,9 @@ export class PlayerHistoryController {
       dateTo,
       dateFrom
     );
+    const playerBalance = await this.accountModel.getPlayerWalletById(playerId);
     const data: PlayerHistoryOutputDTO =
-      this.handleData.parsePlayerHistoryToDTO(history);
+      this.handleData.parsePlayerHistoryToDTO(history, playerBalance);
     return data;
   }
 

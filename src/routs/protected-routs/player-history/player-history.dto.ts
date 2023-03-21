@@ -27,6 +27,7 @@ export interface HistoryOutputDTO {
 export interface PlayerHistoryOutputDTO {
   history: HistoryOutputDTO[];
   totalPrice: number;
+  balance: string;
 }
 
 export class InputPayForHistory {
