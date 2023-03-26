@@ -7,6 +7,7 @@ import { PlayerHistoryModule } from "./player-history/player-history.module";
 import { PlayerModule } from "./player/player.module";
 import { PriceListModule } from "./price-list/price-list.module";
 import { TimetableModule } from "./timetable/timetable.module";
+import { DebtorModule } from "./debtor/debtor.module";
 
 const routs: RouteTree[] = [
   {
@@ -17,6 +18,7 @@ const routs: RouteTree[] = [
       PriceListModule,
       TimetableModule,
       PlayerHistoryModule,
+      DebtorModule,
     ],
   },
 ];
@@ -30,6 +32,7 @@ const routs: RouteTree[] = [
     PriceListModule,
     TimetableModule,
     PlayerHistoryModule,
+    DebtorModule,
   ],
   exports: [
     AdministratorModule,
@@ -37,7 +40,9 @@ const routs: RouteTree[] = [
     PriceListModule,
     TimetableModule,
     PlayerHistoryModule,
+    DebtorModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: AuthGuard }],
+  controllers: [],
 })
 export class ProtectedRoutsModule {}
