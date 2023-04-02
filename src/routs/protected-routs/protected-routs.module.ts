@@ -8,7 +8,7 @@ import { PlayerModule } from "./player/player.module";
 import { PriceListModule } from "./price-list/price-list.module";
 import { TimetableModule } from "./timetable/timetable.module";
 import { DebtorModule } from "./debtor/debtor.module";
-import { ServicesModule } from "./services/services.module";
+import { TennisServicesModule } from "./tennis-services/tennis.services.module";
 
 const routs: RouteTree[] = [
   {
@@ -20,7 +20,7 @@ const routs: RouteTree[] = [
       TimetableModule,
       PlayerHistoryModule,
       DebtorModule,
-      ServicesModule,
+      TennisServicesModule,
     ],
   },
 ];
@@ -35,7 +35,7 @@ const routs: RouteTree[] = [
     TimetableModule,
     PlayerHistoryModule,
     DebtorModule,
-    ServicesModule,
+    TennisServicesModule,
   ],
   exports: [
     AdministratorModule,

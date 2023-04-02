@@ -1,7 +1,8 @@
 import { Model } from "sequelize";
-import { Column, DataType } from "sequelize-typescript";
+import { Column, DataType, Table } from "sequelize-typescript";
 
-export class Service extends Model {
+@Table({ freezeTableName: true, tableName: "services" })
+export class TennisServiceModel extends Model {
   @Column({ primaryKey: true, autoIncrement: true })
   id: number;
 
