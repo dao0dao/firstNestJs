@@ -6,8 +6,9 @@ import { PlayerAccount } from "./model/player-account/playerAccount.model";
 import { PriceList } from "./model/price-list/priceList.model";
 import { Sessions } from "./model/session.model";
 import { Timetable } from "./model/timetable/timetable.model";
+import { TennisService } from "./model/tennis-service/tennis.service.model";
 
-export const modelsForRoot = [
+export const mysqlTables = [
   Administrator,
   Sessions,
   Player,
@@ -16,4 +17,5 @@ export const modelsForRoot = [
   PriceList,
   Timetable,
   PlayerHistory,
+  TennisService,
 ];

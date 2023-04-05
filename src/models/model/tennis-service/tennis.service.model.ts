@@ -1,14 +1,13 @@
-import { Model } from "sequelize";
-import { Column, DataType, Table } from "sequelize-typescript";
+import { Table, Model, Column } from "sequelize-typescript";
 
-@Table({ freezeTableName: true, tableName: "services" })
-export class TennisServiceModel extends Model {
+@Table({ modelName: "services", freezeTableName: true })
+export class TennisService extends Model {
   @Column({ primaryKey: true, autoIncrement: true })
   id: number;
 
   @Column
   name: string;
 
-  @Column(DataType.DECIMAL(10, 2))
+  @Column
   price: string;
 }

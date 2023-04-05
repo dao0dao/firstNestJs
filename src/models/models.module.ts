@@ -1,7 +1,7 @@
 import { Module } from "@nestjs/common";
 import { SequelizeModule } from "@nestjs/sequelize";
 import { PlayerHistoryModelService } from "./model/player-history/player-history.service";
-import { modelsForRoot } from "./modelsForRoot";
+import { mysqlTables } from "./mysql-tables";
 import { TimetableService } from "./model/timetable/timetable.service";
 import { PriceListService } from "./model/price-list/price-list.service";
 import { PlayerService } from "./model/player/player.service";
@@ -18,7 +18,7 @@ const models = [
 ];
 
 @Module({
-  imports: [SequelizeModule.forFeature(modelsForRoot)],
+  imports: [SequelizeModule.forFeature(mysqlTables)],
   providers: models,
   exports: models,
 })

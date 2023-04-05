@@ -4,10 +4,11 @@ import {
   IsNumber,
   IsOptional,
   IsString,
+  Matches,
   ValidateNested,
 } from "class-validator";
 
-class Service {
+export class ServiceDTO {
   @IsOptional()
   @IsNumber()
   id: number;
@@ -21,6 +22,13 @@ class Service {
 
 export class ServicesDTO {
   @ValidateNested({ each: true })
-  @Type(() => Service)
-  services: Service[];
+  @Type(() => ServiceDTO)
+  services: ServiceDTO[];
+}
+
+export class ServiceDeleteParam {
+
+  @IsString()
+  @Matches(/\d{1,}/)
+  id: string
 }

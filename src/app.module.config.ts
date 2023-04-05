@@ -2,7 +2,7 @@ import { ConfigModule } from "@nestjs/config";
 import { ServeStaticModule } from "@nestjs/serve-static";
 import { StaticModuleForRoot } from "./utils/staticFiles";
 import { SequelizeModule } from "@nestjs/sequelize";
-import { modelsForRoot } from "./models/modelsForRoot";
+import { mysqlTables } from "./models/mysql-tables";
 
 export const envConfig = ConfigModule.forRoot();
 export const staticFolder = ServeStaticModule.forRoot(StaticModuleForRoot);
@@ -13,7 +13,7 @@ export const sequelizeIntegration = SequelizeModule.forRoot({
   username: process.env.DATABASE_username,
   password: process.env.DATABASE_password,
   database: process.env.DATABASE_database,
-  models: modelsForRoot,
+  models: mysqlTables,
   define: {
     timestamps: false,
   },
