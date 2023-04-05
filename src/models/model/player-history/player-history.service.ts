@@ -34,7 +34,9 @@ export class PlayerHistoryModelService {
       service_date: data.service_date,
       service_name: data.service_name,
       price: data.price,
-      is_paid: false,
+      is_paid: data.is_paid ? data.is_paid : false,
+      payment_method: data.payment_method ? data.payment_method : null,
+      cashier: data.cashier ? data.cashier : null,
     });
   }
 

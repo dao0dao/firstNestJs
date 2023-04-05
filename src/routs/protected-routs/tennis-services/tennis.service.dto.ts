@@ -27,8 +27,25 @@ export class ServicesDTO {
 }
 
 export class ServiceDeleteParam {
-
   @IsString()
   @Matches(/\d{1,}/)
-  id: string
+  id: string;
+}
+
+export class ServicePaymentDTO {
+  @IsString()
+  id: string;
+
+  @IsString()
+  name: string;
+
+  @IsString()
+  @Matches(/payment|cash|transfer|none|debet|charge/)
+  paymentMethod: "payment" | "cash" | "transfer" | "none" | "charge" | "debet";
+
+  @IsString()
+  serviceName: string;
+
+  @IsNumber()
+  value: number;
 }

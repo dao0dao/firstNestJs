@@ -1,10 +1,18 @@
 import { Injectable } from "@nestjs/common";
 import { TennisServiceResolver } from "src/models/model/tennis-service/tennis.resolver.service";
-import { ServiceDTO } from "./tennis.service.dto";
+import { ServiceDTO, ServicePaymentDTO } from "./tennis.service.dto";
+import { PlayerAccountService } from "src/models/model/player-account/player-account.service";
+import { PlayerHistoryModelService } from "src/models/model/player-history/player-history.service";
+import { todaySQLDate } from "src/utils/time";
+import { RequestDTO } from "src/request.dto";
 
 @Injectable()
 export class TennisService {
-  constructor(private serviceModel: TennisServiceResolver) {}
+  constructor(
+    private serviceModel: TennisServiceResolver,
+    private playerAccount: PlayerAccountService,
+    private playerHistory: PlayerHistoryModelService
+  ) {}
   async getAllServices() {
     const services = [];
     const data = await this.serviceModel.getAllServices();
@@ -21,5 +29,70 @@ export class TennisService {
 
   deleteServiceById(id: number) {
     return this.serviceModel.deleteServiceById(id);
+  }
+
+  async handleService(
+    data: ServicePaymentDTO,
+    cashier: RequestDTO["ADMIN_NAME"]
+  ) {
+    const errors = {
+      accountChargeFail: false,
+      createHistoryFail: false,
+      accountSubtractFail: false,
+    };
+    if ("charge" === data.paymentMethod) {
+      const result = await this.playerAccount.addToPlayerWallet(
+        data.id,
+        data.value
+      );
+      if (!result) {
+        errors.accountChargeFail = true;
+        return errors;
+      }
+      return true;
+    } else if (
+      "payment" === data.paymentMethod ||
+      "transfer" === data.paymentMethod
+    ) {
+      const history = await this.playerHistory.createPlayerHistory({
+        is_paid: true,
+        player_id: data.id,
+        price: data.value.toString(),
+        service_name: data.serviceName,
+        timetable_id: null,
+        service_date: todaySQLDate(),
+        payment_method: data.paymentMethod,
+        cashier,
+      });
+      if (!history) {
+        errors.createHistoryFail = true;
+        return errors;
+      }
+      if ("payment" === data.paymentMethod) {
+        const result = await this.playerAccount.subtractToPlayerWallet(
+          data.id,
+          data.value
+        );
+        if (!result) {
+          errors.accountSubtractFail = true;
+          return errors;
+        }
+      }
+    } else if ("debet" === data.paymentMethod) {
+      const history = await this.playerHistory.createPlayerHistory({
+        is_paid: false,
+        player_id: data.id,
+        price: data.value.toString(),
+        service_name: data.serviceName,
+        timetable_id: null,
+        service_date: todaySQLDate(),
+        cashier,
+      });
+      if (!history) {
+        errors.createHistoryFail = true;
+        return errors;
+      }
+    }
+    return true;
   }
 }

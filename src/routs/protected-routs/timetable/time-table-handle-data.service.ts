@@ -7,17 +7,17 @@ import { OutputReservationDTO, ReservationPlayerDTO } from "./timetable.dto";
 export class TimeTableHandleDataService {
   private setReservationPlayer(allPlayers: Player[], playerId: string) {
     const player = allPlayers.find((pl) => pl.id === playerId);
-    if (!player && playerId === "") {
+    if (!player) {
       return undefined;
     }
-    if (!player) {
-      return {
-        id: playerId,
-        name: "",
-        surname: "[gracz usunięty]",
-        telephone: "",
-      };
-    }
+    // if (!player) {
+    //   return {
+    //     id: playerId,
+    //     name: "",
+    //     surname: "",
+    //     telephone: "",
+    //   };
+    // }
     const reservationPlayer: ReservationPlayerDTO = {
       id: player.id,
       name: player.name,

@@ -1,6 +1,6 @@
 import { IsNumber, IsString, IsUUID, Matches, Min } from "class-validator";
 
-const paymentMethodRegExp = /payment|cash|transfer/;
+const paymentMethodRegExp = /payment|cash|transfer|debet|charge/;
 
 export class PlayerHistoryQuery {
   @IsUUID()
