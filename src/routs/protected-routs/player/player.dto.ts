@@ -14,7 +14,6 @@ import {
   Min,
 } from "class-validator";
 import { Week } from "src/models/model/player/player.models";
-import { PriceList } from "src/models/model/price-list/priceList.model";
 
 interface OpponentId {
   id: string;
