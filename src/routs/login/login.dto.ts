@@ -1,8 +1,13 @@
-import { IsString } from "class-validator";
+import { IsString, MaxLength } from "class-validator";
 
 export class LoginInputDTO {
-  @IsString() nick: string;
-  @IsString() password: string;
+  @IsString()
+  @MaxLength(15)
+  nick: string;
+
+  @IsString()
+  @MaxLength(15)
+  password: string;
 }
 
 export class LoginResponse {

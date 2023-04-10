@@ -12,12 +12,12 @@ export class AdministratorDTO {
   id: string;
 
   @IsString()
-  @MaxLength(10)
+  @MaxLength(15)
   @MinLength(2)
   name: string;
 
   @IsString()
-  @MaxLength(10)
+  @MaxLength(15)
   @MinLength(2)
   login: string;
 

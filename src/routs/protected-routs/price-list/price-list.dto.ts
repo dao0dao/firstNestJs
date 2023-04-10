@@ -1,4 +1,11 @@
-import { IsNumber, IsOptional, IsString, IsUUID } from "class-validator";
+import {
+  IsNumber,
+  IsOptional,
+  IsPositive,
+  IsString,
+  IsUUID,
+  MaxLength,
+} from "class-validator";
 
 export interface Hours {
   [key: number]: HoursDTO;
@@ -10,9 +17,11 @@ export class PriceListDTO {
   id: string;
 
   @IsString()
+  @MaxLength(150)
   name: string;
 
   @IsNumber()
+  @IsPositive()
   defaultPrice: number;
 
   hours: Hours;

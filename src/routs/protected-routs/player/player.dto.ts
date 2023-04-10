@@ -10,6 +10,8 @@ import {
   IsArray,
   ValidateNested,
   IsOptional,
+  Max,
+  Min,
 } from "class-validator";
 import { Week } from "src/models/model/player/player.models";
 import { PriceList } from "src/models/model/price-list/priceList.model";
@@ -49,9 +51,11 @@ export class PlayerInputDTO {
   @IsOptional()
   @ValidateIf((c) => c.priceListId != "")
   @IsUUID()
-  priceListId?: PriceList;
+  priceListId?: string;
 
   @IsNumber()
+  @Min(1)
+  @Max(3)
   court: number;
 
   @ValidateIf((c) => c.stringsName != "")

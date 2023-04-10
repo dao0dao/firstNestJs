@@ -5,7 +5,10 @@ import {
   IsOptional,
   IsString,
   Matches,
+  MaxLength,
   ValidateNested,
+  Min,
+  IsUUID,
 } from "class-validator";
 
 export class ServiceDTO {
@@ -14,9 +17,11 @@ export class ServiceDTO {
   id: number;
 
   @IsString()
+  @MaxLength(50)
   name: string;
 
   @IsNumber()
+  @Min(0)
   price: number;
 }
 
@@ -33,10 +38,11 @@ export class ServiceDeleteParam {
 }
 
 export class ServicePaymentDTO {
-  @IsString()
+  @IsUUID()
   id: string;
 
   @IsString()
+  @MaxLength(200)
   name: string;
 
   @IsString()
@@ -44,6 +50,7 @@ export class ServicePaymentDTO {
   paymentMethod: "payment" | "cash" | "transfer" | "none" | "charge" | "debet";
 
   @IsString()
+  @MaxLength(50)
   serviceName: string;
 
   @IsNumber()
