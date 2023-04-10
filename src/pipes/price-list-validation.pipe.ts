@@ -18,7 +18,9 @@ export class PriceListValidationPipe implements PipeTransform {
         constraints: { 0: "wrong hours fields" },
         value: isCorrect.value,
       } as ValidationError;
-      writeErrorToLog([err]);
+      if (process.env.MODE === "dev") {
+        writeErrorToLog([err]);
+      }
       throw new BadRequestException("Validation failed");
     }
     return body;
