@@ -2,8 +2,8 @@ const path = require('path');
 require('dotenv').config();
 
 module.exports = {
-  'config': path.resolve('dist','src','sequelize', 'config.js'),
-  'models-path': path.resolve('dist', 'src', 'models'),
-  'seeders-path': path.resolve('dist', 'src', 'sequelize' ,'seeders'),
-  'migrations-path': path.resolve('dist', 'src', 'sequelize' ,'migrations')
+  'config': path.resolve('dist','sequelize', 'config.js'),
+  'models-path': path.resolve('dist', 'models'),
+  'seeders-path': path.resolve('dist', 'sequelize' ,'seeders'),
+  'migrations-path': path.resolve('dist', 'sequelize' ,'migrations')
 }

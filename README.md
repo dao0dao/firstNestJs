@@ -19,5 +19,5 @@ PORT={number of port in which server should run}
 ```
 ## Set up project
 1. `npm install`
-2. `npm run set_project`
-3. `npm run set_project:start-dev` for local serve
+2. `npm run set_project` (set project) or `npm run set_project:start-dev` (set project and start local server)
+3. `npm run start:dev` if you have set project

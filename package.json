@@ -21,10 +21,10 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "set_project": "npm run build && node dist/createDatabase.js && npm run migration:migrate && npm run seeder:seed",
     "set_project:start-dev": "npm run set_project && npm run start:dev",
-    "migration:create": "npx sequelize-cli migration:create  --migrations-path ./src/sequelize/migrations --name",
+    "migration:create": "npx sequelize-cli migration:create  --migrations-path ./sequelize/migrations --name",
     "migration:migrate": "npx sequelize-cli db:migrate",
     "migration:back": "npx sequelize-cli db:migrate:undo --name",
-    "seeder:create": "npx sequelize-cli seed:create --seeders-path ./src/sequelize/seeders --name",
+    "seeder:create": "npx sequelize-cli seed:create --seeders-path ./sequelize/seeders --name",
     "seeder:seed": "npx sequelize-cli db:seed:all"
   },
   "dependencies": {

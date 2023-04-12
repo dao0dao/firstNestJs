@@ -2,7 +2,7 @@ import { QueryInterface } from "sequelize";
 import { DataType } from "sequelize-typescript";
 
 module.exports = {
-  async up(queryInterface: QueryInterface) {
+  async up(queryInterface: QueryInterface, Sequelize) {
     return queryInterface.createTable("sessions", {
       id: {
         autoIncrement: true,
