@@ -7,7 +7,7 @@ import {
 } from "sequelize-typescript";
 import { Player } from "./player/player.models";
 
-@Table({ modelName: "opponents" })
+@Table({ modelName: "opponents", freezeTableName: true })
 export class Opponent extends Model {
   @Column({ primaryKey: true, autoIncrement: true, allowNull: true })
   id: number;

@@ -26,7 +26,7 @@ export class PriceListController {
   ) {}
 
   @Get()
-  @Role("admin")
+  @Role("login")
   async getAllPriceLists() {
     const priceListModel = await this.priceList.getAllPriceList();
     const priceList = this.handleData.parsePriceListModelToDTO(priceListModel);

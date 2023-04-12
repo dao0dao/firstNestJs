@@ -1,5 +1,5 @@
 import { Table, Column, Model } from "sequelize-typescript";
-@Table
+@Table({ modelName: "sessions", freezeTableName: true })
 export class Sessions extends Model {
   @Column({ primaryKey: true })
   id: number;

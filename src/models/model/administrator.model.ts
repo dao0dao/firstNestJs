@@ -1,6 +1,6 @@
 import { Table, Column, Model, DataType } from "sequelize-typescript";
 
-@Table
+@Table({ modelName: "administrators", freezeTableName: true })
 export class Administrator extends Model {
   @Column({ primaryKey: true, defaultValue: DataType.UUIDV4 })
   id: string;

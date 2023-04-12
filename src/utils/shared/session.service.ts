@@ -50,13 +50,18 @@ export class SessionsService {
 
   clearOldSessions() {
     const now = Date.now();
-    this.sessionModel.findAll().then((res) => {
-      for (const ses of res) {
-        const expired = new Date(ses.expired_at).getTime();
-        if (now >= expired) {
-          ses.destroy();
+    this.sessionModel
+      .findAll()
+      .then((res) => {
+        for (const ses of res) {
+          const expired = new Date(ses.expired_at).getTime();
+          if (now >= expired) {
+            ses.destroy();
+          }
         }
-      }
-    });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
 }
