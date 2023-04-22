@@ -39,8 +39,11 @@ export class AdministratorService {
       name: data.name,
       login: data.login,
     });
-    if (data.newPassword) {
-      const password = await createPassword(data.newPassword);
+    console.log("===============");
+    console.log(data);
+    console.log("===============");
+    if (data.password) {
+      const password = await createPassword(data.password);
       admin.set({
         password,
       });

@@ -1,7 +1,6 @@
-import { QueryInterface, Sequelize } from "sequelize";
-import { DataType } from "sequelize-typescript";
+import { QueryInterface } from "sequelize";
 module.exports = {
   async up(queryInterface: QueryInterface) {
-    queryInterface.createDatabase("korty");
+    queryInterface.createDatabase(process.env.DATABASE_database);
   },
 };

@@ -55,7 +55,7 @@ export class AdministratorDataHandlerService {
       el.name == data.name ? (errors.name = true) : null;
       el.login == data.login ? (errors.reservedLogin = true) : null;
     }
-    data.password == data.confirmPassword && data.password !== ""
+    data.password == data.confirmPassword && data.password === ""
       ? (errors.confirmNewPassword = true)
       : null;
     return errors;
