@@ -21,43 +21,43 @@ export class AuthGuard implements CanActivate {
   ) {}
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const req: RequestDTO = context.switchToHttp().getRequest();
-    const role: string | string[] = this.reflector.get<string[]>(
+    const requestRole: string | string[] = this.reflector.get<string[]>(
       "role",
       context.getHandler()
     );
-    if (!role) {
+    if (!requestRole) {
       return true;
     }
     const session_id: string = req.cookies.key;
     if (!session_id) {
       throw new UnauthorizedException();
     }
-    const adminModel = await this.sessionService.findAdminIdInSession(
+    const loginUser = await this.sessionService.findLoginUserBySessionId(
       session_id
     );
-    if (!adminModel) {
+    if (!loginUser) {
       const res: Response = context.switchToHttp().getResponse();
       res.clearCookie("key");
       throw new HttpException({ session: "fail" }, HttpStatus.UNAUTHORIZED);
     }
-    const admin = await this.adminService.findAdministratorById(
-      adminModel.administrator_id
+    const registeredUser = await this.adminService.findAdministratorById(
+      loginUser.administrator_id
     );
-    if (!admin) {
+    if (!registeredUser) {
       throw new UnauthorizedException();
     }
-    req.ADMIN_NAME = admin.name;
-    req.ADMIN_ID = admin.id;
+    req.ADMIN_NAME = registeredUser.name;
+    req.ADMIN_ID = registeredUser.id;
 
     const roles = [];
-    if (admin.isAdmin) {
+    if (registeredUser.isAdmin) {
       roles.push("admin", "login");
       req.ROLE = "admin";
     } else {
       roles.push("login");
       req.ROLE = "login";
     }
-    if (roles.includes(role)) {
+    if (roles.includes(requestRole)) {
       return true;
     } else {
       throw new UnauthorizedException();

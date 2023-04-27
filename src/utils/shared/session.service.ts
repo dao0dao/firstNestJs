@@ -33,7 +33,7 @@ export class SessionsService {
     return { key: session.session_id, date };
   }
 
-  findAdminIdInSession(session_id: string) {
+  findLoginUserBySessionId(session_id: string) {
     return this.sessionModel.findOne({ where: { session_id } });
   }
 
