@@ -17,10 +17,12 @@ export class SessionsService {
     name: string
   ): Promise<{ key: string; date: Date }> {
     const rounds = parseInt((Math.random() * 10).toFixed(0));
-    const key = (await bcrypt.hash("MySecret" + name + "key", rounds)).replace(
-      /\.*\$*/g,
-      ""
-    );
+    const key = (
+      await bcrypt.hash(
+        process.env.SESSION_KEY_ONE + name + process.env.SESSION_KEY_TWO,
+        rounds
+      )
+    ).replace(/\.*\$*/g, "");
     const date = new Date(Date.now() + 2 * 3600 * 1000);
     const dateSQL = this.toSqlDate(date);
     const session = await this.sessionModel.create({
