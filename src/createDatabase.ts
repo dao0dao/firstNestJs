@@ -12,7 +12,7 @@ pool.query(
   "CREATE SCHEMA IF NOT EXISTS " + process.env.DATABASE_database,
   (err, res) => {
     if (res) {
-      pool.destroy;
+      pool.destroy();
       process.exit();
     }
   }

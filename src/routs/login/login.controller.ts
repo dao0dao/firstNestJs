@@ -24,13 +24,13 @@ export class LoginController {
     @Res({ passthrough: true }) res: Response,
     @Body() body: LoginInputDTO
   ) {
-    const login = await this.loginService.login(body);
-    if (!login) {
+    const user = await this.loginService.loginUser(body);
+    if (!user) {
       throw new HttpException("UNAUTHORIZED", HttpStatus.UNAUTHORIZED);
     }
     const session = await this.sessionService.createSession(
-      login.user_id,
-      login.user
+      user.user_id,
+      user.user
     );
     res
       .cookie("key", session.key, {
@@ -40,9 +40,9 @@ export class LoginController {
         path: "/",
       })
       .json({
-        isLogin: login.isLogin,
-        isAdmin: login.isAdmin,
-        user: login.user,
+        isLogin: user.isLogin,
+        isAdmin: user.isAdmin,
+        user: user.user,
       });
   }
 
@@ -51,18 +51,18 @@ export class LoginController {
     if (!req.cookies.key) {
       throw new HttpException("UNAUTHORIZED", HttpStatus.UNAUTHORIZED);
     }
-    const adminModel = await this.sessionService.findLoginUserBySessionId(
+    const userSession = await this.sessionService.findLoginUserBySessionId(
       req.cookies.key
     );
-    if (!adminModel) {
+    if (!userSession) {
       throw new HttpException({ session: "fail" }, HttpStatus.UNAUTHORIZED);
     }
-    const admin = await this.loginService.checkIsLogin(
-      adminModel.administrator_id
+    const user = await this.loginService.checkIsLogin(
+      userSession.administrator_id
     );
-    if (!admin) {
+    if (!user) {
       throw new HttpException("UNAUTHORIZED", HttpStatus.UNAUTHORIZED);
     }
-    return admin;
+    return user;
   }
 }

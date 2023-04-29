@@ -10,7 +10,7 @@ export class LoginInputDTO {
   password: string;
 }
 
-export class LoginResponse {
+export interface User {
   isLogin: boolean;
   isAdmin: boolean;
   user: string;

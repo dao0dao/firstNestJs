@@ -149,7 +149,7 @@ export class PlayerService {
     }
   }
 
-  getPlayerPriceListId(player_id: string) {
+  getPlayerPriceListIdByPlayerId(player_id: string) {
     return this.playerModel
       .findOne({
         where: { id: player_id },

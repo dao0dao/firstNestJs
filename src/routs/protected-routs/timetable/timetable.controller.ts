@@ -103,7 +103,7 @@ export class TimetableController {
     if (reservation.player_one) {
       playerOne = {
         id: reservation.player_one,
-        priceListId: await this.playerService.getPlayerPriceListId(
+        priceListId: await this.playerService.getPlayerPriceListIdByPlayerId(
           reservation.player_one
         ),
       };
@@ -111,7 +111,7 @@ export class TimetableController {
     if (reservation.player_two) {
       playerTwo = {
         id: reservation.player_two,
-        priceListId: await this.playerService.getPlayerPriceListId(
+        priceListId: await this.playerService.getPlayerPriceListIdByPlayerId(
           reservation.player_two
         ),
       };
@@ -167,7 +167,7 @@ export class TimetableController {
     if (timetable.player_one) {
       playerOne = {
         id: timetable.player_one,
-        priceListId: await this.playerService.getPlayerPriceListId(
+        priceListId: await this.playerService.getPlayerPriceListIdByPlayerId(
           timetable.player_one
         ),
       };
@@ -175,7 +175,7 @@ export class TimetableController {
     if (timetable.player_two) {
       playerTwo = {
         id: timetable.player_two,
-        priceListId: await this.playerService.getPlayerPriceListId(
+        priceListId: await this.playerService.getPlayerPriceListIdByPlayerId(
           timetable.player_two
         ),
       };
