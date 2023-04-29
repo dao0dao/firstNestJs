@@ -7,7 +7,7 @@ import {
   UnauthorizedException,
 } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
-import { AdministratorService } from "src/routs/protected-routs/administrator/administrator.service";
+import { AdministratorSQLService } from "src/routs/protected-routs/administrator/administrator-sql.service";
 import { RequestDTO } from "src/request.dto";
 import { SessionsService } from "src/utils/shared/session.service";
 import { Response } from "express";
@@ -17,7 +17,7 @@ export class AuthGuard implements CanActivate {
   constructor(
     private reflector: Reflector,
     private sessionService: SessionsService,
-    private adminService: AdministratorService
+    private adminService: AdministratorSQLService
   ) {}
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const req: RequestDTO = context.switchToHttp().getRequest();
@@ -40,7 +40,7 @@ export class AuthGuard implements CanActivate {
       res.clearCookie("key");
       throw new HttpException({ session: "fail" }, HttpStatus.UNAUTHORIZED);
     }
-    const registeredUser = await this.adminService.findAdministratorById(
+    const registeredUser = await this.adminService.findUserById(
       loginUser.administrator_id
     );
     if (!registeredUser) {

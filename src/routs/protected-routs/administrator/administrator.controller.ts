@@ -11,25 +11,25 @@ import {
 } from "@nestjs/common";
 import { Role } from "src/guards/roles.decorators";
 import { RequestDTO } from "src/request.dto";
-import { AdministratorDataHandlerService } from "./administrator-data-handler.service";
+import { AdministratorService } from "./administrator.service";
 import { AdministratorDTO, AdministratorQuery } from "./administrator.dto";
 import {
   AdministratorCreateErrors,
   AdministratorUpdateErrors,
   LoginAdministratorUpdateErrors,
 } from "./administrator.interfaces";
-import { AdministratorService } from "./administrator.service";
+import { AdministratorSQLService } from "./administrator-sql.service";
 
 @Controller("administrator")
 export class AdministratorController {
   constructor(
-    private adminService: AdministratorService,
-    private dataHandler: AdministratorDataHandlerService
+    private adminSQL: AdministratorSQLService,
+    private adminService: AdministratorService
   ) {}
   @Get()
   @Role("login")
-  async getAdminData(@Req() req: RequestDTO) {
-    const admin = await this.adminService.returnAdminNickAndNameByName(
+  async getUserData(@Req() req: RequestDTO) {
+    const admin = await this.adminSQL.returnAdminNickAndNameByName(
       req.ADMIN_NAME
     );
     return admin;
@@ -41,21 +41,20 @@ export class AdministratorController {
     @Req() req: RequestDTO,
     @Body() body: AdministratorDTO
   ) {
-    const allAdmins = await this.adminService.findAllAdministrators();
     const errors: LoginAdministratorUpdateErrors =
-      this.dataHandler.checkCanUpdateLoginAdministrator(
+      await this.adminService.checkCanUpdateLoginAdministrator(
         req.ADMIN_ID,
-        body,
-        allAdmins
+        body
       );
-    if (Object.keys(errors).length > 0) {
+    if (errors.notExist) {
+      throw new HttpException({ notAllowed: true }, HttpStatus.UNAUTHORIZED);
+    } else if (Object.keys(errors).length > 0) {
       throw new HttpException(errors, HttpStatus.BAD_REQUEST);
     }
-    const admin = allAdmins.find((el) => el.id === req.ADMIN_ID);
-    if (!admin) {
-      throw new HttpException({ notAllowed: true }, HttpStatus.UNAUTHORIZED);
-    }
-    const result = await this.adminService.updateAdministrator(body, admin);
+    const result = await this.adminSQL.updateAdministratorById(
+      req.ADMIN_ID,
+      body
+    );
     if (!result) {
       throw new HttpException(
         { readWrite: "fail" },
@@ -67,24 +66,20 @@ export class AdministratorController {
 
   @Get("list")
   @Role("admin")
-  async getAdministratorList() {
-    const administrators = await this.adminService.findAllAdministrators();
+  async getUserList() {
+    const administrators = await this.adminSQL.findAllUsers();
     return { users: administrators };
   }
 
   @Post("create")
   @Role("admin")
-  async createAdministrator(
-    @Req() req: RequestDTO,
-    @Body() body: AdministratorDTO
-  ) {
-    const allAdmins = await this.adminService.findAllAdministrators();
+  async createAdministrator(@Body() body: AdministratorDTO) {
     const errors: AdministratorCreateErrors =
-      this.dataHandler.checkCanAddAdministrator(body, allAdmins);
+      await this.adminService.checkCanAddAdministrator(body);
     if (Object.keys(errors).length > 0) {
       throw new HttpException(errors, HttpStatus.BAD_REQUEST);
     }
-    const result = await this.adminService.createAdministrator(body);
+    const result = await this.adminSQL.createAdministrator(body);
     if (!result) {
       throw new HttpException(
         { readWrite: "fail" },
@@ -96,9 +91,9 @@ export class AdministratorController {
 
   @Get("list")
   @Role("admin")
-  async getListOfAdministrators() {
-    const admins = await this.adminService.findAllAdministrators();
-    return { user: admins };
+  async getListOfUsers() {
+    const users = await this.adminSQL.findAllUsers();
+    return { user: users };
   }
 
   @Post("update/:id")
@@ -107,17 +102,12 @@ export class AdministratorController {
     @Param() query: AdministratorQuery,
     @Body() body: AdministratorDTO
   ) {
-    const allAdmins = await this.adminService.findAllAdministrators();
     const errors: AdministratorUpdateErrors =
-      this.dataHandler.checkCanUpdateAdministrator(query.id, body, allAdmins);
+      await this.adminService.checkCanUpdateAdministrator(query.id, body);
     if (Object.keys(errors).length > 0) {
       throw new HttpException(errors, HttpStatus.BAD_REQUEST);
     }
-    const editedAdmin = allAdmins.find((el) => el.id === query.id);
-    const result = await this.adminService.updateAdministrator(
-      body,
-      editedAdmin
-    );
+    const result = await this.adminSQL.updateAdministratorById(query.id, body);
     if (!result) {
       throw new HttpException(
         { readWrite: "fail" },
@@ -131,20 +121,16 @@ export class AdministratorController {
   @Role("admin")
   async deleteAdministrator(@Param() query: AdministratorQuery) {
     if (!query) {
-      throw new HttpException("Bad id", HttpStatus.BAD_REQUEST);
+      throw new HttpException("Bad request", HttpStatus.BAD_REQUEST);
     }
-    const admin = await this.adminService.findAdministratorById(query.id);
-    return await admin
-      .destroy()
-      .then(() => {
-        return { deleted: true };
-      })
-      .catch(
-        () =>
-          new HttpException(
-            { readWrite: "fail" },
-            HttpStatus.INTERNAL_SERVER_ERROR
-          )
+    const result = this.adminService.deleteUser(query.id);
+    if (!result) {
+      new HttpException(
+        { readWrite: "fail" },
+        HttpStatus.INTERNAL_SERVER_ERROR
       );
+    } else {
+      return { deleted: true };
+    }
   }
 }

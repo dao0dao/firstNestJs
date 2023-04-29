@@ -2,6 +2,7 @@ export interface LoginAdministratorUpdateErrors {
   reservedLogin?: boolean;
   reservedName?: boolean;
   passwordNotMatch?: boolean;
+  notExist: boolean;
 }
 
 export interface AdministratorCreateErrors {

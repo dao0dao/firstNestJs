@@ -13,6 +13,7 @@ module.exports = {
         login: "admin",
         password: await bcrypt.hash("admin", parseInt(process.env.SALT_ROUNDS)),
         isAdmin: true,
+        superAdmin: true,
       },
     ]);
   },

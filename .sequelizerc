@@ -5,5 +5,5 @@ module.exports = {
   'config': path.resolve('dist','sequelize', 'config.js'),
   'models-path': path.resolve('dist', 'models'),
   'seeders-path': path.resolve('dist', 'sequelize' ,'seeders'),
-  'migrations-path': path.resolve('dist', 'sequelize' ,'migrations')
+  'migrations-path': path.resolve('dist', 'sequelize' ,'migrations'),
 }

@@ -1,59 +1,75 @@
 import { Injectable } from "@nestjs/common";
-import { InjectModel } from "@nestjs/sequelize";
-import { Administrator } from "src/models/model/administrator.model";
-import { createPassword } from "src/utils/bcript";
 import { AdministratorDTO } from "./administrator.dto";
+import {
+  AdministratorCreateErrors,
+  AdministratorUpdateErrors,
+  LoginAdministratorUpdateErrors,
+} from "./administrator.interfaces";
+import { AdministratorSQLService } from "./administrator-sql.service";
 
 @Injectable()
 export class AdministratorService {
-  constructor(
-    @InjectModel(Administrator) private administratorModel: typeof Administrator
-  ) {}
+  constructor(private adminSQL: AdministratorSQLService) {}
 
-  findAdministratorById(id: string) {
-    return this.administratorModel.findOne({
-      where: { id },
-    });
-  }
-
-  findAdministratorByLogin(login: string) {
-    return this.administratorModel.findOne({ where: { login } });
-  }
-
-  returnAdminNickAndNameByName(name: string) {
-    return this.administratorModel.findOne({
-      where: { name },
-      attributes: ["name", "login"],
-    });
-  }
-
-  findAllAdministrators() {
-    return this.administratorModel.findAll();
-  }
-
-  async updateAdministrator(
-    data: AdministratorDTO,
-    admin: Administrator
-  ): Promise<Administrator> {
-    admin.set({
-      name: data.name,
-      login: data.login,
-    });
-    if (data.password) {
-      const password = await createPassword(data.password);
-      admin.set({
-        password,
-      });
+  async checkCanUpdateLoginAdministrator(
+    admin_id: string,
+    admin: AdministratorDTO
+  ) {
+    const allAdmins = await this.adminSQL.findAllUsersAndAdmin();
+    const errors = {} as LoginAdministratorUpdateErrors;
+    for (const el of allAdmins) {
+      if (el.login === admin.login && el.id !== admin_id) {
+        errors.reservedLogin = true;
+      }
+      if (el.name === admin.name && el.id !== admin_id) {
+        errors.reservedName = true;
+      }
+      if (admin.newPassword !== admin.confirmNewPassword) {
+        errors.passwordNotMatch = true;
+      }
     }
-    return admin.save();
+    const existUser = allAdmins.find((el) => el.id === admin_id);
+    if (!existUser) {
+      errors.notExist = true;
+    }
+    return errors;
   }
 
-  async createAdministrator(data: AdministratorDTO): Promise<Administrator> {
-    const password = await createPassword(data.password);
-    return this.administratorModel.create({
-      name: data.name,
-      login: data.login,
-      password,
-    });
+  async checkCanAddAdministrator(data: AdministratorDTO) {
+    const allAdmins = await this.adminSQL.findAllUsers();
+    const errors = {} as AdministratorCreateErrors;
+    if (data.confirmNewPassword !== data.newPassword) {
+      errors.passwordDoesNotMatch = true;
+    }
+    for (const el of allAdmins) {
+      if (el.name === data.name || el.login === data.login) {
+        errors.canNotCreateUser = true;
+      }
+    }
+    return errors;
+  }
+  async checkCanUpdateAdministrator(admin_id: string, data: AdministratorDTO) {
+    const admins = await this.adminSQL.findAllUsers();
+    const allAdmins = admins.filter((el) => el.id !== admin_id);
+    const errors = {} as AdministratorUpdateErrors;
+    if (!admin_id) {
+      errors.id = true;
+    }
+    for (const el of allAdmins) {
+      el.name == data.name ? (errors.name = true) : null;
+      el.login == data.login ? (errors.reservedLogin = true) : null;
+    }
+    data.password == data.confirmPassword && data.password === ""
+      ? (errors.confirmNewPassword = true)
+      : null;
+    return errors;
+  }
+
+  async deleteUser(id: string) {
+    const user = await this.adminSQL.findUserWithoutSuperAdminById(id);
+    if (!user) {
+      return false;
+    }
+    return user.destroy().then(() => true);
   }
 }
