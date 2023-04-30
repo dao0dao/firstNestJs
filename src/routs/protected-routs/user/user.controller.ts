@@ -60,7 +60,7 @@ export class UserController {
   @Role("admin")
   async getListOfUsers() {
     const users = await this.userSQL.findAllUsers();
-    return { user: users };
+    return { users };
   }
 
   @Post("create")
