@@ -35,7 +35,7 @@ export class AdministratorController {
 
   @Post()
   @Role("login")
-  async updateLoginAdmin(
+  async updateLoginUser(
     @Req() req: RequestDTO,
     @Body() body: AdministratorDTO
   ) {
@@ -58,14 +58,14 @@ export class AdministratorController {
 
   @Get("list")
   @Role("admin")
-  async getUserList() {
-    const administrators = await this.adminSQL.findAllUsers();
-    return { users: administrators };
+  async getListOfUsers() {
+    const users = await this.adminSQL.findAllUsers();
+    return { user: users };
   }
 
   @Post("create")
   @Role("admin")
-  async createAdministrator(@Body() body: AdministratorDTO) {
+  async createUser(@Body() body: AdministratorDTO) {
     const errors: AdministratorCreateErrors =
       await this.adminService.checkCanAddUser(body);
     if (Object.keys(errors).length > 0) {
@@ -79,13 +79,6 @@ export class AdministratorController {
       );
     }
     return { created: true };
-  }
-
-  @Get("list")
-  @Role("admin")
-  async getListOfUsers() {
-    const users = await this.adminSQL.findAllUsers();
-    return { user: users };
   }
 
   @Post("update/:id")
