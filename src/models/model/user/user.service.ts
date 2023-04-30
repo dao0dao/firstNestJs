@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
 import { User } from "src/models/model/user/user.model";
 import { createPassword } from "src/utils/bcript";
-import { AdministratorDTO } from "../../../routs/protected-routs/administrator/administrator.dto";
+import { AdministratorDTO } from "../../../routs/protected-routs/user/administrator.dto";
 import { Op } from "sequelize";
 
 @Injectable()
