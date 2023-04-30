@@ -1,14 +1,14 @@
 import { Module } from "@nestjs/common";
 import { SequelizeModule } from "@nestjs/sequelize";
-import { Administrator } from "src/models/model/administrator.model";
+import { User } from "src/models/model/user/user.model";
 import { AdministratorController } from "./administrator.controller";
-import { AdministratorSQLService } from "./administrator-sql.service";
+import { UserSQLService } from "../../../models/model/user/user.service";
 import { AdministratorService } from "./administrator.service";
 
 @Module({
-  imports: [SequelizeModule.forFeature([Administrator])],
+  imports: [SequelizeModule.forFeature([User])],
   controllers: [AdministratorController],
-  providers: [AdministratorSQLService, AdministratorService],
-  exports: [AdministratorSQLService],
+  providers: [UserSQLService, AdministratorService],
+  exports: [UserSQLService],
 })
 export class AdministratorModule {}

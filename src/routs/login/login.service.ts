@@ -1,13 +1,13 @@
 import { Injectable } from "@nestjs/common";
-import { AdministratorSQLService } from "src/routs/protected-routs/administrator/administrator-sql.service";
+import { UserSQLService } from "src/models/model/user/user.service";
 import { isSamePasswords } from "src/utils/bcript";
 import { LoginInputDTO, User } from "./login.dto";
 
 @Injectable()
 export class LoginService {
-  constructor(private adminService: AdministratorSQLService) {}
+  constructor(private adminService: UserSQLService) {}
   async loginUser(data: LoginInputDTO): Promise<false | User> {
-    const registeredUser = await this.adminService.findAdministratorByLogin(
+    const registeredUser = await this.adminService.findUserByLoginName(
       data.nick
     );
     if (!registeredUser) {

@@ -1,4 +1,4 @@
-import { Administrator } from "./model/administrator.model";
+import { User } from "./model/user/user.model";
 import { Opponent } from "./model/opponent.model";
 import { PlayerHistory } from "./model/player-history/playerHistory.model";
 import { Player } from "./model/player/player.models";
@@ -9,7 +9,7 @@ import { Timetable } from "./model/timetable/timetable.model";
 import { TennisService } from "./model/tennis-service/tennis.service.model";
 
 export const mysqlTables = [
-  Administrator,
+  User,
   Sessions,
   Player,
   Opponent,

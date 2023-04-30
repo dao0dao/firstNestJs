@@ -18,20 +18,18 @@ import {
   AdministratorUpdateErrors,
   LoginAdministratorUpdateErrors,
 } from "./administrator.interfaces";
-import { AdministratorSQLService } from "./administrator-sql.service";
+import { UserSQLService } from "../../../models/model/user/user.service";
 
 @Controller("administrator")
 export class AdministratorController {
   constructor(
-    private adminSQL: AdministratorSQLService,
+    private adminSQL: UserSQLService,
     private adminService: AdministratorService
   ) {}
   @Get()
   @Role("login")
   async getUserData(@Req() req: RequestDTO) {
-    const admin = await this.adminSQL.returnAdminNickAndNameByName(
-      req.ADMIN_NAME
-    );
+    const admin = await this.adminSQL.returnUserNameByLoginName(req.ADMIN_NAME);
     return admin;
   }
 
@@ -51,10 +49,7 @@ export class AdministratorController {
     } else if (Object.keys(errors).length > 0) {
       throw new HttpException(errors, HttpStatus.BAD_REQUEST);
     }
-    const result = await this.adminSQL.updateAdministratorById(
-      req.ADMIN_ID,
-      body
-    );
+    const result = await this.adminSQL.updateUserById(req.ADMIN_ID, body);
     if (!result) {
       throw new HttpException(
         { readWrite: "fail" },
@@ -79,7 +74,7 @@ export class AdministratorController {
     if (Object.keys(errors).length > 0) {
       throw new HttpException(errors, HttpStatus.BAD_REQUEST);
     }
-    const result = await this.adminSQL.createAdministrator(body);
+    const result = await this.adminSQL.createUser(body);
     if (!result) {
       throw new HttpException(
         { readWrite: "fail" },
@@ -107,7 +102,7 @@ export class AdministratorController {
     if (Object.keys(errors).length > 0) {
       throw new HttpException(errors, HttpStatus.BAD_REQUEST);
     }
-    const result = await this.adminSQL.updateAdministratorById(query.id, body);
+    const result = await this.adminSQL.updateUserById(query.id, body);
     if (!result) {
       throw new HttpException(
         { readWrite: "fail" },

@@ -1,24 +1,22 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
-import { Administrator } from "src/models/model/administrator.model";
+import { User } from "src/models/model/user/user.model";
 import { createPassword } from "src/utils/bcript";
-import { AdministratorDTO } from "./administrator.dto";
+import { AdministratorDTO } from "../../../routs/protected-routs/administrator/administrator.dto";
 import { Op } from "sequelize";
 
 @Injectable()
-export class AdministratorSQLService {
-  constructor(
-    @InjectModel(Administrator) private administratorModel: typeof Administrator
-  ) {}
+export class UserSQLService {
+  constructor(@InjectModel(User) private userModel: typeof User) {}
 
   findUserById(id: string) {
-    return this.administratorModel.findOne({
+    return this.userModel.findOne({
       where: { id },
     });
   }
 
   findUserWithoutSuperAdminById(id: string) {
-    return this.administratorModel.findOne({
+    return this.userModel.findOne({
       where: {
         id,
         superAdmin: {
@@ -28,28 +26,25 @@ export class AdministratorSQLService {
     });
   }
 
-  findAdministratorByLogin(login: string) {
-    return this.administratorModel.findOne({ where: { login } });
+  findUserByLoginName(loginName: string) {
+    return this.userModel.findOne({ where: { login: loginName } });
   }
 
-  returnAdminNickAndNameByName(name: string) {
-    return this.administratorModel.findOne({
+  returnUserNameByLoginName(name: string) {
+    return this.userModel.findOne({
       where: { name },
       attributes: ["name", "login"],
     });
   }
 
   findAllUsers() {
-    return this.administratorModel.findAll({ where: { isAdmin: false } });
+    return this.userModel.findAll({ where: { isAdmin: false } });
   }
   findAllUsersAndAdmin() {
-    return this.administratorModel.findAll();
+    return this.userModel.findAll();
   }
 
-  async updateAdministratorById(
-    id: string,
-    data: AdministratorDTO
-  ): Promise<Administrator> {
+  async updateUserById(id: string, data: AdministratorDTO): Promise<User> {
     const admin = await this.findUserById(id);
     admin.set({
       name: data.name,
@@ -64,9 +59,9 @@ export class AdministratorSQLService {
     return admin.save();
   }
 
-  async createAdministrator(data: AdministratorDTO): Promise<Administrator> {
+  async createUser(data: AdministratorDTO): Promise<User> {
     const password = await createPassword(data.password);
-    return this.administratorModel.create({
+    return this.userModel.create({
       name: data.name,
       login: data.login,
       password,

@@ -7,7 +7,7 @@ import {
   UnauthorizedException,
 } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
-import { AdministratorSQLService } from "src/routs/protected-routs/administrator/administrator-sql.service";
+import { UserSQLService } from "src/models/model/user/user.service";
 import { RequestDTO } from "src/request.dto";
 import { SessionsService } from "src/utils/shared/session.service";
 import { Response } from "express";
@@ -17,7 +17,7 @@ export class AuthGuard implements CanActivate {
   constructor(
     private reflector: Reflector,
     private sessionService: SessionsService,
-    private adminService: AdministratorSQLService
+    private adminService: UserSQLService
   ) {}
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const req: RequestDTO = context.switchToHttp().getRequest();

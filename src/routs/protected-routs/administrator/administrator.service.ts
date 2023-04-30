@@ -5,11 +5,11 @@ import {
   AdministratorUpdateErrors,
   LoginAdministratorUpdateErrors,
 } from "./administrator.interfaces";
-import { AdministratorSQLService } from "./administrator-sql.service";
+import { UserSQLService } from "../../../models/model/user/user.service";
 
 @Injectable()
 export class AdministratorService {
-  constructor(private adminSQL: AdministratorSQLService) {}
+  constructor(private adminSQL: UserSQLService) {}
 
   async checkCanUpdateLoginAdministrator(
     admin_id: string,
