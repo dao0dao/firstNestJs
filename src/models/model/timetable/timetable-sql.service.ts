@@ -4,7 +4,7 @@ import { InputReservationDTO } from "src/routs/protected-routs/timetable/timetab
 import { Timetable } from "./timetable.model";
 
 @Injectable()
-export class TimetableService {
+export class TimetableSQLService {
   constructor(
     @InjectModel(Timetable) private timetableModel: typeof Timetable
   ) {}

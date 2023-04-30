@@ -14,10 +14,10 @@ import {
 import { Role } from "src/guards/roles.decorators";
 import { PlayerService } from "src/models/model/player/player.service";
 import { PriceListService } from "src/models/model/price-list/price-list.service";
-import { TimetableService } from "src/models/model/timetable/timetable.service";
+import { TimetableSQLService } from "src/models/model/timetable/timetable-sql.service";
 import { RequestDTO } from "src/request.dto";
 import { countFromToTime } from "src/utils/time";
-import { TimeTableHandleDataService } from "./time-table-handle-data.service";
+import { TimeTableHandleDataService } from "./timetable.service";
 import { TimetableHandlePlayerHistoryService } from "./timetable-handle-player-history.service";
 import {
   CreateReservationDTO,
@@ -29,15 +29,17 @@ import {
   TimetableIdParam,
   TimetableQuery,
 } from "./timetable.dto";
+import { TimetableFacadeService } from "./timetable-facade.service";
 
 @Controller("timetable")
 export class TimetableController {
   constructor(
-    private timetable: TimetableService,
+    private timetable: TimetableSQLService,
     private playerService: PlayerService,
     private timetableHandleData: TimeTableHandleDataService,
     private timetableHandleHistory: TimetableHandlePlayerHistoryService,
-    private priceList: PriceListService
+    private priceList: PriceListService,
+    private facade: TimetableFacadeService
   ) {}
 
   @Get()
@@ -45,23 +47,17 @@ export class TimetableController {
   async getReservationByDate(
     @Req() req: RequestDTO,
     @Query() query: TimetableQuery
-  ): Promise<{ reservations: OutputReservationDTO[] }> {
+  ) {
     if (!query.date) {
       throw new HttpException(
         { reason: "Nie prawidłowa data" },
         HttpStatus.NOT_ACCEPTABLE
       );
     }
-    const dailyTimetable = await this.timetable.findAllReservationByDate(
-      query.date
+    const reservations = await this.facade.getReservationByDate(
+      query.date,
+      req.ROLE
     );
-    const allPlayers = await this.playerService.findAllPlayers();
-    const reservations =
-      this.timetableHandleData.parseTimetableToReservationModelArray(
-        dailyTimetable,
-        allPlayers,
-        req.ROLE
-      );
     return {
       reservations,
     };

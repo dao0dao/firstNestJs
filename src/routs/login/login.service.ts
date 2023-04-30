@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { UserSQLService } from "src/models/model/user/user.service";
+import { UserSQLService } from "src/models/model/user/user-sql.service";
 import { isSamePasswords } from "src/utils/bcript";
 import { LoginInputDTO, User } from "./login.dto";
 

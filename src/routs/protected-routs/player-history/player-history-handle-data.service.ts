@@ -3,7 +3,7 @@ import { PlayerAccountService } from "src/models/model/player-account/player-acc
 import { PlayerAccount } from "src/models/model/player-account/playerAccount.model";
 import { PlayerHistoryModelService } from "src/models/model/player-history/player-history.service";
 import { PlayerHistory } from "src/models/model/player-history/playerHistory.model";
-import { TimetableService } from "src/models/model/timetable/timetable.service";
+import { TimetableSQLService } from "src/models/model/timetable/timetable-sql.service";
 import { RequestDTO } from "src/request.dto";
 import { checkCanAcceptPayment } from "./factory-player-history.service";
 import { HistoryOutputDTO, InputPayForHistory } from "./player-history.dto";
@@ -12,7 +12,7 @@ import { HistoryOutputDTO, InputPayForHistory } from "./player-history.dto";
 export class PlayerHistoryHandleDataService {
   constructor(
     private historyModel: PlayerHistoryModelService,
-    private timetableModel: TimetableService,
+    private timetableModel: TimetableSQLService,
     private accountModel: PlayerAccountService
   ) {}
   parsePlayerHistoryToDTO(data: PlayerHistory[], playerBlance: PlayerAccount) {

@@ -10,14 +10,6 @@ export class TimeTableHandleDataService {
     if (!player) {
       return undefined;
     }
-    // if (!player) {
-    //   return {
-    //     id: playerId,
-    //     name: "",
-    //     surname: "",
-    //     telephone: "",
-    //   };
-    // }
     const reservationPlayer: ReservationPlayerDTO = {
       id: player.id,
       name: player.name,

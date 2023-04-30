@@ -8,7 +8,7 @@ import {
 } from "src/models/model/player-history/playerHistory.model";
 import { PriceList } from "src/models/model/price-list/priceList.model";
 import { Timetable } from "src/models/model/timetable/timetable.model";
-import { TimetableService } from "src/models/model/timetable/timetable.service";
+import { TimetableSQLService } from "src/models/model/timetable/timetable-sql.service";
 import { RequestDTO } from "src/request.dto";
 import { todaySQLDate } from "src/utils/time";
 import { FactoryDataTimetablePlayerHistory } from "./factory data-timetable-player-history";
@@ -18,7 +18,7 @@ import { InputReservationPayment, PlayerHistoryPrice } from "./timetable.dto";
 export class TimetableHandlePlayerHistoryService {
   constructor(
     private playerHistory: PlayerHistoryModelService,
-    private timetableModel: TimetableService,
+    private timetableModel: TimetableSQLService,
     private dataFactory: FactoryDataTimetablePlayerHistory,
     private accountModel: PlayerAccountService
   ) {}

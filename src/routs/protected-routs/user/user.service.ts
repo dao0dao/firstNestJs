@@ -5,7 +5,7 @@ import {
   UserUpdateErrors,
   LoginUserUpdateErrors,
 } from "./user.interfaces";
-import { UserSQLService } from "../../../models/model/user/user.service";
+import { UserSQLService } from "../../../models/model/user/user-sql.service";
 
 @Injectable()
 export class UserService {
