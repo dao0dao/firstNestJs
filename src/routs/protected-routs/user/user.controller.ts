@@ -11,25 +11,25 @@ import {
 } from "@nestjs/common";
 import { Role } from "src/guards/roles.decorators";
 import { RequestDTO } from "src/request.dto";
-import { AdministratorService } from "./administrator.service";
-import { AdministratorDTO, AdministratorQuery } from "./administrator.dto";
+import { UserService } from "./user.service";
+import { AdministratorDTO, AdministratorQuery } from "./user.dto";
 import {
   AdministratorCreateErrors,
   AdministratorUpdateErrors,
   LoginAdministratorUpdateErrors,
-} from "./administrator.interfaces";
+} from "./user.interfaces";
 import { UserSQLService } from "../../../models/model/user/user.service";
 
 @Controller("administrator")
-export class AdministratorController {
+export class UserController {
   constructor(
-    private adminSQL: UserSQLService,
-    private adminService: AdministratorService
+    private userSQL: UserSQLService,
+    private userService: UserService
   ) {}
   @Get()
   @Role("login")
   async getUserData(@Req() req: RequestDTO) {
-    const admin = await this.adminSQL.returnUserNameByLoginName(req.ADMIN_NAME);
+    const admin = await this.userSQL.returnUserNameByLoginName(req.ADMIN_NAME);
     return admin;
   }
 
@@ -40,13 +40,13 @@ export class AdministratorController {
     @Body() body: AdministratorDTO
   ) {
     const errors: LoginAdministratorUpdateErrors =
-      await this.adminService.checkCanUpdateLoginUser(req.ADMIN_ID, body);
+      await this.userService.checkCanUpdateLoginUser(req.ADMIN_ID, body);
     if (errors.notExist) {
       throw new HttpException({ notAllowed: true }, HttpStatus.UNAUTHORIZED);
     } else if (Object.keys(errors).length > 0) {
       throw new HttpException(errors, HttpStatus.BAD_REQUEST);
     }
-    const result = await this.adminSQL.updateUserById(req.ADMIN_ID, body);
+    const result = await this.userSQL.updateUserById(req.ADMIN_ID, body);
     if (!result) {
       throw new HttpException(
         { readWrite: "fail" },
@@ -59,7 +59,7 @@ export class AdministratorController {
   @Get("list")
   @Role("admin")
   async getListOfUsers() {
-    const users = await this.adminSQL.findAllUsers();
+    const users = await this.userSQL.findAllUsers();
     return { user: users };
   }
 
@@ -67,11 +67,11 @@ export class AdministratorController {
   @Role("admin")
   async createUser(@Body() body: AdministratorDTO) {
     const errors: AdministratorCreateErrors =
-      await this.adminService.checkCanAddUser(body);
+      await this.userService.checkCanAddUser(body);
     if (Object.keys(errors).length > 0) {
       throw new HttpException(errors, HttpStatus.BAD_REQUEST);
     }
-    const result = await this.adminSQL.createUser(body);
+    const result = await this.userSQL.createUser(body);
     if (!result) {
       throw new HttpException(
         { readWrite: "fail" },
@@ -83,16 +83,16 @@ export class AdministratorController {
 
   @Post("update/:id")
   @Role("admin")
-  async updateAdministrator(
+  async updateUser(
     @Param() query: AdministratorQuery,
     @Body() body: AdministratorDTO
   ) {
     const errors: AdministratorUpdateErrors =
-      await this.adminService.checkCanUpdateUser(query.id, body);
+      await this.userService.checkCanUpdateUser(query.id, body);
     if (Object.keys(errors).length > 0) {
       throw new HttpException(errors, HttpStatus.BAD_REQUEST);
     }
-    const result = await this.adminSQL.updateUserById(query.id, body);
+    const result = await this.userSQL.updateUserById(query.id, body);
     if (!result) {
       throw new HttpException(
         { readWrite: "fail" },
@@ -104,11 +104,11 @@ export class AdministratorController {
 
   @Delete("delete/:id")
   @Role("admin")
-  async deleteAdministrator(@Param() query: AdministratorQuery) {
+  async deleteUser(@Param() query: AdministratorQuery) {
     if (!query) {
       throw new HttpException("Bad request", HttpStatus.BAD_REQUEST);
     }
-    const result = this.adminService.deleteUser(query.id);
+    const result = this.userService.deleteUser(query.id);
     if (!result) {
       new HttpException(
         { readWrite: "fail" },

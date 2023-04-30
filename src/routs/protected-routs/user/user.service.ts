@@ -1,14 +1,14 @@
 import { Injectable } from "@nestjs/common";
-import { AdministratorDTO } from "./administrator.dto";
+import { AdministratorDTO } from "./user.dto";
 import {
   AdministratorCreateErrors,
   AdministratorUpdateErrors,
   LoginAdministratorUpdateErrors,
-} from "./administrator.interfaces";
+} from "./user.interfaces";
 import { UserSQLService } from "../../../models/model/user/user.service";
 
 @Injectable()
-export class AdministratorService {
+export class UserService {
   constructor(private userSQL: UserSQLService) {}
 
   async checkCanUpdateLoginUser(admin_id: string, admin: AdministratorDTO) {

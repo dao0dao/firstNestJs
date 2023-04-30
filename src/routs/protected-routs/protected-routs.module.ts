@@ -2,7 +2,7 @@ import { Module } from "@nestjs/common";
 import { APP_GUARD, RouterModule, RouteTree } from "@nestjs/core";
 import { AuthGuard } from "src/guards/auth.guard";
 import { SharedModule } from "src/utils/shared/shared.module";
-import { AdministratorModule } from "./user/administrator.module";
+import { UserModule } from "./user/user.module";
 import { PlayerHistoryModule } from "./player-history/player-history.module";
 import { PlayerModule } from "./player/player.module";
 import { PriceListModule } from "./price-list/price-list.module";
@@ -14,7 +14,7 @@ const routs: RouteTree[] = [
   {
     path: "api",
     children: [
-      AdministratorModule,
+      UserModule,
       PlayerModule,
       PriceListModule,
       TimetableModule,
@@ -29,7 +29,7 @@ const routs: RouteTree[] = [
   imports: [
     SharedModule,
     RouterModule.register(routs),
-    AdministratorModule,
+    UserModule,
     PlayerModule,
     PriceListModule,
     TimetableModule,
@@ -38,7 +38,7 @@ const routs: RouteTree[] = [
     TennisServicesModule,
   ],
   exports: [
-    AdministratorModule,
+    UserModule,
     PlayerModule,
     PriceListModule,
     TimetableModule,
