@@ -40,10 +40,7 @@ export class AdministratorController {
     @Body() body: AdministratorDTO
   ) {
     const errors: LoginAdministratorUpdateErrors =
-      await this.adminService.checkCanUpdateLoginAdministrator(
-        req.ADMIN_ID,
-        body
-      );
+      await this.adminService.checkCanUpdateLoginUser(req.ADMIN_ID, body);
     if (errors.notExist) {
       throw new HttpException({ notAllowed: true }, HttpStatus.UNAUTHORIZED);
     } else if (Object.keys(errors).length > 0) {
@@ -70,7 +67,7 @@ export class AdministratorController {
   @Role("admin")
   async createAdministrator(@Body() body: AdministratorDTO) {
     const errors: AdministratorCreateErrors =
-      await this.adminService.checkCanAddAdministrator(body);
+      await this.adminService.checkCanAddUser(body);
     if (Object.keys(errors).length > 0) {
       throw new HttpException(errors, HttpStatus.BAD_REQUEST);
     }
@@ -98,7 +95,7 @@ export class AdministratorController {
     @Body() body: AdministratorDTO
   ) {
     const errors: AdministratorUpdateErrors =
-      await this.adminService.checkCanUpdateAdministrator(query.id, body);
+      await this.adminService.checkCanUpdateUser(query.id, body);
     if (Object.keys(errors).length > 0) {
       throw new HttpException(errors, HttpStatus.BAD_REQUEST);
     }

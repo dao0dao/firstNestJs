@@ -9,13 +9,10 @@ import { UserSQLService } from "../../../models/model/user/user.service";
 
 @Injectable()
 export class AdministratorService {
-  constructor(private adminSQL: UserSQLService) {}
+  constructor(private userSQL: UserSQLService) {}
 
-  async checkCanUpdateLoginAdministrator(
-    admin_id: string,
-    admin: AdministratorDTO
-  ) {
-    const allAdmins = await this.adminSQL.findAllUsersAndAdmin();
+  async checkCanUpdateLoginUser(admin_id: string, admin: AdministratorDTO) {
+    const allAdmins = await this.userSQL.findAllUsersAndAdmin();
     const errors = {} as LoginAdministratorUpdateErrors;
     for (const el of allAdmins) {
       if (el.login === admin.login && el.id !== admin_id) {
@@ -35,8 +32,8 @@ export class AdministratorService {
     return errors;
   }
 
-  async checkCanAddAdministrator(data: AdministratorDTO) {
-    const allAdmins = await this.adminSQL.findAllUsers();
+  async checkCanAddUser(data: AdministratorDTO) {
+    const allAdmins = await this.userSQL.findAllUsers();
     const errors = {} as AdministratorCreateErrors;
     if (data.confirmNewPassword !== data.newPassword) {
       errors.passwordDoesNotMatch = true;
@@ -48,8 +45,8 @@ export class AdministratorService {
     }
     return errors;
   }
-  async checkCanUpdateAdministrator(admin_id: string, data: AdministratorDTO) {
-    const admins = await this.adminSQL.findAllUsers();
+  async checkCanUpdateUser(admin_id: string, data: AdministratorDTO) {
+    const admins = await this.userSQL.findAllUsers();
     const allAdmins = admins.filter((el) => el.id !== admin_id);
     const errors = {} as AdministratorUpdateErrors;
     if (!admin_id) {
@@ -66,7 +63,7 @@ export class AdministratorService {
   }
 
   async deleteUser(id: string) {
-    const user = await this.adminSQL.findUserWithoutSuperAdminById(id);
+    const user = await this.userSQL.findUserWithoutSuperAdminById(id);
     if (!user) {
       return false;
     }
