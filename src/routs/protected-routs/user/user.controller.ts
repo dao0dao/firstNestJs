@@ -20,7 +20,7 @@ import {
 } from "./user.interfaces";
 import { UserSQLService } from "../../../models/model/user/user.service";
 
-@Controller("administrator")
+@Controller("user")
 export class UserController {
   constructor(
     private userSQL: UserSQLService,
