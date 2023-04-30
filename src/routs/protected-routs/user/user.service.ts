@@ -1,9 +1,9 @@
 import { Injectable } from "@nestjs/common";
-import { AdministratorDTO } from "./user.dto";
+import { UserDTO } from "./user.dto";
 import {
-  AdministratorCreateErrors,
-  AdministratorUpdateErrors,
-  LoginAdministratorUpdateErrors,
+  UserCreateErrors,
+  UserUpdateErrors,
+  LoginUserUpdateErrors,
 } from "./user.interfaces";
 import { UserSQLService } from "../../../models/model/user/user.service";
 
@@ -11,9 +11,9 @@ import { UserSQLService } from "../../../models/model/user/user.service";
 export class UserService {
   constructor(private userSQL: UserSQLService) {}
 
-  async checkCanUpdateLoginUser(admin_id: string, admin: AdministratorDTO) {
+  async checkCanUpdateLoginUser(admin_id: string, admin: UserDTO) {
     const allAdmins = await this.userSQL.findAllUsersAndAdmin();
-    const errors = {} as LoginAdministratorUpdateErrors;
+    const errors = {} as LoginUserUpdateErrors;
     for (const el of allAdmins) {
       if (el.login === admin.login && el.id !== admin_id) {
         errors.reservedLogin = true;
@@ -32,9 +32,9 @@ export class UserService {
     return errors;
   }
 
-  async checkCanAddUser(data: AdministratorDTO) {
+  async checkCanAddUser(data: UserDTO) {
     const allAdmins = await this.userSQL.findAllUsers();
-    const errors = {} as AdministratorCreateErrors;
+    const errors = {} as UserCreateErrors;
     if (data.confirmNewPassword !== data.newPassword) {
       errors.passwordDoesNotMatch = true;
     }
@@ -45,10 +45,10 @@ export class UserService {
     }
     return errors;
   }
-  async checkCanUpdateUser(admin_id: string, data: AdministratorDTO) {
+  async checkCanUpdateUser(admin_id: string, data: UserDTO) {
     const admins = await this.userSQL.findAllUsers();
     const allAdmins = admins.filter((el) => el.id !== admin_id);
-    const errors = {} as AdministratorUpdateErrors;
+    const errors = {} as UserUpdateErrors;
     if (!admin_id) {
       errors.id = true;
     }

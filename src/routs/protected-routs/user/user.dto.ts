@@ -6,7 +6,7 @@ import {
   IsUUID,
 } from "class-validator";
 
-export class AdministratorDTO {
+export class UserDTO {
   @ValidateIf((c) => c.id !== undefined)
   @IsUUID()
   id: string;
@@ -46,7 +46,7 @@ export class AdministratorDTO {
   confirmNewPassword?: string;
 }
 
-export class AdministratorQuery {
+export class UserQuery {
   @IsUUID()
   id: string;
 }

@@ -12,11 +12,11 @@ import {
 import { Role } from "src/guards/roles.decorators";
 import { RequestDTO } from "src/request.dto";
 import { UserService } from "./user.service";
-import { AdministratorDTO, AdministratorQuery } from "./user.dto";
+import { UserDTO, UserQuery } from "./user.dto";
 import {
-  AdministratorCreateErrors,
-  AdministratorUpdateErrors,
-  LoginAdministratorUpdateErrors,
+  UserCreateErrors,
+  UserUpdateErrors,
+  LoginUserUpdateErrors,
 } from "./user.interfaces";
 import { UserSQLService } from "../../../models/model/user/user.service";
 
@@ -35,11 +35,8 @@ export class UserController {
 
   @Post()
   @Role("login")
-  async updateLoginUser(
-    @Req() req: RequestDTO,
-    @Body() body: AdministratorDTO
-  ) {
-    const errors: LoginAdministratorUpdateErrors =
+  async updateLoginUser(@Req() req: RequestDTO, @Body() body: UserDTO) {
+    const errors: LoginUserUpdateErrors =
       await this.userService.checkCanUpdateLoginUser(req.ADMIN_ID, body);
     if (errors.notExist) {
       throw new HttpException({ notAllowed: true }, HttpStatus.UNAUTHORIZED);
@@ -65,9 +62,10 @@ export class UserController {
 
   @Post("create")
   @Role("admin")
-  async createUser(@Body() body: AdministratorDTO) {
-    const errors: AdministratorCreateErrors =
-      await this.userService.checkCanAddUser(body);
+  async createUser(@Body() body: UserDTO) {
+    const errors: UserCreateErrors = await this.userService.checkCanAddUser(
+      body
+    );
     if (Object.keys(errors).length > 0) {
       throw new HttpException(errors, HttpStatus.BAD_REQUEST);
     }
@@ -83,12 +81,11 @@ export class UserController {
 
   @Post("update/:id")
   @Role("admin")
-  async updateUser(
-    @Param() query: AdministratorQuery,
-    @Body() body: AdministratorDTO
-  ) {
-    const errors: AdministratorUpdateErrors =
-      await this.userService.checkCanUpdateUser(query.id, body);
+  async updateUser(@Param() query: UserQuery, @Body() body: UserDTO) {
+    const errors: UserUpdateErrors = await this.userService.checkCanUpdateUser(
+      query.id,
+      body
+    );
     if (Object.keys(errors).length > 0) {
       throw new HttpException(errors, HttpStatus.BAD_REQUEST);
     }
@@ -104,7 +101,7 @@ export class UserController {
 
   @Delete("delete/:id")
   @Role("admin")
-  async deleteUser(@Param() query: AdministratorQuery) {
+  async deleteUser(@Param() query: UserQuery) {
     if (!query) {
       throw new HttpException("Bad request", HttpStatus.BAD_REQUEST);
     }

@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
 import { User } from "src/models/model/user/user.model";
 import { createPassword } from "src/utils/bcript";
-import { AdministratorDTO } from "../../../routs/protected-routs/user/user.dto";
+import { UserDTO } from "../../../routs/protected-routs/user/user.dto";
 import { Op } from "sequelize";
 
 @Injectable()
@@ -44,7 +44,7 @@ export class UserSQLService {
     return this.userModel.findAll();
   }
 
-  async updateUserById(id: string, data: AdministratorDTO): Promise<User> {
+  async updateUserById(id: string, data: UserDTO): Promise<User> {
     const admin = await this.findUserById(id);
     admin.set({
       name: data.name,
@@ -59,7 +59,7 @@ export class UserSQLService {
     return admin.save();
   }
 
-  async createUser(data: AdministratorDTO): Promise<User> {
+  async createUser(data: UserDTO): Promise<User> {
     const password = await createPassword(data.password);
     return this.userModel.create({
       name: data.name,
