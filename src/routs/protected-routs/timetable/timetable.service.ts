@@ -2,9 +2,17 @@ import { Injectable } from "@nestjs/common";
 import { Player } from "src/models/model/player/player.models";
 import { Timetable } from "src/models/model/timetable/timetable.model";
 import { OutputReservationDTO, ReservationPlayerDTO } from "./timetable.dto";
+import { PlayerService } from "src/models/model/player/player.service";
+import { PriceListService } from "src/models/model/price-list/price-list.service";
+import { TimetableHandlePlayerHistoryService } from "./timetable-handle-player-history.service";
 
 @Injectable()
-export class TimeTableHandleDataService {
+export class TimetableService {
+  constructor(
+    private playerService: PlayerService,
+    private priceList: PriceListService,
+    private timetableHistory: TimetableHandlePlayerHistoryService
+  ) {}
   private setReservationPlayer(allPlayers: Player[], playerId: string) {
     const player = allPlayers.find((pl) => pl.id === playerId);
     if (!player) {
@@ -67,5 +75,33 @@ export class TimeTableHandleDataService {
       timetable: { layer: timetable.layer },
     };
     return reservation;
+  }
+
+  async createPlayerHistoryForTimetable(reservation: Timetable) {
+    const priceList = await this.priceList.getAllPriceList();
+    let playerOne = undefined;
+    let playerTwo = undefined;
+    if (reservation.player_one) {
+      playerOne = {
+        id: reservation.player_one,
+        priceListId: await this.playerService.getPlayerPriceListIdByPlayerId(
+          reservation.player_one
+        ),
+      };
+    }
+    if (reservation.player_two) {
+      playerTwo = {
+        id: reservation.player_two,
+        priceListId: await this.playerService.getPlayerPriceListIdByPlayerId(
+          reservation.player_two
+        ),
+      };
+    }
+    const playersHistory = await this.timetableHistory.createPlayerHistory(
+      reservation,
+      priceList,
+      { playerOne, playerTwo }
+    );
+    return playersHistory;
   }
 }

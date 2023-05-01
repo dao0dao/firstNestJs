@@ -17,7 +17,7 @@ import { PriceListService } from "src/models/model/price-list/price-list.service
 import { TimetableSQLService } from "src/models/model/timetable/timetable-sql.service";
 import { RequestDTO } from "src/request.dto";
 import { countFromToTime } from "src/utils/time";
-import { TimeTableHandleDataService } from "./timetable.service";
+import { TimetableService } from "./timetable.service";
 import { TimetableHandlePlayerHistoryService } from "./timetable-handle-player-history.service";
 import {
   CreateReservationDTO,
@@ -34,9 +34,9 @@ import { TimetableFacadeService } from "./timetable-facade.service";
 @Controller("timetable")
 export class TimetableController {
   constructor(
-    private timetable: TimetableSQLService,
+    private timetableSQL: TimetableSQLService,
     private playerService: PlayerService,
-    private timetableHandleData: TimeTableHandleDataService,
+    private timetableHandleData: TimetableService,
     private timetableHandleHistory: TimetableHandlePlayerHistoryService,
     private priceList: PriceListService,
     private facade: TimetableFacadeService
@@ -69,58 +69,31 @@ export class TimetableController {
     @Req() req: RequestDTO,
     @Body() body: InputReservationDTO
   ): Promise<CreateReservationDTO> {
-    const canCreate = this.timetableHandleData.checkCanCreateOrUpdate(
-      body.form.date,
-      req.ROLE
+    const result = await this.facade.createReservationAndPlayerHistory(
+      req.ROLE,
+      body
     );
-    if (!canCreate) {
+    if ("permissionDenied" === result) {
       throw new HttpException(
         { reason: "Brak uprawnień, nie można dodać z datą wsteczną." },
         HttpStatus.NOT_ACCEPTABLE
       );
     }
-    const hourCount = countFromToTime(body.form.timeFrom, body.form.timeTo);
-    if (hourCount === "wrong_time_formate") {
+    if ("wrongTimeFormate" === result) {
       throw new HttpException(
         { reason: "Błędny format godziny" },
         HttpStatus.NOT_ACCEPTABLE
       );
     }
-    const reservation = await this.timetable.addReservation(body, hourCount);
-    if (!reservation) {
+    if (result === "intervalServerError") {
       throw new HttpException(
         { readWrite: "fail" },
         HttpStatus.INTERNAL_SERVER_ERROR
       );
     }
-    const priceList = await this.priceList.getAllPriceList();
-    let playerOne = undefined;
-    let playerTwo = undefined;
-    if (reservation.player_one) {
-      playerOne = {
-        id: reservation.player_one,
-        priceListId: await this.playerService.getPlayerPriceListIdByPlayerId(
-          reservation.player_one
-        ),
-      };
-    }
-    if (reservation.player_two) {
-      playerTwo = {
-        id: reservation.player_two,
-        priceListId: await this.playerService.getPlayerPriceListIdByPlayerId(
-          reservation.player_two
-        ),
-      };
-    }
-    const playersHistory =
-      await this.timetableHandleHistory.createPlayerHistory(
-        reservation,
-        priceList,
-        { playerOne, playerTwo }
-      );
     return {
       status: "created",
-      playersHistory,
+      playersHistory: result,
     };
   }
 
@@ -150,7 +123,10 @@ export class TimetableController {
         HttpStatus.NOT_ACCEPTABLE
       );
     }
-    const timetable = await this.timetable.updateReservation(body, hourCount);
+    const timetable = await this.timetableSQL.updateReservation(
+      body,
+      hourCount
+    );
     if (timetable === null) {
       throw new HttpException(
         { reason: "Brak rezerwacji lub nie podano gracza" },
@@ -213,7 +189,7 @@ export class TimetableController {
     await this.timetableHandleHistory.deletePlayerHistoryByTimetableId(
       param.id
     );
-    return this.timetable.deleteReservationById(param.id);
+    return this.timetableSQL.deleteReservationById(param.id);
   }
 
   @Get("reservation/price/:id")
