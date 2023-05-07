@@ -36,11 +36,11 @@ export class TimetableService {
     return new Date(date) >= today;
   }
 
-  parseTimetableToReservationModelArray(
+  async parseTimetableToReservationModelArray(
     timetable: Timetable[],
-    allPlayers: Player[],
     role: string
   ) {
+    const allPlayers = await this.playerService.findAllPlayers();
     const reservationsArr: OutputReservationDTO[] = [];
     for (const el of timetable) {
       const reservation: OutputReservationDTO =
@@ -103,5 +103,35 @@ export class TimetableService {
       { playerOne, playerTwo }
     );
     return playersHistory;
+  }
+
+  async updatePlayerHistoryForTimetable(timetable: Timetable) {
+    const priceList = await this.priceList.getAllPriceList();
+    let playerOne = undefined;
+    let playerTwo = undefined;
+    if (timetable.player_one) {
+      playerOne = {
+        id: timetable.player_one,
+        priceListId: await this.playerService.getPlayerPriceListIdByPlayerId(
+          timetable.player_one
+        ),
+      };
+    }
+    if (timetable.player_two) {
+      playerTwo = {
+        id: timetable.player_two,
+        priceListId: await this.playerService.getPlayerPriceListIdByPlayerId(
+          timetable.player_two
+        ),
+      };
+    }
+    await this.timetableHistory.updatePlayerHistoryTimetable(
+      timetable,
+      priceList,
+      {
+        playerOne,
+        playerTwo,
+      }
+    );
   }
 }

@@ -234,7 +234,7 @@ export class TimetableHandlePlayerHistoryService {
       );
       await this.timetableModel.setReservationPayedForPlayerOne(reservationId);
     }
-    if (!playerTwo?.id && playerTwo.name) {
+    if (!playerTwo?.id && playerTwo?.name) {
       await this.timetableModel.setReservationPayedForPlayerTwo(reservationId);
     }
     if (playerTwo?.id && playerTwo.name && "none" !== data.playerTwo.method) {

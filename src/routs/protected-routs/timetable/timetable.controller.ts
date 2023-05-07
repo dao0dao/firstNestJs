@@ -104,70 +104,28 @@ export class TimetableController {
     @Body() body: InputUpdateReservationDTO
   ): Promise<{
     reservation: OutputReservationDTO;
-    playersHistory: boolean | { playerTwo?: boolean; playerOne?: boolean };
   }> {
-    const canUpdate = this.timetableHandleData.checkCanCreateOrUpdate(
-      body.form.date,
-      req.ROLE
-    );
-    if (!canUpdate) {
+    const result = await this.facade.updateReservation(req.ROLE, body);
+    if ("permissionDenied" === result) {
       throw new HttpException(
         { reason: "Brak uprawnień." },
         HttpStatus.NOT_ACCEPTABLE
       );
     }
-    const hourCount = countFromToTime(body.form.timeFrom, body.form.timeTo);
-    if (hourCount === "wrong_time_formate") {
+    if ("wrongTimeFormate" === result) {
       throw new HttpException(
         { reason: "Błędny format godziny" },
         HttpStatus.NOT_ACCEPTABLE
       );
     }
-    const timetable = await this.timetableSQL.updateReservation(
-      body,
-      hourCount
-    );
-    if (timetable === null) {
+    if ("intervalServerError" === result) {
       throw new HttpException(
         { reason: "Brak rezerwacji lub nie podano gracza" },
         HttpStatus.NOT_ACCEPTABLE
       );
     }
-    const priceList = await this.priceList.getAllPriceList();
-    let playerOne = undefined;
-    let playerTwo = undefined;
-    if (timetable.player_one) {
-      playerOne = {
-        id: timetable.player_one,
-        priceListId: await this.playerService.getPlayerPriceListIdByPlayerId(
-          timetable.player_one
-        ),
-      };
-    }
-    if (timetable.player_two) {
-      playerTwo = {
-        id: timetable.player_two,
-        priceListId: await this.playerService.getPlayerPriceListIdByPlayerId(
-          timetable.player_two
-        ),
-      };
-    }
-    const playersHistory =
-      await this.timetableHandleHistory.updatePlayerHistoryTimetable(
-        timetable,
-        priceList,
-        {
-          playerOne,
-          playerTwo,
-        }
-      );
-    const allPlayers = await this.playerService.findAllPlayers();
-    const reservation = this.timetableHandleData.parseTimetableToReservation(
-      timetable,
-      allPlayers,
-      req.ROLE
-    );
-    return { reservation: reservation, playersHistory };
+    const { reservation } = result;
+    return { reservation };
   }
 
   @Delete("reservation/delete/:id")
