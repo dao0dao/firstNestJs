@@ -3,15 +3,17 @@ import { PlayerService } from "src/models/model/player/player.service";
 import { TimetableSQLService } from "src/models/model/timetable/timetable-sql.service";
 import { TimetableService } from "./timetable.service";
 import { RequestDTO } from "src/request.dto";
-import { InputReservationDTO } from "./timetable.dto";
+import { InputReservationDTO, TimetableIdParam } from "./timetable.dto";
 import { countFromToTime } from "src/utils/time";
+import { TimetableHandlePlayerHistoryService } from "./timetable-handle-player-history.service";
 
 @Injectable()
 export class TimetableFacadeService {
   constructor(
     private timetableSQL: TimetableSQLService,
     private timetable: TimetableService,
-    private playerService: PlayerService
+    private playerService: PlayerService,
+    private timetableHandleHistory: TimetableHandlePlayerHistoryService
   ) {}
 
   async getReservationByDate(date: string, role: string) {
@@ -75,5 +77,20 @@ export class TimetableFacadeService {
       role
     );
     return { reservation };
+  }
+
+  async deleteReservation(role: RequestDTO["ROLE"], param: TimetableIdParam) {
+    const canDelete = this.timetable.checkCanCreateOrUpdate(
+      new Date().toString(),
+      role
+    );
+    if (!canDelete) {
+      return "accessDenied";
+    }
+    await this.timetableHandleHistory.deletePlayerHistoryByTimetableId(
+      param.id
+    );
+    await this.timetableSQL.deleteReservationById(param.id);
+    return { status: "deleted" };
   }
 }

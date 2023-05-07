@@ -34,7 +34,7 @@ export class TimetableController {
     private timetableSQL: TimetableSQLService,
     private timetableHandleData: TimetableService,
     private timetableHandleHistory: TimetableHandlePlayerHistoryService,
-    private facade: TimetableFacadeService
+    private timetableFacade: TimetableFacadeService
   ) {}
 
   @Get()
@@ -49,7 +49,7 @@ export class TimetableController {
         HttpStatus.NOT_ACCEPTABLE
       );
     }
-    const reservations = await this.facade.getReservationByDate(
+    const reservations = await this.timetableFacade.getReservationByDate(
       query.date,
       req.ROLE
     );
@@ -64,7 +64,7 @@ export class TimetableController {
     @Req() req: RequestDTO,
     @Body() body: InputReservationDTO
   ): Promise<CreateReservationDTO> {
-    const result = await this.facade.createReservationAndPlayerHistory(
+    const result = await this.timetableFacade.createReservationAndPlayerHistory(
       req.ROLE,
       body
     );
@@ -100,7 +100,7 @@ export class TimetableController {
   ): Promise<{
     reservation: OutputReservationDTO;
   }> {
-    const result = await this.facade.updateReservation(req.ROLE, body);
+    const result = await this.timetableFacade.updateReservation(req.ROLE, body);
     if ("permissionDenied" === result) {
       throw new HttpException(
         { reason: "Brak uprawnień." },
@@ -119,8 +119,7 @@ export class TimetableController {
         HttpStatus.NOT_ACCEPTABLE
       );
     }
-    const { reservation } = result;
-    return { reservation };
+    return { reservation: result.reservation };
   }
 
   @Delete("reservation/delete/:id")
@@ -129,20 +128,17 @@ export class TimetableController {
     @Req() req: RequestDTO,
     @Param() param: TimetableIdParam
   ) {
-    const canDelete = this.timetableHandleData.checkCanCreateOrUpdate(
-      new Date().toString(),
-      req.ROLE
+    const result = await this.timetableFacade.deleteReservation(
+      req.ROLE,
+      param
     );
-    if (!canDelete) {
+    if ("accessDenied" === result) {
       throw new HttpException(
         { reason: "Brak uprawnień" },
         HttpStatus.NOT_ACCEPTABLE
       );
     }
-    await this.timetableHandleHistory.deletePlayerHistoryByTimetableId(
-      param.id
-    );
-    return this.timetableSQL.deleteReservationById(param.id);
+    return result;
   }
 
   @Get("reservation/price/:id")
