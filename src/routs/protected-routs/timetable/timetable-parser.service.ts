@@ -3,13 +3,13 @@ import { Player } from "src/models/model/player/player.models";
 import { Timetable } from "src/models/model/timetable/timetable.model";
 import { ReservationPlayerDTO, OutputReservationDTO } from "./timetable.dto";
 import { PlayerService } from "src/models/model/player/player.service";
-import { TimetableCheckersFactoryService } from "./timetable-checker-factory.service";
+import { TimetableCheckersService } from "./timetable-checker.service";
 
 @Injectable()
 export class TimetableParserService {
   constructor(
     private playerService: PlayerService,
-    private settersCheckers: TimetableCheckersFactoryService
+    private settersCheckers: TimetableCheckersService
   ) {}
   private setReservationPlayer(allPlayers: Player[], playerId: string) {
     const player = allPlayers.find((pl) => pl.id === playerId);

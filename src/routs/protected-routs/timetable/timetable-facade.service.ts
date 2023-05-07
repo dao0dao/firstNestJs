@@ -1,22 +1,20 @@
 import { Injectable } from "@nestjs/common";
 import { PlayerService } from "src/models/model/player/player.service";
 import { TimetableSQLService } from "src/models/model/timetable/timetable-sql.service";
-import { TimetableService } from "./timetable.service";
 import { RequestDTO } from "src/request.dto";
 import { InputReservationDTO, TimetableIdParam } from "./timetable.dto";
 import { countFromToTime } from "src/utils/time";
-import { TimetableHandlePlayerHistoryService } from "./timetable-handle-player-history.service";
-import { TimetableCheckersFactoryService } from "./timetable-checker-factory.service";
+import { TimetablePlayerHistoryFactoryService } from "./timetable-player-history-factory.service";
+import { TimetableCheckersService } from "./timetable-checker.service";
 import { TimetableParserService } from "./timetable-parser.service";
 
 @Injectable()
 export class TimetableFacadeService {
   constructor(
     private timetableSQL: TimetableSQLService,
-    private timetable: TimetableService,
     private playerService: PlayerService,
-    private timetableHandleHistory: TimetableHandlePlayerHistoryService,
-    private settersCheckers: TimetableCheckersFactoryService,
+    private timetablePlayerHistory: TimetablePlayerHistoryFactoryService,
+    private settersCheckers: TimetableCheckersService,
     private timetableParser: TimetableParserService
   ) {}
 
@@ -51,7 +49,7 @@ export class TimetableFacadeService {
     if (!reservation) {
       return "intervalServerError";
     }
-    return await this.timetable.createPlayerHistory(reservation);
+    return await this.timetablePlayerHistory.createPlayerHistory(reservation);
   }
 
   async updateReservation(role: RequestDTO["ROLE"], body: InputReservationDTO) {
@@ -73,7 +71,7 @@ export class TimetableFacadeService {
     if (timetable === null) {
       return "intervalServerError";
     }
-    await this.timetable.updatePlayerHistoryForTimetable(timetable);
+    await this.timetablePlayerHistory.updatePlayerHistoryTimetable(timetable);
     const allPlayers = await this.playerService.findAllPlayers();
     const reservation = this.timetableParser.parseTimetableToReservation(
       timetable,
@@ -91,7 +89,7 @@ export class TimetableFacadeService {
     if (!canDelete) {
       return "accessDenied";
     }
-    await this.timetableHandleHistory.deletePlayerHistoryByTimetableId(
+    await this.timetablePlayerHistory.deletePlayerHistoryByTimetableId(
       param.id
     );
     await this.timetableSQL.deleteReservationById(param.id);

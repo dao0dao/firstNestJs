@@ -8,32 +8,27 @@ import {
 } from "src/models/model/player-history/playerHistory.model";
 import { PriceList } from "src/models/model/price-list/priceList.model";
 import { Timetable } from "src/models/model/timetable/timetable.model";
-import { TimetableSQLService } from "src/models/model/timetable/timetable-sql.service";
-import { RequestDTO } from "src/request.dto";
-import { todaySQLDate } from "src/utils/time";
-import { TimetableCheckersFactoryService } from "./timetable-checker-factory.service";
-import { InputReservationPayment } from "./timetable.dto";
-import { TimetableSetterService } from "./timetable-setter-factory.service";
+import { TimetableSetterService } from "./timetable-setter.service";
+import { PriceListService } from "src/models/model/price-list/price-list.service";
 
 @Injectable()
-export class TimetableHandlePlayerHistoryService {
+export class TimetablePlayerHistoryFactoryService {
   constructor(
     private playerHistory: PlayerHistoryModelService,
-    private timetableModel: TimetableSQLService,
-    private checkerFactory: TimetableCheckersFactoryService,
-    private setterFactory: TimetableSetterService,
-    private accountModel: PlayerAccountService
+    private setterService: TimetableSetterService,
+    private accountSQL: PlayerAccountService,
+    private priceList: PriceListService
   ) {}
 
-  async createPlayerHistory(
-    reservation: Timetable,
-    priceList: PriceList[],
-    players: TimetableHistoryPlayers
-  ) {
-    if (3 === reservation.court) {
+  async createPlayerHistory(timetable: Timetable) {
+    const priceList = await this.priceList.getAllPriceList();
+    const players = await this.setterService.setPlayersForPlayerHistory(
+      timetable
+    );
+    if (3 === timetable.court) {
       return true;
     }
-    const playerNumber = this.setterFactory.setPlayersCount(reservation);
+    const playerNumber = this.setterService.setPlayersCount(timetable);
     if (playerNumber === 0) {
       return false;
     }
@@ -49,10 +44,10 @@ export class TimetableHandlePlayerHistoryService {
         player_position: 1,
         playerCount: playerNumber,
         priceList: playerPriceList,
-        reservation: reservation,
+        reservation: timetable,
       };
       const history: CreateTimetableHistory =
-        this.setterFactory.setDataForPlayerHistory(data);
+        this.setterService.setDataForPlayerHistory(data);
       const result = await this.playerHistory.createPlayerHistory(history);
       if (!result) {
         return { playerOne: false };
@@ -67,10 +62,10 @@ export class TimetableHandlePlayerHistoryService {
         player_position: 2,
         playerCount: playerNumber,
         priceList: playerPriceList,
-        reservation: reservation,
+        reservation: timetable,
       };
       const history: CreateTimetableHistory =
-        this.setterFactory.setDataForPlayerHistory(data);
+        this.setterService.setDataForPlayerHistory(data);
       const result = await this.playerHistory.createPlayerHistory(history);
       if (!result) {
         return { playerTwo: false };
@@ -79,25 +74,25 @@ export class TimetableHandlePlayerHistoryService {
     return true;
   }
 
-  async updatePlayerHistoryTimetable(
-    reservation: Timetable,
-    priceList: PriceList[],
-    players: TimetableHistoryPlayers
-  ) {
-    const history = await this.playerHistory.getPlayersHistoryByTimetableId(
-      reservation.id
+  async updatePlayerHistoryTimetable(timetable: Timetable) {
+    const priceList = await this.priceList.getAllPriceList();
+    const players = await this.setterService.setPlayersForPlayerHistory(
+      timetable
     );
-    if (3 === reservation.court) {
-      await this.playerHistory.removeTwoTimetablePlayerHistory(reservation.id);
+    const history = await this.playerHistory.getPlayersHistoryByTimetableId(
+      timetable.id
+    );
+    if (3 === timetable.court) {
+      await this.playerHistory.removeTwoTimetablePlayerHistory(timetable.id);
       return true;
     }
-    const playerNumber = this.setterFactory.setPlayersCount(reservation);
+    const playerNumber = this.setterService.setPlayersCount(timetable);
     if (playerNumber === 0) {
       return false;
     }
     if (0 === history.length) {
       //stwórz nową historię jeśli jej brak
-      return this.createPlayerHistory(reservation, priceList, players);
+      return this.createPlayerHistory(timetable);
     }
     const history_to_update: PlayerHistory[] = [];
     const { playerOne, playerTwo } = players;
@@ -137,24 +132,24 @@ export class TimetableHandlePlayerHistoryService {
       //odśwież aktualne wpisy
       let player_position = 1;
       let playerPriceList: PriceList;
-      if (reservation.player_one === h.player_id) {
+      if (timetable.player_one === h.player_id) {
         player_position = 1;
         playerPriceList = priceList.find(
           (el) => el.id === playerOne.priceListId
         );
       }
-      if (reservation.player_two === h.player_id) {
+      if (timetable.player_two === h.player_id) {
         player_position = 2;
         playerPriceList = priceList.find(
           (el) => el.id === playerTwo.priceListId
         );
       }
-      const data = this.setterFactory.setDataForPlayerHistory({
+      const data = this.setterService.setDataForPlayerHistory({
         player_id: h.player_id,
         player_position,
         playerCount: playerNumber,
         priceList: playerPriceList,
-        reservation,
+        reservation: timetable,
       });
       h.set({
         player_position: data.player_position,
@@ -165,7 +160,7 @@ export class TimetableHandlePlayerHistoryService {
     }
     if (Object.keys(new_Players).length) {
       //jeśli jest nowy wpis- stwórz
-      return this.createPlayerHistory(reservation, priceList, new_Players);
+      return this.createPlayerHistory(timetable);
     }
   }
 
@@ -175,91 +170,12 @@ export class TimetableHandlePlayerHistoryService {
     );
     for (const h of history) {
       if (h.payment_method === "payment") {
-        await this.accountModel.addToPlayerWallet(
+        await this.accountSQL.addToPlayerWallet(
           h.player_id,
           parseFloat(h.price)
         );
       }
     }
     return this.playerHistory.removeTwoTimetablePlayerHistory(timetable_id);
-  }
-
-  async payForPlayerHistoryTimetable(
-    req: RequestDTO,
-    data: InputReservationPayment
-  ) {
-    const result = {
-      updated: false,
-      access_denied: false,
-      wrong_value: false,
-      no_wallet: false,
-    };
-    const history = await this.playerHistory.getPlayersHistoryByTimetableId(
-      data.reservationId
-    );
-    if (0 === history.length) {
-      await this.timetableModel.setReservationPayedForBothPlayers(
-        data.reservationId
-      );
-      result.updated = true;
-      return result;
-    }
-    if (!this.checkerFactory.checkCanPayForReservation(req.ROLE, history)) {
-      result.access_denied = true;
-      return result;
-    }
-    if (!this.checkerFactory.checkCanChangePrice(req.ROLE, data, history)) {
-      result.wrong_value = true;
-      return result;
-    }
-    const { reservationId, playerOne, playerTwo } = data;
-    if (!playerOne?.id && playerOne?.name) {
-      await this.timetableModel.setReservationPayedForPlayerOne(reservationId);
-    }
-    if (playerOne?.id && playerOne.name && "none" !== playerOne.method) {
-      if ("payment" === playerOne.method) {
-        const wallet = await this.accountModel.subtractToPlayerWallet(
-          playerOne.id,
-          playerOne.value
-        );
-        if (!wallet) {
-          result.no_wallet = true;
-        }
-      }
-      await this.playerHistory.payForPlayerHistoryByTimetableIdAnPosition(
-        reservationId,
-        1,
-        playerOne.value,
-        playerOne.method,
-        req.ADMIN_NAME,
-        todaySQLDate()
-      );
-      await this.timetableModel.setReservationPayedForPlayerOne(reservationId);
-    }
-    if (!playerTwo?.id && playerTwo?.name) {
-      await this.timetableModel.setReservationPayedForPlayerTwo(reservationId);
-    }
-    if (playerTwo?.id && playerTwo.name && "none" !== data.playerTwo.method) {
-      if ("payment" === playerTwo.method) {
-        const wallet = await this.accountModel.subtractToPlayerWallet(
-          playerTwo.id,
-          playerTwo.value
-        );
-        if (!wallet) {
-          result.no_wallet = true;
-        }
-      }
-      await this.playerHistory.payForPlayerHistoryByTimetableIdAnPosition(
-        reservationId,
-        2,
-        playerTwo.value,
-        data.playerTwo.method,
-        req.ADMIN_NAME,
-        todaySQLDate()
-      );
-      await this.timetableModel.setReservationPayedForPlayerTwo(reservationId);
-    }
-    result.updated = true;
-    return result;
   }
 }

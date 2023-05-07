@@ -13,8 +13,7 @@ import {
 } from "@nestjs/common";
 import { Role } from "src/guards/roles.decorators";
 import { RequestDTO } from "src/request.dto";
-import { TimetableService } from "./timetable.service";
-import { TimetableHandlePlayerHistoryService } from "./timetable-handle-player-history.service";
+import { TimetablePaymentFactoryService } from "./timetable-payment-factory.service";
 import {
   CreateReservationDTO,
   InputReservationDTO,
@@ -30,8 +29,7 @@ import { TimetableFacadeService } from "./timetable-facade.service";
 @Controller("timetable")
 export class TimetableController {
   constructor(
-    private timetableService: TimetableService,
-    private timetableHandleHistory: TimetableHandlePlayerHistoryService,
+    private timetablePaymentFactory: TimetablePaymentFactoryService,
     private timetableFacade: TimetableFacadeService
   ) {}
 
@@ -144,7 +142,9 @@ export class TimetableController {
   async getReservationPrice(
     @Param() param: TimetableIdParam
   ): Promise<OutputReservationPrice> {
-    const data = await this.timetableService.getReservationPrice(param.id);
+    const data = await this.timetablePaymentFactory.getReservationPrice(
+      param.id
+    );
     return { prices: data };
   }
 
@@ -154,8 +154,10 @@ export class TimetableController {
     @Req() req: RequestDTO,
     @Body() body: InputReservationPayment
   ) {
-    const result =
-      await this.timetableHandleHistory.payForPlayerHistoryTimetable(req, body);
+    const result = await this.timetablePaymentFactory.payForReservation(
+      req,
+      body
+    );
     if (result.access_denied) {
       throw new HttpException(
         { reason: "Brak uprawnień." },

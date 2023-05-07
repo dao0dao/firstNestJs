@@ -4,7 +4,7 @@ import { RequestDTO } from "src/request.dto";
 import { InputReservationPayment } from "./timetable.dto";
 
 @Injectable()
-export class TimetableCheckersFactoryService {
+export class TimetableCheckersService {
   checkCanChangePrice(
     role: RequestDTO["ROLE"],
     data: InputReservationPayment,
