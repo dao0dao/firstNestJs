@@ -6,6 +6,8 @@ import { RequestDTO } from "src/request.dto";
 import { InputReservationDTO, TimetableIdParam } from "./timetable.dto";
 import { countFromToTime } from "src/utils/time";
 import { TimetableHandlePlayerHistoryService } from "./timetable-handle-player-history.service";
+import { SettersAndCheckersFactory } from "./setters-and-checkers-factory.service";
+import { TimetableParserService } from "./timetable-parser.service";
 
 @Injectable()
 export class TimetableFacadeService {
@@ -13,16 +15,18 @@ export class TimetableFacadeService {
     private timetableSQL: TimetableSQLService,
     private timetable: TimetableService,
     private playerService: PlayerService,
-    private timetableHandleHistory: TimetableHandlePlayerHistoryService
+    private timetableHandleHistory: TimetableHandlePlayerHistoryService,
+    private settersCheckers: SettersAndCheckersFactory,
+    private timetableParser: TimetableParserService
   ) {}
 
   async getReservationByDate(date: string, role: string) {
-    const dailyTimetable = await this.timetableSQL.findAllReservationByDate(
+    const timetableForDate = await this.timetableSQL.findAllReservationByDate(
       date
     );
     const reservations =
-      await this.timetable.parseTimetableToReservationModelArray(
-        dailyTimetable,
+      await this.timetableParser.parseTimetableToReservationModelArray(
+        timetableForDate,
         role
       );
     return reservations;
@@ -32,7 +36,7 @@ export class TimetableFacadeService {
     role: RequestDTO["ROLE"],
     body: InputReservationDTO
   ) {
-    const canCreate = this.timetable.checkCanCreateOrUpdate(
+    const canCreate = this.settersCheckers.checkCanCreateOrUpdate(
       body.form.date,
       role
     );
@@ -47,11 +51,11 @@ export class TimetableFacadeService {
     if (!reservation) {
       return "intervalServerError";
     }
-    return await this.timetable.createPlayerHistoryForTimetable(reservation);
+    return await this.timetable.createPlayerHistory(reservation);
   }
 
   async updateReservation(role: RequestDTO["ROLE"], body: InputReservationDTO) {
-    const canUpdate = this.timetable.checkCanCreateOrUpdate(
+    const canUpdate = this.settersCheckers.checkCanCreateOrUpdate(
       body.form.date,
       role
     );
@@ -71,7 +75,7 @@ export class TimetableFacadeService {
     }
     await this.timetable.updatePlayerHistoryForTimetable(timetable);
     const allPlayers = await this.playerService.findAllPlayers();
-    const reservation = this.timetable.parseTimetableToReservation(
+    const reservation = this.timetableParser.parseTimetableToReservation(
       timetable,
       allPlayers,
       role
@@ -80,7 +84,7 @@ export class TimetableFacadeService {
   }
 
   async deleteReservation(role: RequestDTO["ROLE"], param: TimetableIdParam) {
-    const canDelete = this.timetable.checkCanCreateOrUpdate(
+    const canDelete = this.settersCheckers.checkCanCreateOrUpdate(
       new Date().toString(),
       role
     );

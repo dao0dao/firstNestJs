@@ -11,7 +11,7 @@ import { Timetable } from "src/models/model/timetable/timetable.model";
 import { TimetableSQLService } from "src/models/model/timetable/timetable-sql.service";
 import { RequestDTO } from "src/request.dto";
 import { todaySQLDate } from "src/utils/time";
-import { FactoryDataTimetablePlayerHistory } from "./factory data-timetable-player-history.service";
+import { SettersAndCheckersFactory } from "./setters-and-checkers-factory.service";
 import { InputReservationPayment, PlayerHistoryPrice } from "./timetable.dto";
 
 @Injectable()
@@ -19,7 +19,7 @@ export class TimetableHandlePlayerHistoryService {
   constructor(
     private playerHistory: PlayerHistoryModelService,
     private timetableModel: TimetableSQLService,
-    private dataFactory: FactoryDataTimetablePlayerHistory,
+    private dataFactory: SettersAndCheckersFactory,
     private accountModel: PlayerAccountService
   ) {}
 
@@ -31,7 +31,7 @@ export class TimetableHandlePlayerHistoryService {
     if (3 === reservation.court) {
       return true;
     }
-    const playerNumber = this.dataFactory.countPlayers(reservation);
+    const playerNumber = this.dataFactory.setPlayersCount(reservation);
     if (playerNumber === 0) {
       return false;
     }
@@ -50,7 +50,7 @@ export class TimetableHandlePlayerHistoryService {
         reservation: reservation,
       };
       const history: CreateTimetableHistory =
-        this.dataFactory.createDataForPlayerHistory(data);
+        this.dataFactory.setDataForPlayerHistory(data);
       const result = await this.playerHistory.createPlayerHistory(history);
       if (!result) {
         return { playerOne: false };
@@ -68,7 +68,7 @@ export class TimetableHandlePlayerHistoryService {
         reservation: reservation,
       };
       const history: CreateTimetableHistory =
-        this.dataFactory.createDataForPlayerHistory(data);
+        this.dataFactory.setDataForPlayerHistory(data);
       const result = await this.playerHistory.createPlayerHistory(history);
       if (!result) {
         return { playerTwo: false };
@@ -89,7 +89,7 @@ export class TimetableHandlePlayerHistoryService {
       await this.playerHistory.removeTwoTimetablePlayerHistory(reservation.id);
       return true;
     }
-    const playerNumber = this.dataFactory.countPlayers(reservation);
+    const playerNumber = this.dataFactory.setPlayersCount(reservation);
     if (playerNumber === 0) {
       return false;
     }
@@ -147,7 +147,7 @@ export class TimetableHandlePlayerHistoryService {
           (el) => el.id === playerTwo.priceListId
         );
       }
-      const data = this.dataFactory.createDataForPlayerHistory({
+      const data = this.dataFactory.setDataForPlayerHistory({
         player_id: h.player_id,
         player_position,
         playerCount: playerNumber,

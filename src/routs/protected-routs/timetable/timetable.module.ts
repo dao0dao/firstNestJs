@@ -6,8 +6,9 @@ import { TimetableService } from "./timetable.service";
 import { PlayerModule } from "../player/player.module";
 import { ModelsModule } from "src/models/models.module";
 import { TimetableHandlePlayerHistoryService } from "./timetable-handle-player-history.service";
-import { FactoryDataTimetablePlayerHistory } from "./factory data-timetable-player-history.service";
+import { SettersAndCheckersFactory } from "./setters-and-checkers-factory.service";
 import { TimetableFacadeService } from "./timetable-facade.service";
+import { TimetableParserService } from "./timetable-parser.service";
 
 @Module({
   imports: [
@@ -19,8 +20,9 @@ import { TimetableFacadeService } from "./timetable-facade.service";
   providers: [
     TimetableService,
     TimetableHandlePlayerHistoryService,
-    FactoryDataTimetablePlayerHistory,
+    SettersAndCheckersFactory,
     TimetableFacadeService,
+    TimetableParserService,
   ],
 })
 export class TimetableModule {}

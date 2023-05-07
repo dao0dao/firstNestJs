@@ -11,7 +11,7 @@ import { HoursDTO } from "../price-list/price-list.dto";
 import { InputReservationPayment } from "./timetable.dto";
 
 @Injectable()
-export class FactoryDataTimetablePlayerHistory {
+export class SettersAndCheckersFactory {
   checkCanChangePrice(
     role: RequestDTO["ROLE"],
     data: InputReservationPayment,
@@ -61,7 +61,7 @@ export class FactoryDataTimetablePlayerHistory {
     return true;
   }
 
-  countPlayers(reservation: Timetable) {
+  setPlayersCount(reservation: Timetable) {
     let playerCount = 0;
     if (reservation.player_one !== "" && reservation.player_one !== undefined) {
       playerCount++;
@@ -78,7 +78,7 @@ export class FactoryDataTimetablePlayerHistory {
     return playerCount;
   }
 
-  createDataForPlayerHistory(data: {
+  setDataForPlayerHistory(data: {
     player_id: string;
     playerCount: number;
     player_position: number;
@@ -106,7 +106,7 @@ export class FactoryDataTimetablePlayerHistory {
     return history;
   }
 
-  setPlayerPrice(data: {
+  private setPlayerPrice(data: {
     date: string;
     time_from: string;
     time_to: string;
@@ -185,5 +185,14 @@ export class FactoryDataTimetablePlayerHistory {
       (parseFloat(data.priceList.default_Price) * data.hourCount) /
       data.playerCount;
     return price;
+  }
+
+  checkCanCreateOrUpdate(date: string, role: string) {
+    if (role === "admin") {
+      return true;
+    }
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return new Date(date) >= today;
   }
 }
