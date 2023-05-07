@@ -10,7 +10,7 @@ import { Injectable } from "@nestjs/common";
 @Injectable()
 export class TimetablePaymentFactoryService {
   constructor(
-    private playerHistory: PlayerHistoryModelService,
+    private playerHistorySQL: PlayerHistoryModelService,
     private timetableSQL: TimetableSQLService,
     private checkerService: TimetableCheckersService,
     private accountSQL: PlayerAccountService
@@ -23,7 +23,7 @@ export class TimetablePaymentFactoryService {
       wrong_value: false,
       no_wallet: false,
     };
-    const history = await this.playerHistory.getPlayersHistoryByTimetableId(
+    const history = await this.playerHistorySQL.getPlayersHistoryByTimetableId(
       data.reservationId
     );
     if (0 === history.length) {
@@ -55,7 +55,7 @@ export class TimetablePaymentFactoryService {
           result.no_wallet = true;
         }
       }
-      await this.playerHistory.payForPlayerHistoryByTimetableIdAnPosition(
+      await this.playerHistorySQL.payForPlayerHistoryByTimetableIdAnPosition(
         reservationId,
         1,
         playerOne.value,
@@ -78,7 +78,7 @@ export class TimetablePaymentFactoryService {
           result.no_wallet = true;
         }
       }
-      await this.playerHistory.payForPlayerHistoryByTimetableIdAnPosition(
+      await this.playerHistorySQL.payForPlayerHistoryByTimetableIdAnPosition(
         reservationId,
         2,
         playerTwo.value,
@@ -95,7 +95,7 @@ export class TimetablePaymentFactoryService {
   async getReservationPrice(reservation_id: number) {
     const data: PlayerHistoryPrice[] = [];
     const history =
-      await this.playerHistory.getPriceFromPlayerHistoryByTimetableId(
+      await this.playerHistorySQL.getPriceFromPlayerHistoryByTimetableId(
         reservation_id
       );
     for (const h of history) {

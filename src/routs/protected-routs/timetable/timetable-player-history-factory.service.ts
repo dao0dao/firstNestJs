@@ -14,7 +14,7 @@ import { PriceListService } from "src/models/model/price-list/price-list.service
 @Injectable()
 export class TimetablePlayerHistoryFactoryService {
   constructor(
-    private playerHistory: PlayerHistoryModelService,
+    private playerHistorySQL: PlayerHistoryModelService,
     private setterService: TimetableSetterService,
     private accountSQL: PlayerAccountService,
     private priceList: PriceListService
@@ -48,7 +48,7 @@ export class TimetablePlayerHistoryFactoryService {
       };
       const history: CreateTimetableHistory =
         this.setterService.setDataForPlayerHistory(data);
-      const result = await this.playerHistory.createPlayerHistory(history);
+      const result = await this.playerHistorySQL.createPlayerHistory(history);
       if (!result) {
         return { playerOne: false };
       }
@@ -66,7 +66,7 @@ export class TimetablePlayerHistoryFactoryService {
       };
       const history: CreateTimetableHistory =
         this.setterService.setDataForPlayerHistory(data);
-      const result = await this.playerHistory.createPlayerHistory(history);
+      const result = await this.playerHistorySQL.createPlayerHistory(history);
       if (!result) {
         return { playerTwo: false };
       }
@@ -79,11 +79,11 @@ export class TimetablePlayerHistoryFactoryService {
     const players = await this.setterService.setPlayersForPlayerHistory(
       timetable
     );
-    const history = await this.playerHistory.getPlayersHistoryByTimetableId(
+    const history = await this.playerHistorySQL.getPlayersHistoryByTimetableId(
       timetable.id
     );
     if (3 === timetable.court) {
-      await this.playerHistory.removeTwoTimetablePlayerHistory(timetable.id);
+      await this.playerHistorySQL.removeTwoTimetablePlayerHistory(timetable.id);
       return true;
     }
     const playerNumber = this.setterService.setPlayersCount(timetable);
@@ -165,7 +165,7 @@ export class TimetablePlayerHistoryFactoryService {
   }
 
   async deletePlayerHistoryByTimetableId(timetable_id: number) {
-    const history = await this.playerHistory.getPlayersHistoryByTimetableId(
+    const history = await this.playerHistorySQL.getPlayersHistoryByTimetableId(
       timetable_id
     );
     for (const h of history) {
@@ -176,6 +176,6 @@ export class TimetablePlayerHistoryFactoryService {
         );
       }
     }
-    return this.playerHistory.removeTwoTimetablePlayerHistory(timetable_id);
+    return this.playerHistorySQL.removeTwoTimetablePlayerHistory(timetable_id);
   }
 }
