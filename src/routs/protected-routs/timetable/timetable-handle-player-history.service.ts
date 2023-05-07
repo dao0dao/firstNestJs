@@ -11,15 +11,17 @@ import { Timetable } from "src/models/model/timetable/timetable.model";
 import { TimetableSQLService } from "src/models/model/timetable/timetable-sql.service";
 import { RequestDTO } from "src/request.dto";
 import { todaySQLDate } from "src/utils/time";
-import { SettersAndCheckersFactory } from "./setters-and-checkers-factory.service";
-import { InputReservationPayment, PlayerHistoryPrice } from "./timetable.dto";
+import { TimetableCheckersFactoryService } from "./timetable-checker-factory.service";
+import { InputReservationPayment } from "./timetable.dto";
+import { TimetableSetterService } from "./timetable-setter.service";
 
 @Injectable()
 export class TimetableHandlePlayerHistoryService {
   constructor(
     private playerHistory: PlayerHistoryModelService,
     private timetableModel: TimetableSQLService,
-    private dataFactory: SettersAndCheckersFactory,
+    private checkerFactory: TimetableCheckersFactoryService,
+    private setterFactory: TimetableSetterService,
     private accountModel: PlayerAccountService
   ) {}
 
@@ -31,7 +33,7 @@ export class TimetableHandlePlayerHistoryService {
     if (3 === reservation.court) {
       return true;
     }
-    const playerNumber = this.dataFactory.setPlayersCount(reservation);
+    const playerNumber = this.setterFactory.setPlayersCount(reservation);
     if (playerNumber === 0) {
       return false;
     }
@@ -50,7 +52,7 @@ export class TimetableHandlePlayerHistoryService {
         reservation: reservation,
       };
       const history: CreateTimetableHistory =
-        this.dataFactory.setDataForPlayerHistory(data);
+        this.setterFactory.setDataForPlayerHistory(data);
       const result = await this.playerHistory.createPlayerHistory(history);
       if (!result) {
         return { playerOne: false };
@@ -68,7 +70,7 @@ export class TimetableHandlePlayerHistoryService {
         reservation: reservation,
       };
       const history: CreateTimetableHistory =
-        this.dataFactory.setDataForPlayerHistory(data);
+        this.setterFactory.setDataForPlayerHistory(data);
       const result = await this.playerHistory.createPlayerHistory(history);
       if (!result) {
         return { playerTwo: false };
@@ -89,7 +91,7 @@ export class TimetableHandlePlayerHistoryService {
       await this.playerHistory.removeTwoTimetablePlayerHistory(reservation.id);
       return true;
     }
-    const playerNumber = this.dataFactory.setPlayersCount(reservation);
+    const playerNumber = this.setterFactory.setPlayersCount(reservation);
     if (playerNumber === 0) {
       return false;
     }
@@ -147,7 +149,7 @@ export class TimetableHandlePlayerHistoryService {
           (el) => el.id === playerTwo.priceListId
         );
       }
-      const data = this.dataFactory.setDataForPlayerHistory({
+      const data = this.setterFactory.setDataForPlayerHistory({
         player_id: h.player_id,
         player_position,
         playerCount: playerNumber,
@@ -202,11 +204,11 @@ export class TimetableHandlePlayerHistoryService {
       result.updated = true;
       return result;
     }
-    if (!this.dataFactory.checkCanPayForReservation(req.ROLE, history)) {
+    if (!this.checkerFactory.checkCanPayForReservation(req.ROLE, history)) {
       result.access_denied = true;
       return result;
     }
-    if (!this.dataFactory.checkCanChangePrice(req.ROLE, data, history)) {
+    if (!this.checkerFactory.checkCanChangePrice(req.ROLE, data, history)) {
       result.wrong_value = true;
       return result;
     }
@@ -259,22 +261,5 @@ export class TimetableHandlePlayerHistoryService {
     }
     result.updated = true;
     return result;
-  }
-
-  async getReservationPrice(reservation_id: number) {
-    const data: PlayerHistoryPrice[] = [];
-    const history =
-      await this.playerHistory.getPriceFromPlayerHistoryByTimetableId(
-        reservation_id
-      );
-    for (const h of history) {
-      data.push({
-        is_paid: h.is_paid,
-        player: h.player,
-        player_position: parseInt(h.player_position),
-        price: parseFloat(h.price),
-      });
-    }
-    return data;
   }
 }

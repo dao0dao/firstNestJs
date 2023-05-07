@@ -6,9 +6,10 @@ import { TimetableService } from "./timetable.service";
 import { PlayerModule } from "../player/player.module";
 import { ModelsModule } from "src/models/models.module";
 import { TimetableHandlePlayerHistoryService } from "./timetable-handle-player-history.service";
-import { SettersAndCheckersFactory } from "./setters-and-checkers-factory.service";
+import { TimetableCheckersFactoryService } from "./timetable-checker-factory.service";
 import { TimetableFacadeService } from "./timetable-facade.service";
 import { TimetableParserService } from "./timetable-parser.service";
+import { TimetableSetterService } from "./timetable-setter.service";
 
 @Module({
   imports: [
@@ -20,9 +21,10 @@ import { TimetableParserService } from "./timetable-parser.service";
   providers: [
     TimetableService,
     TimetableHandlePlayerHistoryService,
-    SettersAndCheckersFactory,
+    TimetableCheckersFactoryService,
     TimetableFacadeService,
     TimetableParserService,
+    TimetableSetterService,
   ],
 })
 export class TimetableModule {}

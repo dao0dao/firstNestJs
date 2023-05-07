@@ -1,72 +1,59 @@
 import { Injectable } from "@nestjs/common";
 import { Timetable } from "src/models/model/timetable/timetable.model";
-import { PlayerService } from "src/models/model/player/player.service";
 import { PriceListService } from "src/models/model/price-list/price-list.service";
 import { TimetableHandlePlayerHistoryService } from "./timetable-handle-player-history.service";
+import { PlayerHistoryPrice } from "./timetable.dto";
+import { PlayerHistoryModelService } from "src/models/model/player-history/player-history.service";
+import { TimetableSetterService } from "./timetable-setter.service";
 
 @Injectable()
 export class TimetableService {
   constructor(
-    private playerService: PlayerService,
     private priceList: PriceListService,
-    private timetableHistory: TimetableHandlePlayerHistoryService
+    private timetableHistory: TimetableHandlePlayerHistoryService,
+    private playerHistory: PlayerHistoryModelService,
+    private setterFactory: TimetableSetterService
   ) {}
 
-  async createPlayerHistory(reservation: Timetable) {
+  async createPlayerHistory(timetable: Timetable) {
     const priceList = await this.priceList.getAllPriceList();
-    let playerOne = undefined;
-    let playerTwo = undefined;
-    if (reservation.player_one) {
-      playerOne = {
-        id: reservation.player_one,
-        priceListId: await this.playerService.getPlayerPriceListIdByPlayerId(
-          reservation.player_one
-        ),
-      };
-    }
-    if (reservation.player_two) {
-      playerTwo = {
-        id: reservation.player_two,
-        priceListId: await this.playerService.getPlayerPriceListIdByPlayerId(
-          reservation.player_two
-        ),
-      };
-    }
+    const players = await this.setterFactory.setPlayersForPlayerHistory(
+      timetable
+    );
     const playersHistory = await this.timetableHistory.createPlayerHistory(
-      reservation,
+      timetable,
       priceList,
-      { playerOne, playerTwo }
+      players
     );
     return playersHistory;
   }
 
   async updatePlayerHistoryForTimetable(timetable: Timetable) {
     const priceList = await this.priceList.getAllPriceList();
-    let playerOne = undefined;
-    let playerTwo = undefined;
-    if (timetable.player_one) {
-      playerOne = {
-        id: timetable.player_one,
-        priceListId: await this.playerService.getPlayerPriceListIdByPlayerId(
-          timetable.player_one
-        ),
-      };
-    }
-    if (timetable.player_two) {
-      playerTwo = {
-        id: timetable.player_two,
-        priceListId: await this.playerService.getPlayerPriceListIdByPlayerId(
-          timetable.player_two
-        ),
-      };
-    }
+    const players = await this.setterFactory.setPlayersForPlayerHistory(
+      timetable
+    );
     await this.timetableHistory.updatePlayerHistoryTimetable(
       timetable,
       priceList,
-      {
-        playerOne,
-        playerTwo,
-      }
+      players
     );
+  }
+
+  async getReservationPrice(reservation_id: number) {
+    const data: PlayerHistoryPrice[] = [];
+    const history =
+      await this.playerHistory.getPriceFromPlayerHistoryByTimetableId(
+        reservation_id
+      );
+    for (const h of history) {
+      data.push({
+        is_paid: h.is_paid,
+        player: h.player,
+        player_position: parseInt(h.player_position),
+        price: parseFloat(h.price),
+      });
+    }
+    return data;
   }
 }

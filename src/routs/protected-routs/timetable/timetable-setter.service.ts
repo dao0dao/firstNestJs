@@ -1,65 +1,14 @@
 import { Injectable } from "@nestjs/common";
-import {
-  PlayerHistory,
-  CreateTimetableHistory,
-} from "src/models/model/player-history/playerHistory.model";
+import { CreateTimetableHistory } from "src/models/model/player-history/playerHistory.model";
 import { PriceList } from "src/models/model/price-list/priceList.model";
 import { Timetable } from "src/models/model/timetable/timetable.model";
-import { RequestDTO } from "src/request.dto";
 import { timeToNumber } from "src/utils/time";
 import { HoursDTO } from "../price-list/price-list.dto";
-import { InputReservationPayment } from "./timetable.dto";
+import { PlayerService } from "src/models/model/player/player.service";
 
 @Injectable()
-export class SettersAndCheckersFactory {
-  checkCanChangePrice(
-    role: RequestDTO["ROLE"],
-    data: InputReservationPayment,
-    history: PlayerHistory[]
-  ) {
-    if ("admin" === role) {
-      return true;
-    }
-    const { playerOne, playerTwo } = data;
-    if (playerOne?.id) {
-      const h = history.find((el) => el.player_id === playerOne.id);
-      if (!h) {
-        return false;
-      }
-      if (parseFloat(h.price) !== playerOne.value) {
-        return false;
-      }
-    }
-    if (playerTwo?.id) {
-      const h = history.find((el) => el.player_id === playerTwo.id);
-      if (!h) {
-        return false;
-      }
-      if (parseFloat(h.price) !== playerTwo.value) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  checkCanPayForReservation(
-    role: RequestDTO["ROLE"],
-    history: PlayerHistory[]
-  ) {
-    if ("admin" === role) {
-      return true;
-    }
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    for (const h of history) {
-      const date = new Date(h.service_date);
-      date.setHours(0, 0, 0, 0);
-      if (today > date) {
-        return false;
-      }
-    }
-    return true;
-  }
+export class TimetableSetterService {
+  constructor(private playerService: PlayerService) {}
 
   setPlayersCount(reservation: Timetable) {
     let playerCount = 0;
@@ -187,12 +136,25 @@ export class SettersAndCheckersFactory {
     return price;
   }
 
-  checkCanCreateOrUpdate(date: string, role: string) {
-    if (role === "admin") {
-      return true;
+  async setPlayersForPlayerHistory(reservation: Timetable) {
+    let playerOne = undefined;
+    let playerTwo = undefined;
+    if (reservation.player_one) {
+      playerOne = {
+        id: reservation.player_one,
+        priceListId: await this.playerService.getPlayerPriceListIdByPlayerId(
+          reservation.player_one
+        ),
+      };
     }
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    return new Date(date) >= today;
+    if (reservation.player_two) {
+      playerTwo = {
+        id: reservation.player_two,
+        priceListId: await this.playerService.getPlayerPriceListIdByPlayerId(
+          reservation.player_two
+        ),
+      };
+    }
+    return { playerOne, playerTwo };
   }
 }

@@ -6,7 +6,7 @@ import { RequestDTO } from "src/request.dto";
 import { InputReservationDTO, TimetableIdParam } from "./timetable.dto";
 import { countFromToTime } from "src/utils/time";
 import { TimetableHandlePlayerHistoryService } from "./timetable-handle-player-history.service";
-import { SettersAndCheckersFactory } from "./setters-and-checkers-factory.service";
+import { TimetableCheckersFactoryService } from "./timetable-checker-factory.service";
 import { TimetableParserService } from "./timetable-parser.service";
 
 @Injectable()
@@ -16,7 +16,7 @@ export class TimetableFacadeService {
     private timetable: TimetableService,
     private playerService: PlayerService,
     private timetableHandleHistory: TimetableHandlePlayerHistoryService,
-    private settersCheckers: SettersAndCheckersFactory,
+    private settersCheckers: TimetableCheckersFactoryService,
     private timetableParser: TimetableParserService
   ) {}
 

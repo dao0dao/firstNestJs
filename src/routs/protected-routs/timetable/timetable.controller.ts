@@ -12,7 +12,6 @@ import {
   Param,
 } from "@nestjs/common";
 import { Role } from "src/guards/roles.decorators";
-import { TimetableSQLService } from "src/models/model/timetable/timetable-sql.service";
 import { RequestDTO } from "src/request.dto";
 import { TimetableService } from "./timetable.service";
 import { TimetableHandlePlayerHistoryService } from "./timetable-handle-player-history.service";
@@ -31,8 +30,7 @@ import { TimetableFacadeService } from "./timetable-facade.service";
 @Controller("timetable")
 export class TimetableController {
   constructor(
-    private timetableSQL: TimetableSQLService,
-    private timetableHandleData: TimetableService,
+    private timetableService: TimetableService,
     private timetableHandleHistory: TimetableHandlePlayerHistoryService,
     private timetableFacade: TimetableFacadeService
   ) {}
@@ -146,9 +144,7 @@ export class TimetableController {
   async getReservationPrice(
     @Param() param: TimetableIdParam
   ): Promise<OutputReservationPrice> {
-    const data = await this.timetableHandleHistory.getReservationPrice(
-      param.id
-    );
+    const data = await this.timetableService.getReservationPrice(param.id);
     return { prices: data };
   }
 
