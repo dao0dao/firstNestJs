@@ -12,11 +12,8 @@ import {
   Param,
 } from "@nestjs/common";
 import { Role } from "src/guards/roles.decorators";
-import { PlayerService } from "src/models/model/player/player.service";
-import { PriceListService } from "src/models/model/price-list/price-list.service";
 import { TimetableSQLService } from "src/models/model/timetable/timetable-sql.service";
 import { RequestDTO } from "src/request.dto";
-import { countFromToTime } from "src/utils/time";
 import { TimetableService } from "./timetable.service";
 import { TimetableHandlePlayerHistoryService } from "./timetable-handle-player-history.service";
 import {
@@ -35,10 +32,8 @@ import { TimetableFacadeService } from "./timetable-facade.service";
 export class TimetableController {
   constructor(
     private timetableSQL: TimetableSQLService,
-    private playerService: PlayerService,
     private timetableHandleData: TimetableService,
     private timetableHandleHistory: TimetableHandlePlayerHistoryService,
-    private priceList: PriceListService,
     private facade: TimetableFacadeService
   ) {}
 
