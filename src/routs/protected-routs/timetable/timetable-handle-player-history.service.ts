@@ -13,7 +13,7 @@ import { RequestDTO } from "src/request.dto";
 import { todaySQLDate } from "src/utils/time";
 import { TimetableCheckersFactoryService } from "./timetable-checker-factory.service";
 import { InputReservationPayment } from "./timetable.dto";
-import { TimetableSetterService } from "./timetable-setter.service";
+import { TimetableSetterService } from "./timetable-setter-factory.service";
 
 @Injectable()
 export class TimetableHandlePlayerHistoryService {

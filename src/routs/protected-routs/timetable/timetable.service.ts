@@ -4,7 +4,7 @@ import { PriceListService } from "src/models/model/price-list/price-list.service
 import { TimetableHandlePlayerHistoryService } from "./timetable-handle-player-history.service";
 import { PlayerHistoryPrice } from "./timetable.dto";
 import { PlayerHistoryModelService } from "src/models/model/player-history/player-history.service";
-import { TimetableSetterService } from "./timetable-setter.service";
+import { TimetableSetterService } from "./timetable-setter-factory.service";
 
 @Injectable()
 export class TimetableService {

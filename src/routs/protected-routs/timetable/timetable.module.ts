@@ -9,7 +9,7 @@ import { TimetableHandlePlayerHistoryService } from "./timetable-handle-player-h
 import { TimetableCheckersFactoryService } from "./timetable-checker-factory.service";
 import { TimetableFacadeService } from "./timetable-facade.service";
 import { TimetableParserService } from "./timetable-parser.service";
-import { TimetableSetterService } from "./timetable-setter.service";
+import { TimetableSetterService } from "./timetable-setter-factory.service";
 
 @Module({
   imports: [
