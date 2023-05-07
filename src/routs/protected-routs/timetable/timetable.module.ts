@@ -6,7 +6,7 @@ import { TimetableService } from "./timetable.service";
 import { PlayerModule } from "../player/player.module";
 import { ModelsModule } from "src/models/models.module";
 import { TimetableHandlePlayerHistoryService } from "./timetable-handle-player-history.service";
-import { FactoryDataTimetablePlayerHistory } from "./factory data-timetable-player-history";
+import { FactoryDataTimetablePlayerHistory } from "./factory data-timetable-player-history.service";
 import { TimetableFacadeService } from "./timetable-facade.service";
 
 @Module({

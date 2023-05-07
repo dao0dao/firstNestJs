@@ -11,7 +11,7 @@ import { Timetable } from "src/models/model/timetable/timetable.model";
 import { TimetableSQLService } from "src/models/model/timetable/timetable-sql.service";
 import { RequestDTO } from "src/request.dto";
 import { todaySQLDate } from "src/utils/time";
-import { FactoryDataTimetablePlayerHistory } from "./factory data-timetable-player-history";
+import { FactoryDataTimetablePlayerHistory } from "./factory data-timetable-player-history.service";
 import { InputReservationPayment, PlayerHistoryPrice } from "./timetable.dto";
 
 @Injectable()
