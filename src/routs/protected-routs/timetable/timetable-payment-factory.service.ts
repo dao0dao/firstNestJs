@@ -1,19 +1,19 @@
 import { InputReservationPayment, PlayerHistoryPrice } from "./timetable.dto";
-import { PlayerHistoryModelService } from "src/models/model/player-history/player-history.service";
+import { PlayerHistorySQL } from "src/models/model/player-history/player-history.service";
 import { RequestDTO } from "src/request.dto";
 import { todaySQLDate } from "src/utils/time";
 import { TimetableSQLService } from "src/models/model/timetable/timetable-sql.service";
 import { TimetableCheckersService } from "./timetable-checker.service";
-import { PlayerAccountService } from "src/models/model/player-account/player-account.service";
+import { PlayerAccountSQL } from "src/models/model/player-account/player-account.service";
 import { Injectable } from "@nestjs/common";
 
 @Injectable()
 export class TimetablePaymentFactoryService {
   constructor(
-    private playerHistorySQL: PlayerHistoryModelService,
+    private playerHistorySQL: PlayerHistorySQL,
     private timetableSQL: TimetableSQLService,
     private checkerService: TimetableCheckersService,
-    private accountSQL: PlayerAccountService
+    private accountSQL: PlayerAccountSQL
   ) {}
 
   async payForReservation(req: RequestDTO, data: InputReservationPayment) {

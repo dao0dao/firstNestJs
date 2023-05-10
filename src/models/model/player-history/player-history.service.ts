@@ -5,7 +5,7 @@ import { Player } from "../player/player.models";
 import { CreateTimetableHistory, PlayerHistory } from "./playerHistory.model";
 
 @Injectable()
-export class PlayerHistoryModelService {
+export class PlayerHistorySQL {
   constructor(
     @InjectModel(PlayerHistory) private history: typeof PlayerHistory
   ) {}

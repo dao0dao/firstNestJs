@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
-import { PlayerAccountService } from "src/models/model/player-account/player-account.service";
-import { PlayerHistoryModelService } from "src/models/model/player-history/player-history.service";
+import { PlayerAccountSQL } from "src/models/model/player-account/player-account.service";
+import { PlayerHistorySQL } from "src/models/model/player-history/player-history.service";
 import {
   CreateTimetableHistory,
   PlayerHistory,
@@ -14,9 +14,9 @@ import { PriceListService } from "src/models/model/price-list/price-list.service
 @Injectable()
 export class TimetablePlayerHistoryFactoryService {
   constructor(
-    private playerHistorySQL: PlayerHistoryModelService,
+    private playerHistorySQL: PlayerHistorySQL,
     private setterService: TimetableSetterService,
-    private accountSQL: PlayerAccountService,
+    private accountSQL: PlayerAccountSQL,
     private priceList: PriceListService
   ) {}
 

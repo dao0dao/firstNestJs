@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { TennisServiceResolver } from "src/models/model/tennis-service/tennis.resolver.service";
 import { ServiceDTO, ServicePaymentDTO } from "./tennis.service.dto";
-import { PlayerAccountService } from "src/models/model/player-account/player-account.service";
-import { PlayerHistoryModelService } from "src/models/model/player-history/player-history.service";
+import { PlayerAccountSQL } from "src/models/model/player-account/player-account.service";
+import { PlayerHistorySQL } from "src/models/model/player-history/player-history.service";
 import { todaySQLDate } from "src/utils/time";
 import { RequestDTO } from "src/request.dto";
 
@@ -10,8 +10,8 @@ import { RequestDTO } from "src/request.dto";
 export class TennisService {
   constructor(
     private serviceModel: TennisServiceResolver,
-    private playerAccount: PlayerAccountService,
-    private playerHistory: PlayerHistoryModelService
+    private playerAccount: PlayerAccountSQL,
+    private playerHistory: PlayerHistorySQL
   ) {}
   async getAllServices() {
     const services = [];

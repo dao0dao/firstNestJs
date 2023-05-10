@@ -1,10 +1,10 @@
 import { Injectable } from "@nestjs/common";
-import { PlayerAccountService } from "src/models/model/player-account/player-account.service";
+import { PlayerAccountSQL } from "src/models/model/player-account/player-account.service";
 import { DebtorDTO } from "./debtor.model";
 
 @Injectable()
 export class DebtorService {
-  constructor(private accountModel: PlayerAccountService) {}
+  constructor(private accountModel: PlayerAccountSQL) {}
 
   async getDebtors() {
     const debtorsList: DebtorDTO[] = [];
