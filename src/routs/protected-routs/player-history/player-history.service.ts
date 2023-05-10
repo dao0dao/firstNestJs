@@ -32,7 +32,7 @@ export class PlayerHistoryService {
     return data;
   }
 
-  async setHistoryAsPaid(
+  async setPlayerHistoryAsPaid(
     name: RequestDTO["ADMIN_NAME"],
     role: RequestDTO["ROLE"],
     data: InputPayForHistory

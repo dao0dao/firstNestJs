@@ -36,7 +36,7 @@ export class PlayerHistoryController {
     @Request() req: RequestDTO,
     @Body() data: InputPayForHistory
   ) {
-    const result = await this.playerHistory.setHistoryAsPaid(
+    const result = await this.playerHistory.setPlayerHistoryAsPaid(
       req.ADMIN_NAME,
       req.ROLE,
       data
