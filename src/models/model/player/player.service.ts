@@ -7,7 +7,7 @@ import { PlayerAccount } from "../player-account/playerAccount.model";
 import { Player } from "./player.models";
 
 @Injectable()
-export class PlayerService {
+export class PlayerSQL {
   constructor(
     @InjectModel(Player) private playerModel: typeof Player,
     @InjectModel(PlayerAccount) private accountMode: typeof PlayerAccount,

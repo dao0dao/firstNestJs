@@ -1,6 +1,11 @@
 import { Injectable } from "@nestjs/common";
 import { Player } from "src/models/model/player/player.models";
-import { OpponentOutputDTO, PlayerOutputDTO } from "./player.dto";
+import {
+  OpponentOutputDTO,
+  PlayerInputDTO,
+  PlayerOutputDTO,
+} from "./player.dto";
+import { PlayerSQL } from "src/models/model/player/player.service";
 
 interface IsPlayerExist {
   allPlayers: Player[];
@@ -12,8 +17,66 @@ interface IsPlayerExist {
 }
 
 @Injectable()
-export class PlayerDataHandlerService {
-  parsePlayerOpponents(data: Player[]) {
+export class PlayerService {
+  constructor(private playerSQL: PlayerSQL) {}
+
+  async getAllPlayers() {
+    const data = await this.playerSQL.findAllPlayers();
+    const players = this.parsePlayerOpponents(data);
+    return { players };
+  }
+
+  async createPlayer(data: PlayerInputDTO) {
+    const allPlayers = await this.playerSQL.findAllPlayers();
+    const result = this.isDoubledDataPlayerExist({
+      allPlayers,
+      name: data.name,
+      surname: data.surname,
+      telephone: data.telephone,
+      email: data.email,
+    });
+    if ("playerNotFound" !== result) {
+      return result;
+    }
+    const playerId = await this.playerSQL.createPlayer(data);
+    if (!playerId) {
+      return "serverIntervalError";
+    }
+    return { id: playerId };
+  }
+
+  async updatePlayer(id: string, data: PlayerInputDTO) {
+    const allPlayers = await this.playerSQL.findAllPlayers();
+    const condition = this.isDoubledDataPlayerExist(
+      {
+        allPlayers,
+        playerId: id,
+        name: data.name,
+        surname: data.surname,
+        telephone: data.telephone,
+        email: data.email,
+      },
+      true
+    );
+    if ("playerNotFound" !== condition) {
+      return condition;
+    }
+    const player = allPlayers.find((pl) => pl.id === id);
+    if (!player) {
+      return "playerDoNotExist";
+    }
+    const result = await this.playerSQL.updatePlayer(player, data);
+    if (!result) {
+      return "intervalServerError";
+    }
+    return "playerUpdated";
+  }
+
+  deletePlayer(id: string) {
+    return this.playerSQL.deletePlayer(id);
+  }
+
+  private parsePlayerOpponents(data: Player[]) {
     const newPlayers: PlayerOutputDTO[] = [];
     for (const player of data) {
       const newOpponents: OpponentOutputDTO[] = [];
@@ -62,7 +125,10 @@ export class PlayerDataHandlerService {
     return newPlayers;
   }
 
-  isPlayerExist(data: IsPlayerExist, isUpdatingPlayer?: boolean) {
+  private isDoubledDataPlayerExist(
+    data: IsPlayerExist,
+    isUpdatingPlayer?: boolean
+  ) {
     let isPlayer = false;
     let isNumber = false;
     let isEmail = false;
@@ -92,14 +158,14 @@ export class PlayerDataHandlerService {
       }
     }
     if (isPlayer) {
-      return { playerExist: true };
+      return "playerExist";
     }
     if (isNumber) {
-      return { numberExist: true };
+      return "numberExist";
     }
     if (isEmail) {
-      return { emailExist: true };
+      return "emailExist";
     }
-    return { playerExist: false };
+    return "playerNotFound";
   }
 }

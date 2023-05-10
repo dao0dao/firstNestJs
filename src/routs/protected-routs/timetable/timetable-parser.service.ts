@@ -2,13 +2,13 @@ import { Injectable } from "@nestjs/common";
 import { Player } from "src/models/model/player/player.models";
 import { Timetable } from "src/models/model/timetable/timetable.model";
 import { ReservationPlayerDTO, OutputReservationDTO } from "./timetable.dto";
-import { PlayerService } from "src/models/model/player/player.service";
+import { PlayerSQL } from "src/models/model/player/player.service";
 import { TimetableCheckersService } from "./timetable-checker.service";
 
 @Injectable()
 export class TimetableParserService {
   constructor(
-    private playerService: PlayerService,
+    private playerService: PlayerSQL,
     private settersCheckers: TimetableCheckersService
   ) {}
   private setReservationPlayer(allPlayers: Player[], playerId: string) {

@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { PlayerService } from "src/models/model/player/player.service";
+import { PlayerSQL } from "src/models/model/player/player.service";
 import { TimetableSQLService } from "src/models/model/timetable/timetable-sql.service";
 import { RequestDTO } from "src/request.dto";
 import { InputReservationDTO, TimetableIdParam } from "./timetable.dto";
@@ -12,7 +12,7 @@ import { TimetableParserService } from "./timetable-parser.service";
 export class TimetableFacadeService {
   constructor(
     private timetableSQL: TimetableSQLService,
-    private playerService: PlayerService,
+    private playerService: PlayerSQL,
     private timetablePlayerHistory: TimetablePlayerHistoryFactoryService,
     private settersCheckers: TimetableCheckersService,
     private timetableParser: TimetableParserService

@@ -4,7 +4,7 @@ import { PlayerHistoryModelService } from "./model/player-history/player-history
 import { mysqlTables } from "./mysql-tables";
 import { TimetableSQLService } from "./model/timetable/timetable-sql.service";
 import { PriceListService } from "./model/price-list/price-list.service";
-import { PlayerService } from "./model/player/player.service";
+import { PlayerSQL } from "./model/player/player.service";
 import { PlayerAccountService } from "./model/player-account/player-account.service";
 import { TennisServiceResolver } from "./model/tennis-service/tennis.resolver.service";
 
@@ -12,7 +12,7 @@ const models = [
   PlayerHistoryModelService,
   TimetableSQLService,
   PriceListService,
-  PlayerService,
+  PlayerSQL,
   PlayerAccountService,
   TennisServiceResolver,
 ];

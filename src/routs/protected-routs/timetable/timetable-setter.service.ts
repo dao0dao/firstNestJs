@@ -4,11 +4,11 @@ import { PriceList } from "src/models/model/price-list/priceList.model";
 import { Timetable } from "src/models/model/timetable/timetable.model";
 import { timeToNumber } from "src/utils/time";
 import { HoursDTO } from "../price-list/price-list.dto";
-import { PlayerService } from "src/models/model/player/player.service";
+import { PlayerSQL } from "src/models/model/player/player.service";
 
 @Injectable()
 export class TimetableSetterService {
-  constructor(private playerService: PlayerService) {}
+  constructor(private playerService: PlayerSQL) {}
 
   setPlayersCount(reservation: Timetable) {
     let playerCount = 0;

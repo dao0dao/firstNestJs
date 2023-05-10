@@ -4,14 +4,14 @@ import {
   PriceListDTO,
   PriceListQueryDTO,
 } from "src/routs/protected-routs/price-list/price-list.dto";
-import { PlayerService } from "../player/player.service";
+import { PlayerSQL } from "../player/player.service";
 import { PriceList } from "./priceList.model";
 
 @Injectable()
 export class PriceListService {
   constructor(
     @InjectModel(PriceList) private priceListModel: typeof PriceList,
-    private playerService: PlayerService
+    private playerService: PlayerSQL
   ) {}
 
   getAllPriceList() {

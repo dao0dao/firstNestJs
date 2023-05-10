@@ -10,58 +10,45 @@ import {
 } from "@nestjs/common";
 import { Role } from "src/guards/roles.decorators";
 import { PlayerIdParamDTO, PlayerInputDTO } from "./player.dto";
-import { PlayerDataHandlerService } from "./player-data-handler.service";
-import { PlayerService } from "src/models/model/player/player.service";
+import { PlayerService } from "./player.service";
 
 @Controller("players")
 export class PlayerController {
-  constructor(
-    private playerService: PlayerService,
-    private dataHandler: PlayerDataHandlerService
-  ) {}
+  constructor(private playerService: PlayerService) {}
 
   @Get()
   @Role("login")
   async getAllPayers() {
-    const data = await this.playerService.findAllPlayers();
-    const players = this.dataHandler.parsePlayerOpponents(data);
+    const players = await this.playerService.getAllPlayers();
     return { players };
   }
   @Post("add")
   @Role("login")
   async addPlayer(@Body() body: PlayerInputDTO) {
-    const allPlayers = await this.playerService.findAllPlayers();
-    const condition = this.dataHandler.isPlayerExist({
-      allPlayers,
-      name: body.name,
-      surname: body.surname,
-      telephone: body.telephone,
-      email: body.email,
-    });
-    if (condition.playerExist) {
-      throw new HttpException(
-        { reason: "Taki gracz istniej" },
-        HttpStatus.NOT_ACCEPTABLE
-      );
-    } else if (condition.numberExist) {
-      throw new HttpException(
-        { reason: "Taki numer kom. już istnieje" },
-        HttpStatus.NOT_ACCEPTABLE
-      );
-    } else if (condition.emailExist) {
-      throw new HttpException(
-        { reason: "Taki email już istnieje" },
-        HttpStatus.NOT_ACCEPTABLE
-      );
+    const result = await this.playerService.createPlayer(body);
+    switch (result) {
+      case "playerExist":
+        throw new HttpException(
+          { reason: "Taki gracz istniej" },
+          HttpStatus.NOT_ACCEPTABLE
+        );
+      case "numberExist":
+        throw new HttpException(
+          { reason: "Taki numer kom. już istnieje" },
+          HttpStatus.NOT_ACCEPTABLE
+        );
+      case "emailExist":
+        throw new HttpException(
+          { reason: "Taki email już istnieje" },
+          HttpStatus.NOT_ACCEPTABLE
+        );
+      case "serverIntervalError":
+        throw new HttpException(
+          { readWrite: "fail" },
+          HttpStatus.INTERNAL_SERVER_ERROR
+        );
     }
-    const playerId = await this.playerService.createPlayer(body);
-    if (!playerId) {
-      throw new HttpException(
-        { readWrite: "fail" },
-        HttpStatus.INTERNAL_SERVER_ERROR
-      );
-    }
-    return { id: playerId };
+    return { id: result };
   }
 
   @Post("update/:id")
@@ -70,47 +57,33 @@ export class PlayerController {
     @Param() Query: PlayerIdParamDTO,
     @Body() body: PlayerInputDTO
   ) {
-    const allPlayers = await this.playerService.findAllPlayers();
-    const condition = this.dataHandler.isPlayerExist(
-      {
-        allPlayers,
-        playerId: Query.id,
-        name: body.name,
-        surname: body.surname,
-        telephone: body.telephone,
-        email: body.email,
-      },
-      true
-    );
-    if (condition.playerExist) {
-      throw new HttpException(
-        { reason: "Taki gracz istniej" },
-        HttpStatus.NOT_ACCEPTABLE
-      );
-    } else if (condition.numberExist) {
-      throw new HttpException(
-        { reason: "Taki numer kom. już istnieje" },
-        HttpStatus.NOT_ACCEPTABLE
-      );
-    } else if (condition.emailExist) {
-      throw new HttpException(
-        { reason: "Taki email już istnieje" },
-        HttpStatus.NOT_ACCEPTABLE
-      );
-    }
-    const player = allPlayers.find((pl) => pl.id === Query.id);
-    if (!player) {
-      throw new HttpException(
-        { reason: "Brak gracza w bazie danych" },
-        HttpStatus.NOT_ACCEPTABLE
-      );
-    }
-    const result = await this.playerService.updatePlayer(player, body);
-    if (!result) {
-      throw new HttpException(
-        { readWrite: "fail" },
-        HttpStatus.INTERNAL_SERVER_ERROR
-      );
+    const result = await this.playerService.updatePlayer(Query.id, body);
+    switch (result) {
+      case "playerExist":
+        throw new HttpException(
+          { reason: "Taki gracz istniej" },
+          HttpStatus.NOT_ACCEPTABLE
+        );
+      case "numberExist":
+        throw new HttpException(
+          { reason: "Taki numer kom. już istnieje" },
+          HttpStatus.NOT_ACCEPTABLE
+        );
+      case "emailExist":
+        throw new HttpException(
+          { reason: "Taki email już istnieje" },
+          HttpStatus.NOT_ACCEPTABLE
+        );
+      case "intervalServerError":
+        throw new HttpException(
+          { readWrite: "fail" },
+          HttpStatus.INTERNAL_SERVER_ERROR
+        );
+      case "playerDoNotExist":
+        throw new HttpException(
+          { reason: "Brak gracza w bazie danych" },
+          HttpStatus.NOT_ACCEPTABLE
+        );
     }
     return { updated: true };
   }
