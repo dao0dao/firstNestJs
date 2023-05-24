@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
 import {
   PriceListDTO,
@@ -8,10 +8,10 @@ import { PlayerSQL } from "../player/player.service";
 import { PriceList } from "./priceList.model";
 
 @Injectable()
-export class PriceListService {
+export class PriceListSQL {
   constructor(
     @InjectModel(PriceList) private priceListModel: typeof PriceList,
-    private playerService: PlayerSQL
+    private playerSQL: PlayerSQL
   ) {}
 
   getAllPriceList() {
@@ -32,10 +32,7 @@ export class PriceListService {
       where: { id: query.id },
     });
     if (!priceList) {
-      throw new HttpException(
-        { reason: "Brak takiej listy" },
-        HttpStatus.NOT_ACCEPTABLE
-      );
+      return "no_list";
     }
     priceList.set({
       name: data.name,
@@ -49,7 +46,7 @@ export class PriceListService {
     const result = await this.priceListModel.destroy({
       where: { id: query.id },
     });
-    this.playerService.clearPlayerPriceListById(query.id);
+    this.playerSQL.clearPlayerPriceListById(query.id);
     return result;
   }
 }

@@ -11,41 +11,34 @@ import {
   UsePipes,
 } from "@nestjs/common";
 import { Role } from "src/guards/roles.decorators";
-import { PriceListService } from "src/models/model/price-list/price-list.service";
 import { OptionalPriceListHourValidationPipe } from "src/pipes/priceListHour-validator.pipe";
-import { PriceListHandleDataService } from "./price-list-handle-data.service";
 import { PriceListDTO, PriceListQueryDTO } from "./price-list.dto";
 import { PriceListValidationPipe } from "src/pipes/price-list-validation.pipe";
+import { PriceListFactoryService } from "./price-list-factory.service";
 
 @Controller("price-list")
 @UsePipes(OptionalPriceListHourValidationPipe)
 export class PriceListController {
-  constructor(
-    private priceList: PriceListService,
-    private handleData: PriceListHandleDataService
-  ) {}
+  constructor(private priceList: PriceListFactoryService) {}
 
   @Get()
   @Role("login")
-  async getAllPriceLists() {
-    const priceListModel = await this.priceList.getAllPriceList();
-    const priceList = this.handleData.parsePriceListModelToDTO(priceListModel);
-    return { priceList };
+  getPriceLists() {
+    return this.priceList.getPriceLists();
   }
 
   @Post()
   @Role("admin")
   @UsePipes(PriceListValidationPipe)
   async createPriceList(@Body() body: PriceListDTO) {
-    const isWrongData = this.handleData.validateHoursAndDay(body);
-    if (isWrongData) {
+    const result = await this.priceList.createPriceList(body);
+    if ("wrong_data" === result) {
       throw new HttpException(
         { reason: "Błędne dane" },
         HttpStatus.NOT_ACCEPTABLE
       );
     }
-    const id = await this.priceList.createPriceList(body);
-    return { status: "created", id };
+    return result;
   }
 
   @Put("update/:id")
@@ -55,21 +48,25 @@ export class PriceListController {
     @Body() body: PriceListDTO,
     @Param() query: PriceListQueryDTO
   ) {
-    const isWrongData = this.handleData.validateHoursAndDay(body);
-    if (isWrongData) {
+    const result = await this.priceList.updatePriceList(body, query);
+    if ("wrong_data" === result) {
       throw new HttpException(
         { reason: "Błędne dane" },
         HttpStatus.NOT_ACCEPTABLE
       );
     }
-    await this.priceList.updatePriceList(body, query);
-    return { status: "updated" };
+    if ("no_list" === result) {
+      throw new HttpException(
+        { readWrite: "fail" },
+        HttpStatus.INTERNAL_SERVER_ERROR
+      );
+    }
+    return result;
   }
 
   @Delete("delete/:id")
   @Role("admin")
-  async deletePriceList(@Param() query: PriceListQueryDTO) {
-    await this.priceList.deletePriceList(query);
-    return { status: "deleted" };
+  deletePriceList(@Param() query: PriceListQueryDTO) {
+    return this.priceList.deletePriceList(query);
   }
 }

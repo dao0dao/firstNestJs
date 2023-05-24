@@ -9,7 +9,7 @@ import {
 import { PriceList } from "src/models/model/price-list/priceList.model";
 import { Timetable } from "src/models/model/timetable/timetable.model";
 import { TimetableSetterService } from "./timetable-setter.service";
-import { PriceListService } from "src/models/model/price-list/price-list.service";
+import { PriceListSQL } from "src/models/model/price-list/price-list.service";
 
 @Injectable()
 export class TimetablePlayerHistoryFactoryService {
@@ -17,7 +17,7 @@ export class TimetablePlayerHistoryFactoryService {
     private playerHistorySQL: PlayerHistorySQL,
     private setterService: TimetableSetterService,
     private accountSQL: PlayerAccountSQL,
-    private priceList: PriceListService
+    private priceList: PriceListSQL
   ) {}
 
   async createPlayerHistory(timetable: Timetable) {
