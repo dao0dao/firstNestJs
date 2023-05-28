@@ -1,7 +1,7 @@
 export interface LoginUserUpdateErrors {
-  reservedLogin?: boolean;
-  reservedName?: boolean;
-  passwordNotMatch?: boolean;
+  reservedLogin: boolean;
+  reservedName: boolean;
+  passwordNotMatch: boolean;
   notExist: boolean;
 }
 

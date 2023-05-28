@@ -14,9 +14,9 @@ import { RequestDTO } from "src/request.dto";
 import { UserFactoryService } from "./user-factory.service";
 import { UserDTO, UserQuery } from "./user.dto";
 import {
+  LoginUserUpdateErrors,
   UserCreateErrors,
   UserUpdateErrors,
-  LoginUserUpdateErrors,
 } from "./user.interfaces";
 import { UserSQLService } from "../../../models/model/user/user-sql.service";
 
@@ -24,7 +24,7 @@ import { UserSQLService } from "../../../models/model/user/user-sql.service";
 export class UserController {
   constructor(
     private userSQL: UserSQLService,
-    private userService: UserFactoryService
+    private userFactory: UserFactoryService
   ) {}
   @Get()
   @Role("login")
@@ -36,21 +36,31 @@ export class UserController {
   @Post()
   @Role("login")
   async updateLoginUser(@Req() req: RequestDTO, @Body() body: UserDTO) {
-    const errors: LoginUserUpdateErrors =
-      await this.userService.checkCanUpdateLoginUser(req.ADMIN_ID, body);
-    if (errors.notExist) {
-      throw new HttpException({ notAllowed: true }, HttpStatus.UNAUTHORIZED);
-    } else if (Object.keys(errors).length > 0) {
-      throw new HttpException(errors, HttpStatus.BAD_REQUEST);
+    const result = await this.userFactory.updateLoginUser(req.ADMIN_ID, body);
+    if (result === true) {
+      return { updated: true };
     }
-    const result = await this.userSQL.updateUserById(req.ADMIN_ID, body);
-    if (!result) {
+    if ("readWrite" === result) {
       throw new HttpException(
         { readWrite: "fail" },
         HttpStatus.INTERNAL_SERVER_ERROR
       );
     }
-    return { update: true };
+    const errors = {} as LoginUserUpdateErrors;
+    switch (result) {
+      case "notExist":
+        errors.notExist = true;
+        break;
+      case "passwordNotMatch":
+        errors.passwordNotMatch = true;
+        break;
+      case "reservedLogin":
+        errors.reservedLogin = true;
+        break;
+      case "reservedName":
+        errors.reservedName = true;
+    }
+    throw new HttpException(errors, HttpStatus.BAD_REQUEST);
   }
 
   @Get("list")
@@ -63,40 +73,57 @@ export class UserController {
   @Post("create")
   @Role("admin")
   async createUser(@Body() body: UserDTO) {
-    const errors: UserCreateErrors = await this.userService.checkCanAddUser(
-      body
-    );
-    if (Object.keys(errors).length > 0) {
-      throw new HttpException(errors, HttpStatus.BAD_REQUEST);
+    const result = await this.userFactory.createUser(body);
+    if (true === result) {
+      return { created: true };
     }
-    const result = await this.userSQL.createUser(body);
-    if (!result) {
+    if ("readWrite" === result) {
       throw new HttpException(
         { readWrite: "fail" },
         HttpStatus.INTERNAL_SERVER_ERROR
       );
     }
-    return { created: true };
+    const errors = {} as UserCreateErrors;
+    switch (result) {
+      case "canNotCreateUser":
+        errors.canNotCreateUser = true;
+        break;
+      case "passwordDoesNotMatch":
+        errors.passwordDoesNotMatch = true;
+        break;
+    }
+    throw new HttpException(errors, HttpStatus.BAD_REQUEST);
   }
 
   @Post("update/:id")
   @Role("admin")
   async updateUser(@Param() query: UserQuery, @Body() body: UserDTO) {
-    const errors: UserUpdateErrors = await this.userService.checkCanUpdateUser(
-      query.id,
-      body
-    );
-    if (Object.keys(errors).length > 0) {
-      throw new HttpException(errors, HttpStatus.BAD_REQUEST);
+    const result = await this.userFactory.updateUser(query.id, body);
+    if (true === result) {
+      return { update: true };
     }
-    const result = await this.userSQL.updateUserById(query.id, body);
-    if (!result) {
+    if ("readWrite" === result) {
       throw new HttpException(
         { readWrite: "fail" },
         HttpStatus.INTERNAL_SERVER_ERROR
       );
     }
-    return { update: true };
+    const errors = {} as UserUpdateErrors;
+    switch (result) {
+      case "wrongId":
+        errors.id = true;
+        break;
+      case "wrongPassword":
+        errors.confirmNewPassword = true;
+        break;
+      case "reservedName":
+        errors.name = true;
+        break;
+      case "reservedLogin":
+        errors.reservedLogin = true;
+        break;
+    }
+    throw new HttpException(errors, HttpStatus.BAD_REQUEST);
   }
 
   @Delete("delete/:id")
@@ -105,7 +132,7 @@ export class UserController {
     if (!query) {
       throw new HttpException("Bad request", HttpStatus.BAD_REQUEST);
     }
-    const result = this.userService.deleteUser(query.id);
+    const result = this.userFactory.deleteUser(query.id);
     if (!result) {
       new HttpException(
         { readWrite: "fail" },
