@@ -8,7 +8,7 @@ import {
 import { UserSQLService } from "../../../models/model/user/user-sql.service";
 
 @Injectable()
-export class UserService {
+export class UserFactoryService {
   constructor(private userSQL: UserSQLService) {}
 
   async checkCanUpdateLoginUser(admin_id: string, admin: UserDTO) {

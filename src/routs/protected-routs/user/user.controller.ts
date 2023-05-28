@@ -11,7 +11,7 @@ import {
 } from "@nestjs/common";
 import { Role } from "src/guards/roles.decorators";
 import { RequestDTO } from "src/request.dto";
-import { UserService } from "./user.service";
+import { UserFactoryService } from "./user-factory.service";
 import { UserDTO, UserQuery } from "./user.dto";
 import {
   UserCreateErrors,
@@ -24,7 +24,7 @@ import { UserSQLService } from "../../../models/model/user/user-sql.service";
 export class UserController {
   constructor(
     private userSQL: UserSQLService,
-    private userService: UserService
+    private userService: UserFactoryService
   ) {}
   @Get()
   @Role("login")
