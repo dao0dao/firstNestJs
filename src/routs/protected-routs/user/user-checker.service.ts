@@ -39,7 +39,7 @@ export class UserCheckerService {
     return "canCreate";
   }
   async checkCanUpdateUser(admin_id: string, data: UserDTO) {
-    const admins = await this.userSQL.findAllUsers();
+    const admins = await this.userSQL.findAllUsersAndAdmin();
     const allAdmins = admins.filter((el) => el.id !== admin_id);
     if (!admin_id) {
       return "wrongId";
