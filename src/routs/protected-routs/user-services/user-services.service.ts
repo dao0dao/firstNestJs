@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { TennisServiceResolver } from "src/models/model/tennis-service/tennis.resolver.service";
+import { UserServicesSQL } from "src/models/model/user-servicec/user-services.service";
 import { ServiceDTO, ServicePaymentDTO } from "./tennis.service.dto";
 import { PlayerAccountSQL } from "src/models/model/player-account/player-account.service";
 import { PlayerHistorySQL } from "src/models/model/player-history/player-history.service";
@@ -7,54 +7,48 @@ import { todaySQLDate } from "src/utils/time";
 import { RequestDTO } from "src/request.dto";
 
 @Injectable()
-export class TennisService {
+export class UserServicesService {
   constructor(
-    private serviceModel: TennisServiceResolver,
-    private playerAccount: PlayerAccountSQL,
-    private playerHistory: PlayerHistorySQL
+    private userServicesSQL: UserServicesSQL,
+    private playerAccountSQL: PlayerAccountSQL,
+    private playerHistorySQL: PlayerHistorySQL
   ) {}
-  async getAllServices() {
+  async getUserServices() {
     const services = [];
-    const data = await this.serviceModel.getAllServices();
+    const data = await this.userServicesSQL.getAllServices();
     data.forEach((s) => {
       services.push({ id: s.id, name: s.name, price: parseFloat(s.price) });
     });
     return { services };
   }
 
-  async updateAllServices(list: ServiceDTO[]) {
-    const result = await this.serviceModel.createServices(list);
+  async updateUserServices(list: ServiceDTO[]) {
+    const result = await this.userServicesSQL.createServices(list);
     return result;
   }
 
-  deleteServiceById(id: number) {
-    return this.serviceModel.deleteServiceById(id);
+  deleteUserServiceById(id: number) {
+    return this.userServicesSQL.deleteServiceById(id);
   }
 
-  async handleService(
+  async payForService(
     data: ServicePaymentDTO,
     cashier: RequestDTO["ADMIN_NAME"]
   ) {
-    const errors = {
-      accountChargeFail: false,
-      createHistoryFail: false,
-      accountSubtractFail: false,
-    };
     if ("charge" === data.paymentMethod) {
-      const result = await this.playerAccount.addToPlayerWallet(
+      const result = await this.playerAccountSQL.addToPlayerWallet(
         data.id,
         data.value
       );
       if (!result) {
-        errors.accountChargeFail = true;
-        return errors;
+        return "accountChargeFail";
       }
       return true;
     } else if (
       "payment" === data.paymentMethod ||
       "transfer" === data.paymentMethod
     ) {
-      const history = await this.playerHistory.createPlayerHistory({
+      const history = await this.playerHistorySQL.createPlayerHistory({
         is_paid: true,
         player_id: data.id,
         price: data.value.toString(),
@@ -65,21 +59,19 @@ export class TennisService {
         cashier,
       });
       if (!history) {
-        errors.createHistoryFail = true;
-        return errors;
+        return "createHistoryFail";
       }
       if ("payment" === data.paymentMethod) {
-        const result = await this.playerAccount.subtractToPlayerWallet(
+        const result = await this.playerAccountSQL.subtractToPlayerWallet(
           data.id,
           data.value
         );
         if (!result) {
-          errors.accountSubtractFail = true;
-          return errors;
+          return "accountSubtractFail";
         }
       }
     } else if ("debet" === data.paymentMethod) {
-      const history = await this.playerHistory.createPlayerHistory({
+      const history = await this.playerHistorySQL.createPlayerHistory({
         is_paid: false,
         player_id: data.id,
         price: data.value.toString(),
@@ -89,8 +81,7 @@ export class TennisService {
         cashier,
       });
       if (!history) {
-        errors.createHistoryFail = true;
-        return errors;
+        return "createHistoryFail";
       }
     }
     return true;

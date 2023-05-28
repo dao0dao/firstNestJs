@@ -6,7 +6,7 @@ import { PlayerAccount } from "./model/player-account/playerAccount.model";
 import { PriceList } from "./model/price-list/priceList.model";
 import { Sessions } from "./model/session.model";
 import { Timetable } from "./model/timetable/timetable.model";
-import { TennisService } from "./model/tennis-service/tennis.service.model";
+import { UserServices } from "./model/user-servicec/user-services.model";
 
 export const mysqlTables = [
   User,
@@ -17,5 +17,5 @@ export const mysqlTables = [
   PriceList,
   Timetable,
   PlayerHistory,
-  TennisService,
+  UserServices,
 ];

@@ -1,13 +1,13 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
-import { TennisService } from "./tennis.service.model";
-import { ServiceDTO } from "src/routs/protected-routs/tennis-services/tennis.service.dto";
+import { UserServices } from "./user-services.model";
+import { ServiceDTO } from "src/routs/protected-routs/user-services/tennis.service.dto";
 
 @Injectable()
-export class TennisServiceResolver {
+export class UserServicesSQL {
   constructor(
-    @InjectModel(TennisService)
-    private serviceModel: typeof TennisService
+    @InjectModel(UserServices)
+    private serviceModel: typeof UserServices
   ) {}
   getAllServices() {
     return this.serviceModel.findAll();

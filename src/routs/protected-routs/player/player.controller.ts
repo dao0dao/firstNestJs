@@ -18,9 +18,8 @@ export class PlayerController {
 
   @Get()
   @Role("login")
-  async getAllPayers() {
-    const players = await this.playerService.getAllPlayers();
-    return { players };
+  getAllPayers() {
+    return this.playerService.getAllPlayers();
   }
   @Post("add")
   @Role("login")
@@ -48,7 +47,7 @@ export class PlayerController {
           HttpStatus.INTERNAL_SERVER_ERROR
         );
     }
-    return { id: result };
+    return result;
   }
 
   @Post("update/:id")

@@ -6,7 +6,7 @@ import { TimetableSQLService } from "./model/timetable/timetable-sql.service";
 import { PriceListSQL } from "./model/price-list/price-list.service";
 import { PlayerSQL } from "./model/player/player.service";
 import { PlayerAccountSQL } from "./model/player-account/player-account.service";
-import { TennisServiceResolver } from "./model/tennis-service/tennis.resolver.service";
+import { UserServicesSQL } from "./model/user-servicec/user-services.service";
 
 const models = [
   PlayerHistorySQL,
@@ -14,7 +14,7 @@ const models = [
   PriceListSQL,
   PlayerSQL,
   PlayerAccountSQL,
-  TennisServiceResolver,
+  UserServicesSQL,
 ];
 
 @Module({

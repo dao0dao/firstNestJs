@@ -1,7 +1,7 @@
 import { Table, Model, Column } from "sequelize-typescript";
 
 @Table({ modelName: "services", freezeTableName: true })
-export class TennisService extends Model {
+export class UserServices extends Model {
   @Column({ primaryKey: true, autoIncrement: true })
   id: number;
 
