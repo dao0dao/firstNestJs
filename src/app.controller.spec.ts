@@ -3,11 +3,11 @@ import { Response } from "express";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 
-describe("AppController", () => {
+describe("appController test", () => {
   let appController: AppController;
   const mockHtml = "htmlText";
   const mockAppService = {
-    getIndex: jest.fn((res) => {
+    getIndex: jest.fn((res: Response) => {
       return mockHtml;
     }),
   };
