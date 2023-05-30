@@ -1,22 +1,34 @@
 import { Test, TestingModule } from "@nestjs/testing";
+import { Response } from "express";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 
 describe("AppController", () => {
   let appController: AppController;
+  const mockHtml = "htmlText";
+  const mockAppService = {
+    getIndex: jest.fn((res) => {
+      return mockHtml;
+    }),
+  };
+  const mockRes = {} as Response;
 
   beforeEach(async () => {
-    const app: TestingModule = await Test.createTestingModule({
+    const module: TestingModule = await Test.createTestingModule({
       controllers: [AppController],
-      providers: [AppService],
+      providers: [{ provide: AppService, useValue: mockAppService }],
     }).compile();
 
-    appController = app.get<AppController>(AppController);
+    appController = module.get<AppController>(AppController);
   });
 
-  describe("root", () => {
-    it('should return "Hello World!"', () => {
-      expect(appController.getHello()).toBe("Hello World!");
+  describe("appController test", () => {
+    it("should be define", () => {
+      expect(appController).toBeDefined();
+    });
+
+    it("should return file", () => {
+      expect(appController.getIndex(mockRes)).toEqual(mockHtml);
     });
   });
 });
