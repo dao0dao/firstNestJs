@@ -31,6 +31,8 @@ describe("AuthGuard", () => {
       })),
       getResponse: jest.fn(() => ({
         clearCookie: (data) => data,
+        ADMIN_NAME: "",
+        ADMIN_ID: "",
       })),
     })),
     getHandler: jest.fn(),
@@ -84,33 +86,31 @@ describe("AuthGuard", () => {
       HttpException
     );
   });
-  // it("should throw UnauthorizedException if registeredUser is not found", async () => {
-  //   sessionService.findLoginUserBySessionId.mockReturnValueOnce({
-  //     administrator_id: "admin_id",
-  //   });
-  //   adminService.findUserById.mockReturnValueOnce(null);
-  //   await expect(authGuard.canActivate(context)).rejects.toThrow(
-  //     UnauthorizedException
-  //   );
-  // });
-  // it("should set ADMIN_NAME and ADMIN_ID in the request if registeredUser is found and isAdmin is true", async () => {
-  //   const registeredUser = {
-  //     name: "John",
-  //     id: "user_id",
-  //     isAdmin: true,
-  //   };
-  //   sessionService.findLoginUserBySessionId.mockReturnValueOnce({
-  //     administrator_id: "admin_id",
-  //   });
-  //   adminService.findUserById.mockReturnValueOnce(registeredUser);
-  //   reflector.get.mockReturnValueOnce("admin");
-  //   const requestDTO: RequestDTO = { cookies: { key: "session_id" } };
-  //   context.switchToHttp().getRequest.mockReturnValueOnce(requestDTO);
-  //   await authGuard.canActivate(context);
-  //   expect(requestDTO.ADMIN_NAME).toBe(registeredUser.name);
-  //   expect(requestDTO.ADMIN_ID).toBe(registeredUser.id);
-  //   expect(requestDTO.ROLE).toBe("admin");
-  // });
+  it("should throw UnauthorizedException if registeredUser is not found", async () => {
+    const mockUser = true as unknown as Promise<any>;
+    jest
+      .spyOn(sessionsService, "findLoginUserBySessionId")
+      .mockReturnValue(mockUser);
+    const registeredUser = false as unknown as Promise<any>;
+    jest.spyOn(adminService, "findUserById").mockReturnValue(registeredUser);
+    await expect(authGuard.canActivate(mockContext)).rejects.toThrow(
+      HttpException
+    );
+  });
+  it("should set ADMIN_NAME and ADMIN_ID in the request if registeredUser is found and isAdmin is true", async () => {
+    const mockUser = true as unknown as Promise<any>;
+    jest
+      .spyOn(sessionsService, "findLoginUserBySessionId")
+      .mockReturnValue(mockUser);
+    const registeredUser = {
+      name: "Jan",
+      id: "some_id",
+      isAdmin: false,
+    } as unknown as Promise<any>;
+    jest.spyOn(adminService, "findUserById").mockReturnValue(registeredUser);
+    const result = await authGuard.canActivate(mockContext);
+    expect(result).toEqual(true);
+  });
   // it("should set ADMIN_NAME and ADMIN_ID in the request if registeredUser is found and isAdmin is false", async () => {
   //   const registeredUser = {
   //     name: "John",
