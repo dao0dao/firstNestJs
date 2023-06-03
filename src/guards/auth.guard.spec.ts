@@ -1,19 +1,27 @@
 import { AuthGuard } from "./auth.guard";
-import { ExecutionContext, UnauthorizedException } from "@nestjs/common";
+import {
+  ExecutionContext,
+  HttpException,
+  UnauthorizedException,
+} from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
+import { ExecutionContextHost } from "@nestjs/core/helpers/execution-context-host";
 import { Test, TestingModule } from "@nestjs/testing";
 import { UserSQLService } from "src/models/model/user/user-sql.service";
 import { SessionsService } from "src/utils/shared/session.service";
 
 describe("AuthGuard", () => {
   let authGuard: AuthGuard;
+  let reflector: Reflector;
+  let sessionsService: SessionsService;
+  let adminService: UserSQLService;
   const mockReflector = {
-    get: jest.fn(),
+    get: jest.fn(() => "login"),
   };
   const mockSessionService = {
     findLoginUserBySessionId: jest.fn(),
   };
-  const adminService = {
+  const mockAdminService = {
     findUserById: jest.fn(),
   };
   const mockContext = {
@@ -21,7 +29,9 @@ describe("AuthGuard", () => {
       getRequest: jest.fn(() => ({
         cookies: { key: "session_id" },
       })),
-      getResponse: jest.fn(),
+      getResponse: jest.fn(() => ({
+        clearCookie: (data) => data,
+      })),
     })),
     getHandler: jest.fn(),
   } as unknown as ExecutionContext;
@@ -31,11 +41,15 @@ describe("AuthGuard", () => {
       providers: [
         { provide: Reflector, useValue: mockReflector },
         { provide: SessionsService, useValue: mockSessionService },
-        { provide: UserSQLService, useValue: adminService },
+        { provide: UserSQLService, useValue: mockAdminService },
+        { provide: ExecutionContextHost, useValue: mockContext },
         AuthGuard,
       ],
     }).compile();
     authGuard = module.get<AuthGuard>(AuthGuard);
+    reflector = module.get<Reflector>(Reflector);
+    sessionsService = module.get<SessionsService>(SessionsService);
+    adminService = module.get<UserSQLService>(UserSQLService);
   });
 
   it("should be define", () => {
@@ -47,7 +61,7 @@ describe("AuthGuard", () => {
     expect(result).toBe(true);
   });
   it("should throw UnauthorizedException if session_id is not provided", async () => {
-    const newMockContext = {
+    const mockNewContext = {
       switchToHttp: jest.fn(() => ({
         getRequest: jest.fn(() => ({
           cookies: {},
@@ -57,28 +71,19 @@ describe("AuthGuard", () => {
       getHandler: jest.fn(),
     } as unknown as ExecutionContext;
     mockReflector.get.mockReturnValueOnce("login");
-    await expect(authGuard.canActivate(newMockContext)).rejects.toThrow(
+    await expect(authGuard.canActivate(mockNewContext)).rejects.toThrow(
       UnauthorizedException
     );
   });
-  // it("should throw UnauthorizedException if loginUser is not found", async () => {
-  //   sessionService.findLoginUserBySessionId.mockReturnValueOnce(null);
-  //   const clearCookieMock = jest.fn();
-  //   const getResponseMock = jest.fn(() => ({
-  //     clearCookie: clearCookieMock,
-  //   }));
-  //   context.switchToHttp().getResponse.mockReturnValueOnce(getResponseMock);
-  //   await expect(authGuard.canActivate(context)).rejects.toThrow(
-  //     HttpException
-  //   );
-  //   expect(clearCookieMock).toHaveBeenCalledWith("key");
-  //   expect(getResponseMock).toHaveBeenCalledWith();
-  //   expect(getResponseMock().clearCookie).toHaveBeenCalledWith("key");
-  //   expect(HttpException).toHaveBeenCalledWith(
-  //     { session: "fail" },
-  //     HttpStatus.UNAUTHORIZED
-  //   );
-  // });
+  it("should throw UnauthorizedException if loginUser is not found", async () => {
+    const mockUser = false as unknown as Promise<any>;
+    jest
+      .spyOn(sessionsService, "findLoginUserBySessionId")
+      .mockReturnValue(mockUser);
+    await expect(authGuard.canActivate(mockContext)).rejects.toThrow(
+      HttpException
+    );
+  });
   // it("should throw UnauthorizedException if registeredUser is not found", async () => {
   //   sessionService.findLoginUserBySessionId.mockReturnValueOnce({
   //     administrator_id: "admin_id",
