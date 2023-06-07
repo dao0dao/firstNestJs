@@ -47,19 +47,19 @@ describe("ClassValidationPipe", () => {
     });
   });
 
-  //   describe("toValidate", () => {
-  //     it("should return false for String, Boolean, Number, Array, and Object types", () => {
-  //       const types = [String, Boolean, Number, Array, Object];
-  //       types.forEach((type) => {
-  //         const result = pipe["toValidate"](type);
-  //         expect(result).toBe(false);
-  //       });
-  //     });
+  describe("toValidate", () => {
+    it("should return false for String, Boolean, Number, Array, and Object types", () => {
+      const types = [String, Boolean, Number, Array, Object];
+      types.forEach((type) => {
+        const result = pipe["toValidate"](type);
+        expect(result).toBe(false);
+      });
+    });
 
-  //     it("should return true for custom types", () => {
-  //       class CustomType {}
-  //       const result = pipe["toValidate"](CustomType);
-  //       expect(result).toBe(true);
-  //     });
-  //   });
+    it("should return true for custom types", () => {
+      class CustomType {}
+      const result = pipe["toValidate"](CustomType);
+      expect(result).toBe(true);
+    });
+  });
 });
