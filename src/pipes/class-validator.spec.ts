@@ -1,6 +1,6 @@
 import { ArgumentMetadata, BadRequestException } from "@nestjs/common";
 import { ClassValidationPipe } from "./class-validation.pipe";
-import { ClassConstructor } from "class-transformer";
+import { IsString } from "class-validator";
 
 describe("ClassValidationPipe", () => {
   let pipe: ClassValidationPipe;
@@ -10,34 +10,37 @@ describe("ClassValidationPipe", () => {
   });
 
   describe("transform", () => {
-    // it("should return the value when metatype is falsy", async () => {
-    //   const value = "some_value";
-    //   const argumentMetadata: ArgumentMetadata = {
-    //     type: "body",
-    //     metatype: undefined,
-    //   };
-    //   const result = await pipe.transform(value, argumentMetadata);
-    //   expect(result).toBe(value);
-    // });
-
-    // it("should return the value when metatype doesn't require validation", async () => {
-    //   const value = true;
-    //   const argumentMetadata: ArgumentMetadata = {
-    //     type: "body",
-    //     metatype: Boolean,
-    //   };
-    //   const result = await pipe.transform(value, argumentMetadata);
-    //   expect(result).toEqual(value);
-    // });
-
-    it("should throw BadRequestException when validation fails", async () => {
-      let metatype: ClassConstructor<[number]>;
+    it("should return the value when metatype is falsy", async () => {
       const value = "some_value";
       const argumentMetadata: ArgumentMetadata = {
         type: "body",
-        metatype: metatype,
+        metatype: undefined,
       };
+      const result = await pipe.transform(value, argumentMetadata);
+      expect(result).toBe(value);
+    });
 
+    it("should return the value when metatype doesn't require validation", async () => {
+      const value = true;
+      const argumentMetadata: ArgumentMetadata = {
+        type: "body",
+        metatype: Boolean,
+      };
+      const result = await pipe.transform(value, argumentMetadata);
+      expect(result).toEqual(value);
+    });
+
+    it("should throw BadRequestException when validation fails", async () => {
+      const value = { value: undefined };
+      class metaType {
+        @IsString()
+        value: string;
+      }
+      const argumentMetadata: ArgumentMetadata = {
+        type: "body",
+        metatype: metaType,
+        data: undefined,
+      };
       await expect(pipe.transform(value, argumentMetadata)).rejects.toThrow(
         BadRequestException
       );

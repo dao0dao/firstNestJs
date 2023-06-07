@@ -10,7 +10,8 @@ import { writeErrorToLog } from "src/utils/writeLogs";
 
 @Injectable()
 export class ClassValidationPipe implements PipeTransform {
-  async transform(value: any, { metatype }: ArgumentMetadata) {
+  async transform(value: any, argumentMetadata: ArgumentMetadata) {
+    const { metatype } = argumentMetadata;
     if (!metatype || !this.toValidate(metatype)) {
       return value;
     }
@@ -26,7 +27,6 @@ export class ClassValidationPipe implements PipeTransform {
   }
 
   private toValidate(metatype): boolean {
-    console.log(metatype);
     const types = [String, Boolean, Number, Array, Object];
     return !types.includes(metatype);
   }
