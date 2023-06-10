@@ -54,12 +54,12 @@ export class OptionalPriceListHourValidationPipe implements PipeTransform {
   transform(body: any, metadata: ArgumentMetadata) {
     const isCorrect = this.isHourInterfaceCorrect(body, metadata);
     if (!isCorrect.status) {
-      const err = {
-        property: "Price list Hours",
-        constraints: { 0: "wrong hours fields" },
-        value: isCorrect.value,
-      } as ValidationError;
       if (process.env.MODE === "dev") {
+        const err = {
+          property: "Price list Hours",
+          constraints: { 0: "wrong hours fields" },
+          value: isCorrect.value,
+        } as ValidationError;
         writeErrorToLog([err]);
       }
       throw new BadRequestException("Validation failed");
@@ -76,7 +76,7 @@ export class OptionalPriceListHourValidationPipe implements PipeTransform {
     }
     const bodyKeys = Object.keys(body);
     if (!bodyKeys.includes("hours")) {
-      return { status: true };
+      return { status: false };
     }
     if (typeof body.hours !== "object") {
       return { status: false, value: "hours is not object" };
