@@ -1,7 +1,7 @@
 import { ArgumentMetadata, BadRequestException } from "@nestjs/common";
 import { OptionalPriceListHourValidationPipe } from "./priceListHour-validator.pipe";
 
-describe("Price list validation", () => {
+describe("Price list hour validation", () => {
   let pipe: OptionalPriceListHourValidationPipe;
   beforeEach(() => {
     pipe = new OptionalPriceListHourValidationPipe();

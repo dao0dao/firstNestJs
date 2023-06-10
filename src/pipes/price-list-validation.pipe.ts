@@ -41,7 +41,7 @@ export class PriceListValidationPipe implements PipeTransform {
         if (
           !timeRegExp.test(h.from) ||
           !timeRegExp.test(h.to) ||
-          !Number.isInteger(h.price)
+          !this.isPrice(h.price)
         ) {
           return error;
         }
@@ -53,5 +53,14 @@ export class PriceListValidationPipe implements PipeTransform {
       }
     }
     return { status: true, value: "" };
+  }
+
+  private isPrice(value: number | string) {
+    const regexp = /^\d+(\.\d{1,2})?$/;
+    if (typeof value === "number") {
+      return value >= 0;
+    } else {
+      return regexp.test(value);
+    }
   }
 }
