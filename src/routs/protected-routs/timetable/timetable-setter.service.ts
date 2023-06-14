@@ -18,10 +18,10 @@ export class TimetableSetterService {
     if (reservation.player_two !== "" && reservation.player_two !== undefined) {
       playerCount++;
     }
-    if (reservation.guest_one !== "") {
+    if (reservation.guest_one && reservation.guest_one !== "") {
       playerCount++;
     }
-    if (reservation.guest_two !== "") {
+    if (reservation.guest_two && reservation.guest_two !== "") {
       playerCount++;
     }
     return playerCount;
