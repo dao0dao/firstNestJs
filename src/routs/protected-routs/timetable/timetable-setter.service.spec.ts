@@ -185,4 +185,44 @@ describe("test timetable setter service", () => {
       expect(service["setPlayerPrice"](mockData)).toBe(50);
     });
   });
+
+  it("should prepare data for player history", () => {
+    const mockData = {
+      player_id: "somePlayerId",
+      playerCount: 2,
+      player_position: 1,
+      reservation: {
+        id: "someReservationId",
+        date: "2023-06-12",
+        hour_count: "2",
+        time_from: "11:00",
+        time_to: "13:00",
+      } as any,
+      priceList: {
+        default_Price: 20,
+        hours: {
+          1: {
+            days: [1, 2, 3, 4, 5],
+            from: "12:00",
+            to: "18:00",
+            price: 30,
+          },
+        },
+      } as any,
+    };
+    const mockOutputData = {
+      player_id: "somePlayerId",
+      price: "25.00",
+      is_paid: false,
+      service_date: "2023-06-12",
+      service_name: "Wynajęcie kortu",
+      timetable_id: "someReservationId",
+      player_position: 1,
+    };
+    expect(service.setDataForPlayerHistory(mockData)).toStrictEqual(
+      mockOutputData
+    );
+  });
+
+  
 });
