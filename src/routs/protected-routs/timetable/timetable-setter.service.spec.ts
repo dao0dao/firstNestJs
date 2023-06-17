@@ -4,6 +4,7 @@ import { PlayerSQL } from "src/models/model/player/player.service";
 
 describe("test timetable setter service", () => {
   let service: TimetableSetterService;
+  let playerService: PlayerSQL;
 
   const mockPlayerService = {
     getPlayerPriceListIdByPlayerId: jest.fn(),
@@ -20,6 +21,7 @@ describe("test timetable setter service", () => {
       ],
     }).compile();
     service = module.get<TimetableSetterService>(TimetableSetterService);
+    playerService = module.get<PlayerSQL>(PlayerSQL);
   });
 
   it("should count players", () => {
@@ -224,5 +226,26 @@ describe("test timetable setter service", () => {
     );
   });
 
-  
+  it("should prepare player data for player history", () => {
+    const mockData = {
+      player_one: "someId",
+      player_two: "someId",
+    } as any;
+    jest
+      .spyOn(playerService, "getPlayerPriceListIdByPlayerId")
+      .mockResolvedValue("somePriceListId");
+    const mockOutput = {
+      playerOne: {
+        id: "someId",
+        priceListId: "somePriceListId",
+      },
+      playerTwo: {
+        id: "someId",
+        priceListId: "somePriceListId",
+      },
+    };
+    expect(service.setPlayersForPlayerHistory(mockData)).resolves.toStrictEqual(
+      mockOutput
+    );
+  });
 });
