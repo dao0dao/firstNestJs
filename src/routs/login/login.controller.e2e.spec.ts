@@ -1,20 +1,28 @@
 import { Test } from "@nestjs/testing";
-import { INestApplication, HttpStatus } from "@nestjs/common";
+import { INestApplication, CanActivate, HttpStatus } from "@nestjs/common";
 import * as request from "supertest";
-import { AppModule } from "src/app.module";
+import { AppModule } from "../../app.module";
+import { AuthGuard } from "src/guards/auth.guard";
 
 describe("Login (e2e)", () => {
   let app: INestApplication;
+  const mock_ForceFailGuard: CanActivate = {
+    canActivate: jest.fn().mockResolvedValue(true),
+  };
 
-  beforeAll(async () => {
+  beforeEach(async () => {
     const module = await Test.createTestingModule({
       imports: [AppModule],
-    }).compile();
+    })
+      .overrideGuard(AuthGuard)
+      .useValue(mock_ForceFailGuard)
+      .compile();
     app = module.createNestApplication();
+    app.listen(300);
     await app.init();
   });
 
-  afterAll(async () => {
+  afterEach(async () => {
     await app.close();
   });
 
@@ -22,6 +30,12 @@ describe("Login (e2e)", () => {
     await request(app.getHttpServer())
       .post("/api/login")
       .send({ nick: "user", password: "user" })
+      .expect(HttpStatus.UNAUTHORIZED);
+  });
+  it("should throw UNAUTHORIZED", async () => {
+    await request(app.getHttpServer())
+      .get("/api/login")
+      .expect("Content-Type", /json/)
       .expect(HttpStatus.UNAUTHORIZED);
   });
   it("should logIn", async () => {

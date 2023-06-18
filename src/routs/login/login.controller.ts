@@ -20,10 +20,7 @@ export class LoginController {
     private sessionService: SessionsService
   ) {}
   @Post()
-  async logIn(
-    @Res({ passthrough: true }) res: Response,
-    @Body() body: LoginInputDTO
-  ) {
+  async logIn(@Res() res: Response, @Body() body: LoginInputDTO) {
     const user = await this.loginService.loginUser(body);
     if (!user) {
       throw new HttpException("UNAUTHORIZED", HttpStatus.UNAUTHORIZED);
@@ -32,7 +29,7 @@ export class LoginController {
       user.user_id,
       user.user
     );
-    res
+    return res
       .cookie("key", session.key, {
         expires: session.date,
         httpOnly: true,
@@ -48,7 +45,7 @@ export class LoginController {
 
   @Get()
   async checkIsLogin(@Req() req: Request) {
-    if (!req.cookies.key) {
+    if (!req.cookies || !req.cookies.key) {
       throw new HttpException("UNAUTHORIZED", HttpStatus.UNAUTHORIZED);
     }
     const userSession = await this.sessionService.findLoginUserBySessionId(

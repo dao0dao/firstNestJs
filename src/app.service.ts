@@ -5,6 +5,6 @@ import { Response } from "express";
 @Injectable()
 export class AppService {
   getIndex(res: Response) {
-    res.sendFile(frontIndexFile);
+    return res.sendFile(frontIndexFile);
   }
 }

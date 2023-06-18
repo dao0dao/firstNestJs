@@ -14,6 +14,7 @@ describe("AppController (e2e)", () => {
       imports: [AppModule],
     }).compile();
     app = module.createNestApplication();
+    app.listen(300);
     appService = module.get<AppService>(AppService);
     await app.init();
   });
