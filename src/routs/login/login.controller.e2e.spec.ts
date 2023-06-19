@@ -1,22 +1,15 @@
 import { Test } from "@nestjs/testing";
-import { INestApplication, CanActivate, HttpStatus } from "@nestjs/common";
+import { INestApplication, HttpStatus } from "@nestjs/common";
 import * as request from "supertest";
 import { AppModule } from "../../app.module";
-import { AuthGuard } from "src/guards/auth.guard";
 
 describe("Login (e2e)", () => {
   let app: INestApplication;
-  const mock_ForceFailGuard: CanActivate = {
-    canActivate: jest.fn().mockResolvedValue(true),
-  };
 
   beforeEach(async () => {
     const module = await Test.createTestingModule({
       imports: [AppModule],
-    })
-      .overrideGuard(AuthGuard)
-      .useValue(mock_ForceFailGuard)
-      .compile();
+    }).compile();
     app = module.createNestApplication();
     app.listen(300);
     await app.init();
