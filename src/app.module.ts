@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common";
+import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
 import { APP_PIPE, RouterModule, RouteTree } from "@nestjs/core";
 import { AppService } from "./app.service";
 import { SessionsService } from "./utils/shared/session.service";
@@ -13,6 +13,7 @@ import { LoginModule } from "./routs/login/login.module";
 import { SharedModule } from "./utils/shared/shared.module";
 import { ProtectedRoutsModule } from "./routs/protected-routs/protected-routs.module";
 import { ModelsModule } from "./models/models.module";
+import { HeadersMiddleware } from "./midelwares/headers/headers.middleware";
 
 const routs: RouteTree[] = [
   {
@@ -40,7 +41,10 @@ const routs: RouteTree[] = [
   providers: [AppService, { provide: APP_PIPE, useClass: ClassValidationPipe }],
   exports: [],
 })
-export class AppModule {
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(HeadersMiddleware).forRoutes("api");
+  }
   constructor(private readonly session: SessionsService) {
     this.session.clearOldSessions();
     setInterval(() => {

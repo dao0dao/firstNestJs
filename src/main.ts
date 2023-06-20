@@ -1,9 +1,11 @@
 import { NestFactory } from "@nestjs/core";
 import * as cookieParser from "cookie-parser";
 import { AppModule } from "./app.module";
+import { NestExpressApplication } from "@nestjs/platform-express";
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  app.disable("x-powered-by");
   app.use(cookieParser());
   if (process.env.MODE === "dev") {
     app.enableCors({
