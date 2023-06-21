@@ -16,6 +16,11 @@ export class HeadersMiddleware implements NestMiddleware {
     res.header("X-Content-Type-Options", "nosniff");
     res.header("referrer-policy", "no-referrer");
     res.header("permissions-policy", "geolocation=(none)");
+    res.header("default-src", "'self'");
+    res.header("style-src", ["self", "unsafe-inline", "unsafe-eval"]);
+    res.header("font-src", ["self"]);
+    res.header("object-src", ["none"]);
+    res.header("image-src", ["self"]);
     res.removeHeader("Keep-Alive");
     next();
   }
