@@ -8,6 +8,14 @@ export class HeadersMiddleware implements NestMiddleware {
       "Content-Security-Policy",
       "script-src 'strict-dynamic' 'unsafe-inline' http: https:; require-trusted-types-for 'script'; default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self'; font-src 'self'; frame-src 'self'; object-src 'none'; connect-src 'self';"
     );
+    res.header(
+      "Strict-Transport-Security",
+      "max-age=31536000; includeSubDomains"
+    );
+    res.header("X-Frame-Options", "DENY");
+    res.header("X-Content-Type-Options", "nosniff");
+    res.header("referrer-policy", "no-referrer");
+    res.header("permissions-policy", "geolocation=(none)");
     res.removeHeader("Keep-Alive");
     next();
   }
