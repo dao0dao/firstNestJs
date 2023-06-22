@@ -5,20 +5,12 @@ import { NextFunction, Request, Response } from "express";
 export class HeadersMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: NextFunction) {
     res
-      .setHeader(
-        "Strict-Transport-Security",
-        "max-age=31536000; includeSubDomains"
-      )
-      .setHeader("X-Frame-Options", "DENY")
-      .setHeader("X-Content-Type-Options", "nosniff")
-      .setHeader("referrer-policy", "no-referrer")
-      .setHeader("permissions-policy", "geolocation=(none)")
-      .setHeader("default-src", "'self'")
-      .setHeader("style-src", ["self", "unsafe-inline", "unsafe-eval"])
-      .setHeader("font-src", ["self"])
-      .setHeader("object-src", ["none"])
-      .setHeader("image-src", ["self"])
-      .setHeader("script-src", ["self"])
+      .setHeader("Content-Security-Policy", [
+        "default-src 'self' 'unsafe-inline' 'https://fonts.gstatic.com'; script-src 'self' 'unsafe-inline'; image-src 'self'; object-src 'self'; font-src 'self' https://fonts.gstatic.com ; style-src 'self' 'unsafe-inline'; connect-src 'self'; referrer-policy 'no-referrer'",
+        "X-Frame-Options 'DENY'",
+        "Strict-Transport-Security 'max-age=31536000' 'includeSubDomains'",
+        "X-Content-Type-Options, 'nosniff'",
+      ])
       .removeHeader("Keep-Alive");
     next();
   }
