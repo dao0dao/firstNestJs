@@ -43,7 +43,7 @@ const routs: RouteTree[] = [
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(HeadersMiddleware).forRoutes("api");
+    consumer.apply(HeadersMiddleware).forRoutes({ method: 5, path: "*" });
   }
   constructor(private readonly session: SessionsService) {
     this.session.clearOldSessions();
