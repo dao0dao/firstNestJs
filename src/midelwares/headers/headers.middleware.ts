@@ -10,12 +10,13 @@ export class HeadersMiddleware implements NestMiddleware {
       ])
       .setHeader("referrer-policy", "no-referrer")
       .setHeader("image-src", "self")
+      .setHeader("permissions-policy", "self")
       .setHeader("X-Frame-Options", "DENY")
       .setHeader("X-Content-Type-Options", "nosniff")
-      .setHeader("Strict-Transport-Security", [
-        "max-age=31536000",
-        "includeSubDomains",
-      ])
+      .setHeader(
+        "Strict-Transport-Security",
+        "max-age=31536000;includeSubDomains"
+      )
       .removeHeader("Keep-Alive");
     next();
   }
