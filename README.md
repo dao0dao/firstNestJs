@@ -1,6 +1,4 @@
-Rewriting project [link](https://github.com/dao0dao/CourtReservationSystem-Backend) from ExpressJS to NestJS.
-
-Work in progress.
+Rewrited project [link](https://github.com/dao0dao/CourtReservationSystem-Backend) from ExpressJS to NestJS.
 
 ## Requirements:
 1. NestJS V 9.1.1
